@@ -1,0 +1,41 @@
+{
+    "name": "donate-to-educate-backend",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "unit": "jest",
+        "lint": "eslint '*.ts' --quiet --fix",
+        "compile": "tsc",
+        "test": "npm run compile && npm run unit"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/CapgeminiInventUK/educate-for-good-backend.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/CapgeminiInventUK/educate-for-good-backend/issues"
+    },
+    "homepage": "https://github.com/CapgeminiInventUK/educate-for-good-backend#readme",
+    "dependencies": {
+        "sharp": "^0.32.4",
+        "winston": "^3.10.0"
+    },
+    "devDependencies": {
+        "@types/aws-lambda": "^8.10.92",
+        "@types/jest": "^29.2.0",
+        "@types/node": "^20.4.5",
+        "@typescript-eslint/eslint-plugin": "^5.10.2",
+        "@typescript-eslint/parser": "^5.10.2",
+        "eslint": "^8.8.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-prettier": "^4.0.0",
+        "jest": "^29.2.1",
+        "prettier": "^2.5.1",
+        "ts-jest": "^29.0.5",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.1.6"
+    }
+}
