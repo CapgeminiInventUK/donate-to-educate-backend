@@ -1,0 +1,33 @@
+service: donate-to-educate
+
+plugins:
+    - serverless-esbuild
+    - serverless-offline
+
+custom:
+    esbuild:
+        minify: true
+        external:
+            - sharp
+        packagerOptions:
+            scripts:
+                - npm install --arch=x64 --platform=linux sharp
+
+provider:
+    name: aws
+    architecture: x86_64
+    runtime: nodejs18.x
+
+functions:
+    Test:
+        handler: ./src/handlers/app.lambdaHandler
+        events:
+            - http:
+                  path: test
+                  method: get
+    Test2:
+        handler: ./src/handlers/compressImage.lambdaHandler
+        events:
+            - http:
+                  path: test2
+                  method: get

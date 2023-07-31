@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-//import { convertImageToWebpFormat } from '../shared';
-import winston from 'winston';
+import { convertImageToWebpFormat } from '../shared';
+
 /**
  *
  * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
@@ -13,6 +13,8 @@ import winston from 'winston';
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
+        convertImageToWebpFormat('../../large-image.jpeg', 200, '2.webp');
+
         return {
             statusCode: 200,
             body: JSON.stringify({
