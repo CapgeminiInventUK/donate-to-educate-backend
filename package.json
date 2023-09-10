@@ -2,9 +2,12 @@
     "name": "donate-to-educate-backend",
     "version": "1.0.0",
     "description": "",
+    "type": "module",
     "main": "index.js",
     "scripts": {
         "start": "sls offline",
+        "start:localstack": "DEBUG=1 localstack start -d && serverless deploy --stage local",
+        "build": "serverless package",
         "unit": "jest",
         "lint": "eslint '*.ts' --quiet --fix",
         "compile": "tsc",
@@ -21,7 +24,13 @@
     },
     "homepage": "https://github.com/CapgeminiInventUK/educate-for-good-backend#readme",
     "dependencies": {
+        "@sparticuz/chromium": "^116.0.0",
+        "@types/puppeteer": "^7.0.4",
+        "@types/unzipper": "^0.10.7",
+        "csvtojson": "^2.0.10",
+        "puppeteer-core": "^21.1.1",
         "sharp": "^0.32.4",
+        "unzipper": "^0.10.14",
         "winston": "^3.10.0"
     },
     "devDependencies": {
@@ -36,8 +45,10 @@
         "eslint-plugin-prettier": "^4.0.0",
         "jest": "^29.2.1",
         "prettier": "^2.5.1",
+        "puppeteer": "^21.1.1",
         "serverless": "^3.33.0",
         "serverless-esbuild": "^1.46.0",
+        "serverless-localstack": "^1.1.1",
         "serverless-offline": "^12.0.4",
         "ts-jest": "^29.0.5",
         "ts-node": "^10.9.1",

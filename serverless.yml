@@ -3,6 +3,10 @@ service: donate-to-educate
 plugins:
     - serverless-esbuild
     - serverless-offline
+    - serverless-localstack
+
+package:
+    individually: true
 
 custom:
     esbuild:
@@ -12,6 +16,24 @@ custom:
         packagerOptions:
             scripts:
                 - npm install --arch=x64 --platform=linux sharp
+    localstack:
+        debug: true
+        stages:
+            # list of stages for which the plugin should be enabled
+            - local
+        host: http://localhost # optional - LocalStack host to connect to
+        edgePort: 4566 # optional - LocalStack edge port to connect to
+        autostart: true # optional - Start LocalStack in Docker on Serverless deploy
+        networks: #optional - attaches the list of networks to the localstack docker container after startup
+            - host
+            - overlay
+            - my_custom_network
+        lambda:
+            # Enable this flag to improve performance
+            mountCode: true # specify either "true", or a relative path to the root Lambda mount path
+        docker:
+            # Enable this flag to run "docker ..." commands as sudo
+            sudo: False
 
 provider:
     name: aws
@@ -19,15 +41,17 @@ provider:
     runtime: nodejs18.x
 
 functions:
-    Test:
-        handler: ./src/handlers/app.lambdaHandler
-        events:
-            - http:
-                  path: test
-                  method: get
-    Test2:
+    compressImage:
         handler: ./src/handlers/compressImage.lambdaHandler
         events:
             - http:
-                  path: test2
+                  path: compress-image
+                  method: get
+    schoolData:
+        handler: ./src/handlers/schoolData.lambdaHandler
+        timeout: 30
+        memorySize: 512
+        events:
+            - http:
+                  path: school-data
                   method: get
