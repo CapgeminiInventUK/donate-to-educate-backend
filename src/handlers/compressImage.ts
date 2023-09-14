@@ -1,23 +1,25 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyResult } from 'aws-lambda';
 import { convertImageToWebpFormat } from '../shared/image';
+import { logger } from '../shared/logger';
 
-export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    try {
-        convertImageToWebpFormat('@large-image.jpeg', 200, '2.webp');
+export const lambdaHandler = async (): Promise<APIGatewayProxyResult> => {
+  try {
+    await convertImageToWebpFormat('@large-image.jpeg', 200, '2.webp');
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify({
-                message: 'hello world',
-            }),
-        };
-    } catch (err) {
-        console.log(err);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({
-                message: (err as Error).message,
-            }),
-        };
-    }
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: 'hello world',
+      }),
+    };
+  } catch (error) {
+    logger.error(error);
+
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: (error as Error).message,
+      }),
+    };
+  }
 };
