@@ -49,7 +49,7 @@ functions:
                   method: get
     schoolData:
         handler: ./src/handlers/schoolData.lambdaHandler
-        timeout: 30
+        timeout: 900
         memorySize: 512
         events:
             - http:

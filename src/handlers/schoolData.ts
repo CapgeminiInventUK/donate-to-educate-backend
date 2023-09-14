@@ -1,68 +1,107 @@
-import chromium from '@sparticuz/chromium';
-import fs from 'fs';
-import unzipper from 'unzipper';
+import { readdirSync, rmSync, unlinkSync } from 'fs';
 import csv from 'csvtojson';
-const puppeteer = process.env.NODE_ENV === 'production' ? require('puppeteer-core') : require('puppeteer');
+import { AnyBulkWriteOperation, MongoClient } from 'mongodb';
+import { unzip } from '../shared/zip';
+import { downloadSchoolDataFileLocally } from '../shared/puppeteer';
 
 export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
-    const browser = await puppeteer.launch({
-        args: chromium.args,
-        defaultViewport: chromium.defaultViewport,
-        ...(process.env.NODE_ENV === 'production' && { executablePath: await chromium.executablePath() }),
-        headless: chromium.headless,
-    });
-    const [page] = await browser.pages();
-    const client = await page.target().createCDPSession();
-    await client.send('Page.setDownloadBehavior', {
-        behavior: 'allow',
-        downloadPath: './',
-    });
+    await downloadSchoolDataFileLocally();
 
     try {
-        await page.goto('https://get-information-schools.service.gov.uk/Downloads');
+        await unzip('extract.zip', './extracted');
 
-        await page.waitForSelector('#establishment-fields-csv-checkbox');
-        await page.evaluate(() => {
-            (document.querySelector('#establishment-fields-csv-checkbox') as HTMLElement)?.click();
-        });
+        const filename = readdirSync('./extracted').pop();
 
-        await page.waitForSelector('#download-selected-files-button');
-        await page.evaluate(() => {
-            (document.querySelector('#download-selected-files-button') as HTMLElement)?.click();
-        });
+        const data = (await csv().fromFile(`extracted/${filename}`)) as Record<string, string>[];
+        const openSchools = data.filter(
+            ({ 'EstablishmentStatus (name)': status, 'TypeOfEstablishment (name)': type }) =>
+                status === 'Open' && !type.includes('independent'),
+        );
 
-        await page.waitForNavigation();
+        const localAuthorities = data.reduce((acc, { 'LA (name)': name, 'LA (code)': code }) => {
+            const match = acc.find((la) => la.code === code);
+            if (!match) {
+                acc.push({ name, code });
+            }
 
-        await page.waitForSelector('#download-button');
-        await page.evaluate(() => {
-            (document.querySelector('#download-button') as HTMLElement)?.click();
-        });
+            return acc;
+        }, <Record<string, string>[]>[]);
 
-        await page.waitForNetworkIdle({ idleTime: 10000, timeout: 30000 });
+        console.log(`Total schools: ${openSchools.length}, Total local authorities: ${localAuthorities.length}`);
+
+        const uri = 'mongodb://localhost:27017/';
+        const mongoClient = new MongoClient(uri);
+
+        try {
+            const database = mongoClient.db('D2E');
+            const schoolCollection = database.collection('SchoolData');
+
+            const currentSchools = await schoolCollection.find().toArray();
+
+            const schoolUpdateOperations = openSchools.reduce(
+                (acc, { URN: urn, EstablishmentName: name, 'LA (name)': localAuthority }) => {
+                    const match = currentSchools.find((school) => school.urn === urn);
+
+                    if (
+                        !match ||
+                        !(match?.urn === urn && match?.name === name && match?.localAuthority === localAuthority)
+                    ) {
+                        acc.push({
+                            updateOne: {
+                                filter: { urn },
+                                update: { $set: { urn, name, localAuthority }, $setOnInsert: { registered: false } },
+                                upsert: true,
+                            },
+                        });
+                    }
+
+                    return acc;
+                },
+                <AnyBulkWriteOperation[]>[],
+            );
+
+            console.log(`${schoolUpdateOperations.length} School update operations`);
+
+            if (schoolUpdateOperations.length > 0) {
+                await schoolCollection.bulkWrite(schoolUpdateOperations, {
+                    ordered: false,
+                });
+            }
+
+            const localAuthorityCollection = database.collection('LocalAuthorityData');
+            const currentLocalAuthorities = await localAuthorityCollection.find().toArray();
+            const localAuthorityUpdateOperations = localAuthorities.reduce((acc, { name, code }) => {
+                const match = currentLocalAuthorities.find((la) => la.code === code);
+
+                if (!match || !(match?.name === name && match?.code === code)) {
+                    acc.push({
+                        updateOne: {
+                            filter: { code },
+                            update: { $set: { name, code }, $setOnInsert: { registered: false } },
+                            upsert: true,
+                        },
+                    });
+                }
+
+                return acc;
+            }, <AnyBulkWriteOperation[]>[]);
+
+            console.log(`${localAuthorityUpdateOperations.length} Local Authority update operations`);
+            if (localAuthorityUpdateOperations.length > 0) {
+                await localAuthorityCollection.bulkWrite(localAuthorityUpdateOperations, {
+                    ordered: false,
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            await mongoClient.close();
+        }
     } catch (error) {
         console.log(error);
     } finally {
-        page.close();
-        browser.close();
-
-        const readStream = fs.createReadStream('extract.zip');
-
-        readStream.pipe(unzipper.Extract({ path: './extracted' }));
-
-        readStream.on('end', async () => {
-            try {
-                const filename = fs.readdirSync('./extracted').pop();
-
-                const data = (await csv().fromFile(`extracted/${filename}`)) as Record<string, string>[];
-                const openSchools = data.filter(({ 'EstablishmentStatus (name)': status }) => status === 'Open');
-                console.log(openSchools[0]);
-            } catch (error) {
-                console.log(error);
-            } finally {
-                fs.unlinkSync('extract.zip');
-                fs.rmSync('extracted', { recursive: true, force: true });
-            }
-        });
+        unlinkSync('extract.zip');
+        rmSync('extracted', { recursive: true, force: true });
     }
 
     return {
