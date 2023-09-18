@@ -5,9 +5,9 @@ import sharp from 'sharp';
 // This reduced the size 6.6MB => 13KB which is a huge saving
 //convertImageToWebpFormat('large-image.jpeg', 300, 'test.webp');
 export const convertImageToWebpFormat = async (
-    fileName: string,
-    width: number,
-    outputFileName: string,
+  fileName: string,
+  width: number,
+  outputFileName: string
 ): Promise<void> => {
-    await sharp(fileName).resize(width).webp().toFile(outputFileName);
+  await sharp(fileName).resize(width).webp().toFile(outputFileName);
 };

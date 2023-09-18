@@ -64,23 +64,7 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
           longitude,
         };
 
-        if (
-          !match ||
-          !checkIfObjectValuesMatch(
-            [
-              'urn',
-              'name',
-              'localAuthority',
-              'postcode',
-              'easting',
-              'northing',
-              'latitude',
-              'longitude',
-            ],
-            match,
-            entry
-          )
-        ) {
+        if (!match || !checkIfObjectValuesMatch(Object.keys(entry), match, entry)) {
           acc.push({
             updateOne: {
               filter: { urn },
