@@ -96,7 +96,7 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
       const match = currentLocalAuthorities.find((la) => la.code === code);
       const entry = { name, code };
 
-      if (!match || !checkIfObjectValuesMatch(['name', 'code'], match, entry)) {
+      if (!match || !checkIfObjectValuesMatch(Object.keys(entry), match, entry)) {
         acc.push({
           updateOne: {
             filter: { code },
