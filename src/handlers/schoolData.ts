@@ -3,6 +3,7 @@ import { downloadSchoolDataFileLocally } from '../shared/puppeteer';
 import { loadCsvDataFromZip } from '../shared/file';
 import { checkIfObjectValuesMatch } from '../shared/object';
 import { logger } from '../shared/logger';
+import { convertEastingNorthingtoLatLng } from '../shared/location';
 
 export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
   await downloadSchoolDataFileLocally();
@@ -48,11 +49,34 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
         }
       ) => {
         const match = currentSchools.find((school) => school.urn === urn);
-        const entry = { urn, name, localAuthority, postcode, easting, northing };
+        const [longitude, latitude] = convertEastingNorthingtoLatLng(
+          Number(easting),
+          Number(northing)
+        );
+        const entry = {
+          urn,
+          name,
+          localAuthority,
+          postcode,
+          easting,
+          northing,
+          latitude,
+          longitude,
+        };
+
         if (
           !match ||
           !checkIfObjectValuesMatch(
-            ['urn', 'name', 'localAuthority', 'postcode', 'easting', 'northing'],
+            [
+              'urn',
+              'name',
+              'localAuthority',
+              'postcode',
+              'easting',
+              'northing',
+              'latitude',
+              'longitude',
+            ],
             match,
             entry
           )
