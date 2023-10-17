@@ -1,23 +1,24 @@
-// const puppeteer: PuppeteerNode =
-//   process.env.NODE_ENV === 'production' ? require('puppeteer-core') : require('puppeteer');
-import puppeteer from 'puppeteer';
-import chromium from '@sparticuz/chromium';
+import chromium from '@sparticuz/chromium-min';
+import puppeteer from 'puppeteer-core';
 import { logger } from './logger';
+import os from 'os';
 
 export const downloadSchoolDataFileLocally = async (): Promise<void> => {
   const browser = await puppeteer.launch({
-    args: chromium.args,
+    args: [...chromium.args, '--hide-scrollbars', '--disable-web-security'],
     defaultViewport: chromium.defaultViewport,
-    ...(process.env.NODE_ENV === 'production' && {
-      executablePath: await chromium.executablePath(),
-    }),
+    executablePath: await chromium.executablePath(
+      `https://github.com/Sparticuz/chromium/releases/download/v117.0.0/chromium-v117.0.0-pack.tar`
+    ),
     headless: chromium.headless,
+    ignoreHTTPSErrors: true,
   });
+
   const [page] = await browser.pages();
   const client = await page.target().createCDPSession();
   await client.send('Page.setDownloadBehavior', {
     behavior: 'allow',
-    downloadPath: './',
+    downloadPath: `${os.tmpdir()}/`,
   });
 
   try {
@@ -52,6 +53,7 @@ export const downloadSchoolDataFileLocally = async (): Promise<void> => {
     await page.waitForNetworkIdle({ idleTime: 10000, timeout: 30000 });
   } catch (error) {
     logger.error(error);
+    throw error;
   } finally {
     await page.close();
     await browser.close();
