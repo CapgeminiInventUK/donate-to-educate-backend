@@ -36,4 +36,4 @@ jobs:
         run: npm run build
 
       - name: Copy zip files to S3
-        run: aws cp .serverless/*.zip
+        run: aws s3 cp .serverless/*.zip s3://d2e-lambda-s3-bucket
