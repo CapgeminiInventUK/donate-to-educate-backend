@@ -38,7 +38,7 @@ jobs:
       - name: Move Zip files
         run: |
           mkdir archives
-          mv *.zip archives
+          mv .serverless/*.zip archives
 
       - name: Copy Zip files to S3
-        run: aws s3 cp .serverless/archives s3://d2e-lambda-s3-bucket
+        run: aws s3 cp archives s3://d2e-lambda-s3-bucket
