@@ -21,7 +21,16 @@ jobs:
       - name: Install
         run: |
           npm install
-          python3 -m pip install --upgrade localstack
+
+      - name: Start LocalStack
+        run: |
+          pip install localstack awscli-local[ver1]
+          docker pull localstack/localstack
+          localstack start -d
+
+          echo "Waiting for LocalStack startup..."
+          localstack wait -t 30
+          echo "Startup complete"
 
       - name: Build
         run: npm run build
