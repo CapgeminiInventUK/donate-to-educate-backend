@@ -2,7 +2,7 @@ import { downloadSchoolDataFileLocally } from '../shared/puppeteer';
 import { loadCsvDataFromZip } from '../shared/file';
 import { checkIfObjectValuesMatch } from '../shared/object';
 import { logger } from '../shared/logger';
-import { convertEastingNorthingtoLatLng } from '../shared/location';
+// import { convertEastingNorthingtoLatLng } from '../shared/location';
 import os from 'os';
 import { AnyBulkWriteOperation, MongoClient } from 'mongodb';
 
@@ -13,7 +13,7 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
   const extractPath = `${os.tmpdir()}/extracted`;
 
   const data = await loadCsvDataFromZip<Record<string, string>[]>(zipFile, extractPath);
-  logger.info(JSON.stringify(data[0]));
+
   const openSchools = data.filter(
     ({ 'EstablishmentStatus (name)': status, 'TypeOfEstablishment (name)': type }) =>
       status === 'Open' && !type.includes('independent')
@@ -32,7 +32,7 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
   logger.info(`Total local authorities: ${localAuthorities.length}`);
 
   const uri = process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/';
-  const mongoClient = new MongoClient(uri);
+  const mongoClient = new MongoClient(uri); // should do this outside the handler
 
   try {
     const database = mongoClient.db('D2E');
@@ -53,10 +53,13 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
         }
       ) => {
         const match = currentSchools.find((school) => school.urn === urn);
-        const [longitude, latitude] = convertEastingNorthingtoLatLng(
-          Number(easting),
-          Number(northing)
-        );
+        logger.info(`${easting} ${northing}`);
+
+        // const [longitude, latitude] = convertEastingNorthingtoLatLng(
+        //   Number(easting),
+        //   Number(northing)
+        // ); // for one record it is not reading it correctly...
+
         const entry = {
           urn,
           name,
@@ -64,8 +67,8 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
           postcode,
           easting,
           northing,
-          latitude,
-          longitude,
+          // latitude,
+          // longitude,
         };
 
         if (!match || !checkIfObjectValuesMatch(Object.keys(entry), match, entry)) {

@@ -13,7 +13,7 @@ export const loadCsvDataFromZip = async <T>(zipFile: string, extractPath: string
 
     const data = await csv({
       trim: true,
-      noheader: false,
+      // noheader: false,
       headers: school_data_headers,
     }).fromFile(filepath);
 
