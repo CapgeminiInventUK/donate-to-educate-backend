@@ -41,12 +41,12 @@ provider:
   runtime: nodejs18.x
 
 functions:
-  # compressImage:
-  #     handler: ./src/handlers/compressImage.lambdaHandler
-  #     events:
-  #         - http:
-  #               path: compress-image
-  #               method: get
+  compressImage:
+    handler: ./src/handlers/compressImage.lambdaHandler
+    events:
+      - http:
+          path: compress-image
+          method: get
   schoolData:
     handler: ./src/handlers/schoolData.lambdaHandler
     timeout: 900
