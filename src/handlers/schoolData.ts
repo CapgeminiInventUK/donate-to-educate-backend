@@ -32,7 +32,7 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
   logger.info(`Total local authorities: ${localAuthorities.length}`);
 
   const uri = process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/';
-  const mongoClient = new MongoClient(uri); // should do this outside the handler
+  const mongoClient = new MongoClient(uri, { auth: { username: 'user', password: 'user' } }); // should do this outside the handler
 
   try {
     const database = mongoClient.db('D2E');
