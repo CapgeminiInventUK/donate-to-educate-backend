@@ -19,7 +19,12 @@ jobs:
           submodules: true
 
       - name: Install
-        run: npm install
+        run: |
+          npm install
+          python3 -m pip install --upgrade localstack
 
       - name: Build
         run: npm run build
+
+      - name: Copy zip files to S3
+        run: aws cp .serverless/*.zip
