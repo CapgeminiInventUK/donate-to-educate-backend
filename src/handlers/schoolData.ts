@@ -6,11 +6,14 @@ import { logger } from '../shared/logger';
 import os from 'os';
 import { AnyBulkWriteOperation, MongoClient } from 'mongodb';
 
+const uri = process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/';
+const mongoClient = new MongoClient(uri, { auth: { username: 'user', password: 'user' } });
+
 export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
   await downloadSchoolDataFileLocally();
 
   const zipFile = `${os.tmpdir()}/extract.zip`;
-  const extractPath = `${os.tmpdir()}/extracted`;
+  const extractPath = `${os.tmpdir()}/extracted`; // TODO check if hash is same as last one and if so do nothing.
 
   const data = await loadCsvDataFromZip<Record<string, string>[]>(zipFile, extractPath);
 
@@ -31,10 +34,8 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
   logger.info(`Total schools: ${openSchools.length}`);
   logger.info(`Total local authorities: ${localAuthorities.length}`);
 
-  const uri = process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/';
-  const mongoClient = new MongoClient(uri, { auth: { username: 'user', password: 'user' } }); // should do this outside the handler
-
   try {
+    await mongoClient.connect();
     const database = mongoClient.db('D2E');
     const schoolCollection = database.collection('SchoolData');
 
