@@ -14,7 +14,8 @@
     "test": "npm run compile && npm run unit",
     "prepare": "is-ci || husky install",
     "format:check": "prettier --check src",
-    "format:fix": "prettier --write src"
+    "format:fix": "prettier --write src",
+    "codegen": "graphql-codegen"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md,yml,yaml}": [
@@ -49,7 +50,9 @@
     "unzipper": "^0.10.14"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.92",
+    "@graphql-codegen/cli": "^5.0.0",
+    "@graphql-codegen/typescript": "^4.0.1",
+    "@types/aws-lambda": "^8.10.125",
     "@types/jest": "^29.2.0",
     "@types/node": "^20.4.5",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
