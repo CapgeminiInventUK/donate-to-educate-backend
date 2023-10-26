@@ -2,22 +2,18 @@ import { AppSyncResolverHandler } from 'aws-lambda';
 import { Post, QuerySinglePostArgs } from '../../appsync';
 import { logger } from '../shared/logger';
 
-export const handler: AppSyncResolverHandler<QuerySinglePostArgs, Post> = (
-  event,
-  context,
-  callback
-) => {
+export const handler: AppSyncResolverHandler<QuerySinglePostArgs, Post> = (event, _, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
 
-  switch (event.info.fieldName) {
-    case 'singlePost': {
-      const { id } = event.arguments;
-      callback(null, { id, title: id });
+  const { arguments: params, info } = event;
+  logger.info(`${JSON.stringify(params)}`);
+
+  switch (info.fieldName) {
+    case 'singlePost':
+      callback(null, { id: '12', title: '12' });
       break;
-    }
-    default: {
-      callback('Unknown field, unable to resolve' + event.info.fieldName);
+    default:
+      callback(`Unexpected type ${info.fieldName}`);
       break;
-    }
   }
 };
