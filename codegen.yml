@@ -1,6 +1,6 @@
 overwrite: true
 schema:
-  - schema.graphql #your schema file
+  - schema.graphql
 
 generates:
   appsync.d.ts:

@@ -14,18 +14,21 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
-export type Post = {
-  __typename?: 'Post';
-  id: Scalars['ID']['output'];
-  title: Scalars['String']['output'];
-};
-
 export type Query = {
   __typename?: 'Query';
-  singlePost?: Maybe<Post>;
+  getSchoolByName?: Maybe<School>;
 };
 
 
-export type QuerySinglePostArgs = {
-  id: Scalars['ID']['input'];
+export type QueryGetSchoolByNameArgs = {
+  name: Scalars['String']['input'];
+};
+
+export type School = {
+  __typename?: 'School';
+  localAuthority: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  postcode: Scalars['String']['output'];
+  registered: Scalars['Boolean']['output'];
+  urn: Scalars['ID']['output'];
 };

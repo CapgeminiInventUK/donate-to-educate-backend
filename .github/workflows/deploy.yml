@@ -42,3 +42,6 @@ jobs:
 
       - name: Copy Zip files to S3
         run: aws s3 cp archives s3://d2e-lambda-s3-bucket --recursive
+
+      - name: Copy GraphQL schema to S3
+        run: aws s3 cp schema.graphql s3://d2e-lambda-s3-bucket
