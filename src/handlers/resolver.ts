@@ -21,7 +21,7 @@ export const handler: AppSyncResolverHandler<QueryGetSchoolByNameArgs, School> =
   };
 
   switch (info.fieldName) {
-    case 'singlePost':
+    case 'getSchoolByName':
       callback(null, dummySchool);
       break;
     default:
