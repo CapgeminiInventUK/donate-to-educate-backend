@@ -16,7 +16,8 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  getSchoolByName?: Maybe<School>;
+  getSchoolByName: School;
+  getSchools: Array<School>;
 };
 
 

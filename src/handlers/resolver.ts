@@ -1,8 +1,11 @@
 import { AppSyncResolverHandler } from 'aws-lambda';
 import { School, QueryGetSchoolByNameArgs } from '../../appsync';
 import { logger } from '../shared/logger';
+import { SchoolDataRepository } from '../repository/schoolDataRepository';
 
-export const handler: AppSyncResolverHandler<QueryGetSchoolByNameArgs, School> = (
+const schoolDataRepository = SchoolDataRepository.getInstance();
+
+export const handler: AppSyncResolverHandler<QueryGetSchoolByNameArgs, School | School[]> = async (
   event,
   _,
   callback
@@ -24,8 +27,16 @@ export const handler: AppSyncResolverHandler<QueryGetSchoolByNameArgs, School> =
     case 'getSchoolByName':
       callback(null, dummySchool);
       break;
-    default:
-      callback(`Unexpected type ${info.fieldName}`);
+    case 'getSchools': {
+      const schools = await schoolDataRepository.list();
+      callback(null, schools);
       break;
+    }
+    default: {
+      callback(`Unexpected type ${info.fieldName}`);
+      throw new Error(`Unexpected type ${info.fieldName}`);
+    }
   }
+
+  throw new Error('An unknown error occurred');
 };
