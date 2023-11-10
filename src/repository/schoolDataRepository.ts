@@ -8,7 +8,12 @@ export class SchoolDataRepository {
   private readonly collection: Collection<School>;
 
   private constructor() {
-    this.client = new MongoClient(process.env.mongoUrl ?? '');
+    this.client = new MongoClient(
+      process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/',
+      {
+        auth: { username: 'user', password: 'user' },
+      }
+    );
     this.db = this.client.db('D2E');
     this.collection = this.db.collection<School>('SchoolData');
   }
