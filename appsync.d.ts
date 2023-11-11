@@ -17,6 +17,7 @@ export type Scalars = {
 export type Query = {
   __typename?: 'Query';
   getSchoolByName: School;
+  getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
 };
 
@@ -34,7 +35,7 @@ export type School = {
   __typename?: 'School';
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
-  postcode: Scalars['String']['output'];
+  postcode?: Maybe<Scalars['String']['output']>;
   registered: Scalars['Boolean']['output'];
   urn: Scalars['ID']['output'];
 };

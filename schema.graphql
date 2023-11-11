@@ -2,13 +2,14 @@ type School {
   urn: ID!
   name: String!
   localAuthority: String!
-  postcode: String!
+  postcode: String
   registered: Boolean!
 }
 
 type Query {
   getSchoolByName(name: String!): School!
   getSchoolsByLa(name: String!): [School!]!
+  getSchools: [School!]!
 }
 
 schema {
