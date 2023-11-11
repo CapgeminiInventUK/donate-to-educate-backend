@@ -14,8 +14,16 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type LocalAuthority = {
+  __typename?: 'LocalAuthority';
+  code: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  registered: Scalars['Boolean']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  getLocalAuthorities: Array<LocalAuthority>;
   getSchoolByName: School;
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
