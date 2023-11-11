@@ -8,5 +8,9 @@ export const convertEastingNorthingtoLatLng = (
   easting: number,
   northing: number
 ): [number, number] => {
+  if (isNaN(easting) || isNaN(northing)) {
+    return [0, 0];
+  }
+
   return proj4(osgb, wgs84, [easting, northing]);
 };
