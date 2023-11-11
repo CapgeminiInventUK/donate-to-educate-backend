@@ -25,6 +25,11 @@ export type QueryGetSchoolByNameArgs = {
   name: Scalars['String']['input'];
 };
 
+
+export type QueryGetSchoolsByLaArgs = {
+  name: Scalars['String']['input'];
+};
+
 export type School = {
   __typename?: 'School';
   localAuthority: Scalars['String']['output'];

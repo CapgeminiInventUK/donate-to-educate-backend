@@ -8,7 +8,7 @@ type School {
 
 type Query {
   getSchoolByName(name: String!): School!
-  getSchoolsByLa: [School!]!
+  getSchoolsByLa(name: String!): [School!]!
 }
 
 schema {
