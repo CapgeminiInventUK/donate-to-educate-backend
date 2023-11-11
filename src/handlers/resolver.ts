@@ -15,18 +15,12 @@ export const handler: AppSyncResolverHandler<
   const { arguments: params, info } = event;
   logger.info(`${JSON.stringify(params)}`);
 
-  const dummySchool = {
-    urn: '100011',
-    name: 'Brookfield Primary School',
-    localAuthority: 'Camden',
-    postcode: 'N19 5DH',
-    registered: false,
-  };
-
   switch (info.fieldName) {
-    case 'getSchoolByName':
-      callback(null, dummySchool);
+    case 'getSchoolByName': {
+      const school = await schoolDataRepository.getByName(params.name);
+      callback(null, school);
       break;
+    }
     case 'getSchoolsByLa': {
       const schools = await schoolDataRepository.getByLa(params.name);
       callback(null, schools);
