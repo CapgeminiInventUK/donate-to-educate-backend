@@ -8,8 +8,9 @@ const schoolDataRepository = SchoolDataRepository.getInstance();
 export const handler: AppSyncResolverHandler<
   QueryGetSchoolByNameArgs | QueryGetSchoolsByLaArgs,
   School | School[]
-> = async (event, _, callback) => {
+> = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
+  context.callbackWaitsForEmptyEventLoop = false;
 
   const { arguments: params, info } = event;
   logger.info(`${JSON.stringify(params)}`);
