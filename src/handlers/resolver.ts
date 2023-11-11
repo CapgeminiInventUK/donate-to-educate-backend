@@ -7,7 +7,7 @@ import {
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
-import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository1';
+import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
