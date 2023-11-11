@@ -25,22 +25,34 @@ export const handler: AppSyncResolverHandler<
   switch (info.fieldName) {
     case 'getSchoolByName': {
       const school = await schoolDataRepository.getByName(params.name);
-      callback(null, school);
+      callback(
+        null,
+        removeFields<School>(info.selectionSetList, school as unknown as Record<string, string>)
+      );
       break;
     }
     case 'getSchoolsByLa': {
       const schools = await schoolDataRepository.getByLa(params.name);
-      callback(null, schools);
+      const filteredSchools = schools.map((school) =>
+        removeFields<School>(info.selectionSetList, school as unknown as Record<string, string>)
+      );
+      callback(null, filteredSchools);
       break;
     }
     case 'getSchools': {
       const schools = await schoolDataRepository.list();
-      callback(null, schools);
+      const filteredSchools = schools.map((school) =>
+        removeFields<School>(info.selectionSetList, school as unknown as Record<string, string>)
+      );
+      callback(null, filteredSchools);
       break;
     }
     case 'getLocalAuthorities': {
       const las = await localAuthorityDataRepository.list();
-      callback(null, las);
+      const filteredLas = las.map((la) =>
+        removeFields<LocalAuthority>(info.selectionSetList, la as unknown as Record<string, string>)
+      );
+      callback(null, filteredLas);
       break;
     }
     default: {
@@ -50,4 +62,13 @@ export const handler: AppSyncResolverHandler<
   }
 
   throw new Error('An unknown error occurred');
+};
+
+const removeFields = <T>(selectionSetList: string[], obj: Record<string, string>): T => {
+  return Object.entries(obj).reduce((acc, [key, value]) => {
+    if (selectionSetList.includes(key)) {
+      acc = { ...acc, [key]: value };
+    }
+    return acc;
+  }, {} as T);
 };
