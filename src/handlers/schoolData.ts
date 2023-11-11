@@ -22,11 +22,14 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
   const data = await loadCsvDataFromZip<Record<string, string>[]>(zipFile, extractPath);
 
   const openSchools = data.filter(
-    ({ 'EstablishmentStatus (name)': status, 'TypeOfEstablishment (name)': type }) =>
-      status === 'Open' && !type.includes('independent')
+    ({
+      'EstablishmentStatus (name)': status,
+      'TypeOfEstablishment (name)': type,
+      'LA (name)': laName,
+    }) => status === 'Open' && !type.includes('independent') && laName !== 'Does not apply'
   );
 
-  const localAuthorities = data.reduce((acc, { 'LA (name)': name, 'LA (code)': code }) => {
+  const localAuthorities = openSchools.reduce((acc, { 'LA (name)': name, 'LA (code)': code }) => {
     const match = acc.find((la) => la.code === code);
     if (!match) {
       acc.push({ name, code });
