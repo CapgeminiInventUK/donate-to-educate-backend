@@ -1,4 +1,4 @@
-import { Collection, Db, MongoClient, WithId } from 'mongodb';
+import { Collection, Db, Filter, MongoClient, WithId } from 'mongodb';
 import { School } from '../../appsync';
 
 export class SchoolDataRepository {
@@ -25,13 +25,21 @@ export class SchoolDataRepository {
     return this.instance;
   }
 
-  public async list(): Promise<WithId<School>[]> {
-    const cursor = this.collection.find();
+  private async getByQuery(query: Filter<School>): Promise<WithId<School>[]> {
+    const cursor = this.collection.find(query);
 
     if (!(await cursor.hasNext())) {
       return [];
     }
 
     return await cursor.toArray();
+  }
+
+  public async list(): Promise<WithId<School>[]> {
+    return await this.getByQuery({});
+  }
+
+  public async getByLa(localAuthority: string): Promise<WithId<School>[]> {
+    return await this.getByQuery({ localAuthority });
   }
 }

@@ -27,7 +27,7 @@ export const handler: AppSyncResolverHandler<QueryGetSchoolByNameArgs, School | 
     case 'getSchoolByName':
       callback(null, dummySchool);
       break;
-    case 'getSchools': {
+    case 'getSchoolsByLa': {
       const schools = await schoolDataRepository.list();
       callback(null, schools);
       break;

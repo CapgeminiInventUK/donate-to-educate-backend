@@ -17,7 +17,7 @@ export type Scalars = {
 export type Query = {
   __typename?: 'Query';
   getSchoolByName: School;
-  getSchools: Array<School>;
+  getSchoolsByLa: Array<School>;
 };
 
 

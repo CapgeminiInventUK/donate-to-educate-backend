@@ -5,6 +5,10 @@ import { logger } from '../shared/logger';
 // import { convertEastingNorthingtoLatLng } from '../shared/location';
 import os from 'os';
 import { AnyBulkWriteOperation, MongoClient } from 'mongodb';
+// import { SchoolDataRepository } from '../repository/schoolDataRepository';
+
+// TODO fully replace with repo
+// const schoolDataRepository = SchoolDataRepository.getInstance();
 
 const uri = process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/';
 const mongoClient = new MongoClient(uri, { auth: { username: 'user', password: 'user' } });
