@@ -25,16 +25,17 @@ export const handler: AppSyncResolverHandler<
   switch (info.fieldName) {
     case 'getSchoolByName': {
       const school = await schoolDataRepository.getByName(params.name);
-      callback(
-        null,
-        removeFields<School>(info.selectionSetList, school as unknown as Record<string, string>)
-      );
+      if (!school) {
+        callback(null);
+        break;
+      }
+      callback(null, removeFields<School>(info.selectionSetList, school));
       break;
     }
     case 'getSchoolsByLa': {
       const schools = await schoolDataRepository.getByLa(params.name);
       const filteredSchools = schools.map((school) =>
-        removeFields<School>(info.selectionSetList, school as unknown as Record<string, string>)
+        removeFields<School>(info.selectionSetList, school)
       );
       callback(null, filteredSchools);
       break;
@@ -42,16 +43,14 @@ export const handler: AppSyncResolverHandler<
     case 'getSchools': {
       const schools = await schoolDataRepository.list();
       const filteredSchools = schools.map((school) =>
-        removeFields<School>(info.selectionSetList, school as unknown as Record<string, string>)
+        removeFields<School>(info.selectionSetList, school)
       );
       callback(null, filteredSchools);
       break;
     }
     case 'getLocalAuthorities': {
       const las = await localAuthorityDataRepository.list();
-      const filteredLas = las.map((la) =>
-        removeFields<LocalAuthority>(info.selectionSetList, la as unknown as Record<string, string>)
-      );
+      const filteredLas = las.map((la) => removeFields<LocalAuthority>(info.selectionSetList, la));
       callback(null, filteredLas);
       break;
     }
@@ -64,10 +63,10 @@ export const handler: AppSyncResolverHandler<
   throw new Error('An unknown error occurred');
 };
 
-const removeFields = <T>(selectionSetList: string[], obj: Record<string, string>): T => {
+const removeFields = <T extends object>(selectionSetList: string[], obj: T): T => {
   return Object.entries(obj).reduce((acc, [key, value]) => {
     if (selectionSetList.includes(key)) {
-      acc = { ...acc, [key]: value };
+      acc = { ...acc, [key]: value as string };
     }
     return acc;
   }, {} as T);
