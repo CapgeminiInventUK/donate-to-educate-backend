@@ -2,7 +2,7 @@ import { downloadSchoolDataFileLocally } from '../shared/puppeteer';
 import { loadCsvDataFromZip } from '../shared/file';
 import { checkIfObjectValuesMatch } from '../shared/object';
 import { logger } from '../shared/logger';
-// import { convertEastingNorthingtoLatLng } from '../shared/location';
+import { convertEastingNorthingtoLatLng } from '../shared/location';
 import os from 'os';
 import { AnyBulkWriteOperation, MongoClient } from 'mongodb';
 // import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -63,10 +63,10 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
         const match = currentSchools.find((school) => school.urn === urn);
         logger.info(`${easting} ${northing}`);
 
-        // const [longitude, latitude] = convertEastingNorthingtoLatLng(
-        //   Number(easting),
-        //   Number(northing)
-        // ); // for one record it is not reading it correctly...
+        const [longitude, latitude] = convertEastingNorthingtoLatLng(
+          Number(easting),
+          Number(northing)
+        );
 
         const entry = {
           urn,
@@ -75,8 +75,8 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
           postcode,
           easting,
           northing,
-          // latitude,
-          // longitude,
+          latitude,
+          longitude,
         };
 
         if (!match || !checkIfObjectValuesMatch(Object.keys(entry), match, entry)) {
