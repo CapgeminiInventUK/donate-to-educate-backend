@@ -4,17 +4,20 @@ import {
   QueryGetSchoolByNameArgs,
   QueryGetSchoolsByLaArgs,
   LocalAuthority,
+  JoinRequest,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
+import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
+const joinRequestsRepository = JoinRequestsRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
   QueryGetSchoolByNameArgs | QueryGetSchoolsByLaArgs,
-  School | School[] | LocalAuthority[]
+  School | School[] | LocalAuthority[] | JoinRequest[]
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
@@ -52,6 +55,11 @@ export const handler: AppSyncResolverHandler<
       const las = await localAuthorityDataRepository.list();
       const filteredLas = las.map((la) => removeFields<LocalAuthority>(info.selectionSetList, la));
       callback(null, filteredLas);
+      break;
+    }
+    case 'getJoinRequests': {
+      const requests = await joinRequestsRepository.list();
+      callback(null, requests);
       break;
     }
     default: {

@@ -14,6 +14,14 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type JoinRequest = {
+  __typename?: 'JoinRequest';
+  localAuthority: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  requestTime: Scalars['Int']['output'];
+  type: Scalars['String']['output'];
+};
+
 export type LocalAuthority = {
   __typename?: 'LocalAuthority';
   code: Scalars['String']['output'];
@@ -23,6 +31,7 @@ export type LocalAuthority = {
 
 export type Query = {
   __typename?: 'Query';
+  getJoinRequests: Array<JoinRequest>;
   getLocalAuthorities: Array<LocalAuthority>;
   getSchoolByName: School;
   getSchools: Array<School>;

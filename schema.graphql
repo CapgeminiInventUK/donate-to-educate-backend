@@ -12,12 +12,20 @@ type LocalAuthority {
   registered: Boolean!
 }
 
+type JoinRequest {
+  name: String!
+  localAuthority: String!
+  type: String!
+  requestTime: Int!
+}
+
 type Query {
   getSchoolByName(name: String!): School!
   getSchoolsByLa(name: String!): [School!]!
   getSchools: [School!]!
 
   getLocalAuthorities: [LocalAuthority!]!
+  getJoinRequests: [JoinRequest!]!
 }
 
 schema {
