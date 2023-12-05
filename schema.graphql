@@ -36,6 +36,8 @@ type Query {
 
   getLocalAuthorities: [LocalAuthority!]!
   getJoinRequests: [JoinRequest!]!
+
+  getLaByName(name: String!): [LA!]!
 }
 
 type Mutation {
