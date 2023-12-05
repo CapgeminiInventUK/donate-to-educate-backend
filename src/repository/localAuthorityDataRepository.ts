@@ -38,4 +38,8 @@ export class LocalAuthorityDataRepository {
   public async list(): Promise<WithId<LocalAuthority>[]> {
     return await this.getByQuery({});
   }
+
+  public async setToRegistered(name: string): Promise<boolean> {
+    return (await this.collection.updateOne({ name }, { registered: true })).acknowledged;
+  }
 }

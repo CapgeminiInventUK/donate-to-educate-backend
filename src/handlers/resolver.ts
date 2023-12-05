@@ -5,19 +5,22 @@ import {
   QueryGetSchoolsByLaArgs,
   LocalAuthority,
   JoinRequest,
+  MutationRegisterLocalAuthorityArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
+import { LocalAuthorityRepository } from '../repository/localAuthorityRepository';
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
+const localAuthorityRepository = LocalAuthorityRepository.getInstance();
 const joinRequestsRepository = JoinRequestsRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
-  QueryGetSchoolByNameArgs | QueryGetSchoolsByLaArgs,
-  School | School[] | LocalAuthority[] | JoinRequest[]
+  QueryGetSchoolByNameArgs | QueryGetSchoolsByLaArgs | MutationRegisterLocalAuthorityArgs,
+  School | School[] | LocalAuthority[] | JoinRequest[] | boolean
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
@@ -27,7 +30,8 @@ export const handler: AppSyncResolverHandler<
 
   switch (info.fieldName) {
     case 'getSchoolByName': {
-      const school = await schoolDataRepository.getByName(params.name);
+      const { name } = params;
+      const school = await schoolDataRepository.getByName(name);
       if (!school) {
         callback(null);
         break;
@@ -36,7 +40,8 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getSchoolsByLa': {
-      const schools = await schoolDataRepository.getByLa(params.name);
+      const { name } = params;
+      const schools = await schoolDataRepository.getByLa(name);
       const filteredSchools = schools.map((school) =>
         removeFields<School>(info.selectionSetList, school)
       );
@@ -60,6 +65,13 @@ export const handler: AppSyncResolverHandler<
     case 'getJoinRequests': {
       const requests = await joinRequestsRepository.list();
       callback(null, requests);
+      break;
+    }
+    case 'registerLocalAuthority': {
+      const { name, la } = params as MutationRegisterLocalAuthorityArgs;
+      const register = await localAuthorityDataRepository.setToRegistered(name);
+      const insert = await localAuthorityRepository.insert(la);
+      callback(null, register && insert);
       break;
     }
     default: {

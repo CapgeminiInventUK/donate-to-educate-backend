@@ -22,11 +22,33 @@ export type JoinRequest = {
   type: Scalars['String']['output'];
 };
 
+export type La = {
+  __typename?: 'LA';
+  department: Scalars['String']['output'];
+  email: Scalars['String']['output'];
+  firstName: Scalars['String']['output'];
+  jobTitle: Scalars['String']['output'];
+  lastName: Scalars['String']['output'];
+  notes?: Maybe<Scalars['String']['output']>;
+  phone: Scalars['String']['output'];
+};
+
 export type LocalAuthority = {
   __typename?: 'LocalAuthority';
   code: Scalars['String']['output'];
   name: Scalars['String']['output'];
   registered: Scalars['Boolean']['output'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  registerLocalAuthority: Scalars['Boolean']['output'];
+};
+
+
+export type MutationRegisterLocalAuthorityArgs = {
+  la: La;
+  name: Scalars['String']['input'];
 };
 
 export type Query = {

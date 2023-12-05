@@ -1,4 +1,4 @@
-import { readdirSync, rmSync, unlinkSync } from 'fs';
+import { readdirSync, unlinkSync } from 'fs';
 import { unzip } from './zip';
 import { logger } from './logger';
 import csv from 'csvtojson';
@@ -23,6 +23,6 @@ export const loadCsvDataFromZip = async <T>(zipFile: string, extractPath: string
     throw error;
   } finally {
     unlinkSync(zipFile);
-    rmSync(extractPath, { recursive: true, force: true });
+    //rmSync(extractPath, { recursive: true, force: true });
   }
 };
