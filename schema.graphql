@@ -6,7 +6,8 @@ type School {
   registered: Boolean!
 }
 
-type LA {
+type LocalAuthorityUser {
+  localAuthorityName: String!
   firstName: String!
   lastName: String!
   jobTitle: String!
@@ -36,12 +37,19 @@ type Query {
 
   getLocalAuthorities: [LocalAuthority!]!
   getJoinRequests: [JoinRequest!]!
-
-  getLaByName(name: String!): [LA!]!
 }
 
 type Mutation {
-  registerLocalAuthority(name: String!, la: LA!): Boolean!
+  registerLocalAuthority(
+    name: String!
+    firstName: String!
+    lastName: String!
+    jobTitle: String!
+    department: String!
+    email: String!
+    phone: String!
+    notes: String
+  ): Boolean!
 }
 
 schema {

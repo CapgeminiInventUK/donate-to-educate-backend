@@ -68,9 +68,19 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'registerLocalAuthority': {
-      const { name, la } = params as MutationRegisterLocalAuthorityArgs;
+      const { name, firstName, lastName, email, phone, department, jobTitle, notes } =
+        params as MutationRegisterLocalAuthorityArgs;
       const register = await localAuthorityDataRepository.setToRegistered(name);
-      const insert = await localAuthorityRepository.insert(la);
+      const insert = await localAuthorityRepository.insert({
+        localAuthorityName: name,
+        firstName,
+        lastName,
+        email,
+        phone,
+        department,
+        jobTitle,
+        notes,
+      });
       callback(null, register && insert);
       break;
     }

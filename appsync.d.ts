@@ -22,22 +22,23 @@ export type JoinRequest = {
   type: Scalars['String']['output'];
 };
 
-export type La = {
-  __typename?: 'LA';
-  department: Scalars['String']['output'];
-  email: Scalars['String']['output'];
-  firstName: Scalars['String']['output'];
-  jobTitle: Scalars['String']['output'];
-  lastName: Scalars['String']['output'];
-  notes?: Maybe<Scalars['String']['output']>;
-  phone: Scalars['String']['output'];
-};
-
 export type LocalAuthority = {
   __typename?: 'LocalAuthority';
   code: Scalars['String']['output'];
   name: Scalars['String']['output'];
   registered: Scalars['Boolean']['output'];
+};
+
+export type LocalAuthorityUser = {
+  __typename?: 'LocalAuthorityUser';
+  department: Scalars['String']['output'];
+  email: Scalars['String']['output'];
+  firstName: Scalars['String']['output'];
+  jobTitle: Scalars['String']['output'];
+  lastName: Scalars['String']['output'];
+  localAuthorityName: Scalars['String']['output'];
+  notes?: Maybe<Scalars['String']['output']>;
+  phone: Scalars['String']['output'];
 };
 
 export type Mutation = {
@@ -47,8 +48,14 @@ export type Mutation = {
 
 
 export type MutationRegisterLocalAuthorityArgs = {
-  la: La;
+  department: Scalars['String']['input'];
+  email: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  jobTitle: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
+  phone: Scalars['String']['input'];
 };
 
 export type Query = {

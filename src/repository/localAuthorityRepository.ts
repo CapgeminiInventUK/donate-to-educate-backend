@@ -1,11 +1,11 @@
 import { Collection, Db, Filter, MongoClient, WithId } from 'mongodb';
-import { La } from '../../appsync';
+import { LocalAuthorityUser } from '../../appsync';
 
 export class LocalAuthorityRepository {
   private static instance: LocalAuthorityRepository;
   private readonly client: MongoClient;
   private readonly db: Db;
-  private readonly collection: Collection<La>;
+  private readonly collection: Collection<LocalAuthorityUser>;
 
   private constructor() {
     this.client = new MongoClient(
@@ -15,7 +15,7 @@ export class LocalAuthorityRepository {
       }
     );
     this.db = this.client.db('D2E');
-    this.collection = this.db.collection<La>('LocalAuthority');
+    this.collection = this.db.collection<LocalAuthorityUser>('LocalAuthority');
   }
 
   static getInstance(): LocalAuthorityRepository {
@@ -25,7 +25,9 @@ export class LocalAuthorityRepository {
     return this.instance;
   }
 
-  private async getByQuery(query: Filter<La>): Promise<WithId<La>[]> {
+  private async getByQuery(
+    query: Filter<LocalAuthorityUser>
+  ): Promise<WithId<LocalAuthorityUser>[]> {
     const cursor = this.collection.find(query);
 
     if (!(await cursor.hasNext())) {
@@ -35,11 +37,11 @@ export class LocalAuthorityRepository {
     return await cursor.toArray();
   }
 
-  public async list(): Promise<WithId<La>[]> {
+  public async list(): Promise<WithId<LocalAuthorityUser>[]> {
     return await this.getByQuery({});
   }
 
-  public async insert(la: La): Promise<boolean> {
+  public async insert(la: LocalAuthorityUser): Promise<boolean> {
     return (await this.collection.insertOne(la)).acknowledged;
   }
 }
