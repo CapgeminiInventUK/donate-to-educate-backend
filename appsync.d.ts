@@ -36,7 +36,7 @@ export type LocalAuthorityUser = {
   firstName: Scalars['String']['output'];
   jobTitle: Scalars['String']['output'];
   lastName: Scalars['String']['output'];
-  localAuthorityName: Scalars['String']['output'];
+  name: Scalars['String']['output'];
   notes?: Maybe<Scalars['String']['output']>;
   phone: Scalars['String']['output'];
 };

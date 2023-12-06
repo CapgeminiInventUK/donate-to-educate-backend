@@ -72,7 +72,7 @@ export const handler: AppSyncResolverHandler<
         params as MutationRegisterLocalAuthorityArgs;
       const register = await localAuthorityDataRepository.setToRegistered(name);
       const insert = await localAuthorityRepository.insert({
-        localAuthorityName: name,
+        name,
         firstName,
         lastName,
         email,

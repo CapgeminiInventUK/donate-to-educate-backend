@@ -7,7 +7,7 @@ type School {
 }
 
 type LocalAuthorityUser {
-  localAuthorityName: String!
+  name: String!
   firstName: String!
   lastName: String!
   jobTitle: String!

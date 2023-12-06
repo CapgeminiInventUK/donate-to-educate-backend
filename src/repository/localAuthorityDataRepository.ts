@@ -40,6 +40,6 @@ export class LocalAuthorityDataRepository {
   }
 
   public async setToRegistered(name: string): Promise<boolean> {
-    return (await this.collection.updateOne({ name }, { registered: true })).acknowledged;
+    return (await this.collection.updateOne({ name }, { $set: { registered: true } })).acknowledged;
   }
 }
