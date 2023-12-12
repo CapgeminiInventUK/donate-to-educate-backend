@@ -61,3 +61,5 @@ functions:
       - http:
           path: graphql
           method: post
+  email:
+    handler: ./src/handlers/email.handler
