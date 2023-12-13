@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/CapgeminiInventUK/educate-for-good-backend#readme",
   "dependencies": {
+    "@aws-sdk/client-sesv2": "^3.473.0",
     "@sparticuz/chromium-min": "^117.0.0",
     "@types/proj4": "^2.5.2",
     "@types/unzipper": "^0.10.7",

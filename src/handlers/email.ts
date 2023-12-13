@@ -1,14 +1,14 @@
 import { Handler } from 'aws-lambda';
-import SESClient from 'aws-sdk/clients/sesv2';
+import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 
-const sesClient = new SESClient({ region: 'eu-west-2' });
+const sesClient = new SESv2Client({ region: 'eu-west-2' });
 
 export const handler: Handler = async (event, context, callback): Promise<void> => {
   // eslint-disable-next-line no-console
   console.log(event);
   try {
-    const res = await sesClient
-      .sendEmail({
+    const res = await sesClient.send(
+      new SendEmailCommand({
         FromEmailAddress: 'ryan.b.smith@capgemini.com',
         Destination: { ToAddresses: ['ryan.b.smith@capgemini.com'] },
         Content: {
@@ -21,7 +21,8 @@ export const handler: Handler = async (event, context, callback): Promise<void> 
           },
         },
       })
-      .promise();
+    );
+
     // eslint-disable-next-line no-console
     console.log(res);
   } catch (error) {
