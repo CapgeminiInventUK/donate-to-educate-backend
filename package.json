@@ -39,6 +39,7 @@
     "@sparticuz/chromium-min": "^117.0.0",
     "@types/proj4": "^2.5.2",
     "@types/unzipper": "^0.10.7",
+    "aws-sdk": "^2.1518.0",
     "csvtojson": "^2.0.10",
     "is-ci": "^3.0.1",
     "mongodb": "^6.0.0",
