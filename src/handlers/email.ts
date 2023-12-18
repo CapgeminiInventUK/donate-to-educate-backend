@@ -29,7 +29,8 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
               TemplateName: 'Test',
               TemplateData: JSON.stringify({
                 name: firstName,
-                favoriteanimal: 'Tiger',
+                greeting: 'Hello!',
+                body: 'This is a test! <p style="color: blue;">test!</p>',
               }),
             },
           },
