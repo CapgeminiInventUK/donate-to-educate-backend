@@ -1,30 +1,44 @@
 import { Handler } from 'aws-lambda';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
+import { LocalAuthorityUser } from '../../appsync';
 
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
 
-export const handler: Handler = async (event, context, callback): Promise<void> => {
+interface MongoDBEvent {
+  detail: {
+    fullDocument: LocalAuthorityUser;
+  };
+}
+
+export const handler: Handler = async (event: MongoDBEvent, context, callback): Promise<void> => {
   // eslint-disable-next-line no-console
   console.log(event);
-  try {
-    const res = await sesClient.send(
-      new SendEmailCommand({
-        FromEmailAddress: 'ryan.b.smith@capgemini.com',
-        Destination: { ToAddresses: ['ryan.b.smith@capgemini.com'] },
-        Content: {
-          Template: {
-            TemplateName: 'Test',
-            TemplateData: JSON.stringify({
-              name: 'Ryan',
-              favoriteanimal: 'Tiger',
-            }),
-          },
-        },
-      })
-    );
 
-    // eslint-disable-next-line no-console
-    console.log(res);
+  try {
+    // TODO add validation here
+    if (event?.detail?.fullDocument?.email) {
+      const { fullDocument } = event.detail;
+      const { email, firstName } = fullDocument;
+
+      const res = await sesClient.send(
+        new SendEmailCommand({
+          FromEmailAddress: 'ryan.b.smith@capgemini.com',
+          Destination: { ToAddresses: [email] },
+          Content: {
+            Template: {
+              TemplateName: 'Test',
+              TemplateData: JSON.stringify({
+                name: firstName,
+                favoriteanimal: 'Tiger',
+              }),
+            },
+          },
+        })
+      );
+
+      // eslint-disable-next-line no-console
+      console.log(res);
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(error);
