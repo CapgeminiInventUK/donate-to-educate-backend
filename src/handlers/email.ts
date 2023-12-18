@@ -22,7 +22,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
 
       const res = await sesClient.send(
         new SendEmailCommand({
-          FromEmailAddress: 'ryan.b.smith@capgemini.com',
+          FromEmailAddress: email,
           Destination: { ToAddresses: [email] },
           Content: {
             Template: {
