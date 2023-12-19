@@ -44,6 +44,7 @@ export type LocalAuthorityUser = {
 export type Mutation = {
   __typename?: 'Mutation';
   registerLocalAuthority: Scalars['Boolean']['output'];
+  updateSchoolProfile: SchoolProfile;
 };
 
 
@@ -58,17 +59,30 @@ export type MutationRegisterLocalAuthorityArgs = {
   phone: Scalars['String']['input'];
 };
 
+
+export type MutationUpdateSchoolProfileArgs = {
+  key: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  value: Scalars['String']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getJoinRequests: Array<JoinRequest>;
   getLocalAuthorities: Array<LocalAuthority>;
   getSchoolByName: School;
+  getSchoolProfile: SchoolProfile;
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
 };
 
 
 export type QueryGetSchoolByNameArgs = {
+  name: Scalars['String']['input'];
+};
+
+
+export type QueryGetSchoolProfileArgs = {
   name: Scalars['String']['input'];
 };
 
@@ -84,4 +98,11 @@ export type School = {
   postcode?: Maybe<Scalars['String']['output']>;
   registered: Scalars['Boolean']['output'];
   urn: Scalars['ID']['output'];
+};
+
+export type SchoolProfile = {
+  __typename?: 'SchoolProfile';
+  donate: Scalars['String']['output'];
+  excess: Scalars['String']['output'];
+  request: Scalars['String']['output'];
 };

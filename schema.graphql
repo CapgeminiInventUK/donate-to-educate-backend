@@ -6,6 +6,12 @@ type School {
   registered: Boolean!
 }
 
+type SchoolProfile {
+  request: String!
+  donate: String!
+  excess: String!
+}
+
 type LocalAuthorityUser {
   name: String!
   firstName: String!
@@ -37,6 +43,8 @@ type Query {
 
   getLocalAuthorities: [LocalAuthority!]!
   getJoinRequests: [JoinRequest!]!
+
+  getSchoolProfile(name: String!): SchoolProfile!
 }
 
 type Mutation {
@@ -50,6 +58,8 @@ type Mutation {
     phone: String!
     notes: String
   ): Boolean!
+
+  updateSchoolProfile(name: String!, key: String!, value: String!): SchoolProfile!
 }
 
 schema {
