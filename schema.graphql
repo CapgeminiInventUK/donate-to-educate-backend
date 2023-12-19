@@ -34,6 +34,7 @@ type JoinRequest {
   localAuthority: String!
   type: String!
   requestTime: Int!
+  status: String!
 }
 
 type Query {
@@ -60,6 +61,7 @@ type Mutation {
   ): Boolean!
 
   updateSchoolProfile(name: String!, key: String!, value: String!): Boolean!
+  updateJoinRequest(localAuthority: String!, name: String!, status: String!): Boolean!
 }
 
 schema {
