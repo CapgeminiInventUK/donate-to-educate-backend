@@ -7,9 +7,9 @@ type School {
 }
 
 type SchoolProfile {
-  request: String!
-  donate: String!
-  excess: String!
+  request: String
+  donate: String
+  excess: String
 }
 
 type LocalAuthorityUser {
