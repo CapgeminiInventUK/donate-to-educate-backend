@@ -28,8 +28,8 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
             Template: {
               TemplateName: 'Test',
               TemplateData: JSON.stringify({
-                name: firstName,
-                greeting: 'Hello!',
+                subject: 'This is a test email',
+                greeting: `Hello ${firstName}!`,
                 body: 'This is a test! <p style="color: blue;">test!</p>',
               }),
             },
