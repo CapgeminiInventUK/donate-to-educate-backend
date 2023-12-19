@@ -8,6 +8,7 @@ import {
   MutationRegisterLocalAuthorityArgs,
   SchoolProfile,
   MutationUpdateSchoolProfileArgs,
+  MutationUpdateJoinRequestArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -95,7 +96,7 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'updateJoinRequest': {
-      const { localAuthority, name, status } = params as JoinRequest;
+      const { localAuthority, name, status } = params as MutationUpdateJoinRequestArgs;
       const res = await joinRequestsRepository.updateStatus(localAuthority, name, status);
       callback(null, res);
       break;

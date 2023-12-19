@@ -19,8 +19,8 @@ export type JoinRequest = {
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
   requestTime: Scalars['Int']['output'];
-  type: Scalars['String']['output'];
   status: Scalars['String']['output'];
+  type: Scalars['String']['output'];
 };
 
 export type LocalAuthority = {
@@ -45,8 +45,8 @@ export type LocalAuthorityUser = {
 export type Mutation = {
   __typename?: 'Mutation';
   registerLocalAuthority: Scalars['Boolean']['output'];
-  updateSchoolProfile: Scalars['Boolean']['output'];
   updateJoinRequest: Scalars['Boolean']['output'];
+  updateSchoolProfile: Scalars['Boolean']['output'];
 };
 
 
@@ -62,17 +62,18 @@ export type MutationRegisterLocalAuthorityArgs = {
 };
 
 
+export type MutationUpdateJoinRequestArgs = {
+  localAuthority: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  status: Scalars['String']['input'];
+};
+
+
 export type MutationUpdateSchoolProfileArgs = {
   key: Scalars['String']['input'];
   name: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
-
-export type MutationUpdateJoinRequestStatusArgs = {
-  localAuthority: Scalars['String']['input'];
-  name: Scalars['String']['input']; 
-  status: Scalars['String']['input'];
-}
 
 export type Query = {
   __typename?: 'Query';
@@ -110,7 +111,7 @@ export type School = {
 
 export type SchoolProfile = {
   __typename?: 'SchoolProfile';
-  donate: Scalars['String']['output'];
-  excess: Scalars['String']['output'];
-  request: Scalars['String']['output'];
+  donate?: Maybe<Scalars['String']['output']>;
+  excess?: Maybe<Scalars['String']['output']>;
+  request?: Maybe<Scalars['String']['output']>;
 };
