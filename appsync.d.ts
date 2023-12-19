@@ -44,7 +44,7 @@ export type LocalAuthorityUser = {
 export type Mutation = {
   __typename?: 'Mutation';
   registerLocalAuthority: Scalars['Boolean']['output'];
-  updateSchoolProfile: SchoolProfile;
+  updateSchoolProfile: Scalars['Boolean']['output'];
 };
 
 

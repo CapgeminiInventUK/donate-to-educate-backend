@@ -59,7 +59,7 @@ type Mutation {
     notes: String
   ): Boolean!
 
-  updateSchoolProfile(name: String!, key: String!, value: String!): SchoolProfile!
+  updateSchoolProfile(name: String!, key: String!, value: String!): Boolean!
 }
 
 schema {
