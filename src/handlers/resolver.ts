@@ -94,6 +94,12 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
+    case 'updateJoinRequest': {
+      const { localAuthority, name, status } = params as JoinRequest;
+      const res = await joinRequestsRepository.updateStatus(localAuthority, name, status);
+      callback(null, res);
+      break;
+    }
     case 'updateSchoolProfile': {
       const { name, key, value } = params as MutationUpdateSchoolProfileArgs;
       const res = await schoolProfileRepository.updateKey(name, key, value);

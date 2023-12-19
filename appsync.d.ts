@@ -20,6 +20,7 @@ export type JoinRequest = {
   name: Scalars['String']['output'];
   requestTime: Scalars['Int']['output'];
   type: Scalars['String']['output'];
+  status: Scalars['String']['output'];
 };
 
 export type LocalAuthority = {
@@ -45,6 +46,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   registerLocalAuthority: Scalars['Boolean']['output'];
   updateSchoolProfile: Scalars['Boolean']['output'];
+  updateJoinRequest: Scalars['Boolean']['output'];
 };
 
 
@@ -65,6 +67,12 @@ export type MutationUpdateSchoolProfileArgs = {
   name: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
+
+export type MutationUpdateJoinRequestStatusArgs = {
+  localAuthority: Scalars['String']['input'];
+  name: Scalars['String']['input']; 
+  status: Scalars['String']['input'];
+}
 
 export type Query = {
   __typename?: 'Query';

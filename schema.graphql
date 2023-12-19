@@ -34,6 +34,7 @@ type JoinRequest {
   localAuthority: String!
   type: String!
   requestTime: Int!
+  status: String!
 }
 
 type Query {

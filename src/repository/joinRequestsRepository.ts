@@ -38,4 +38,21 @@ export class JoinRequestsRepository {
   public async list(): Promise<WithId<JoinRequest>[]> {
     return await this.getByQuery({});
   }
+
+  public async updateStatus(
+    localAuthority: string,
+    name: string,
+    status: string
+  ): Promise<boolean> {
+    return (
+      await this.collection.updateOne(
+        { localAuthority, name },
+        {
+          $set: { status },
+          $setOnInsert: { localAuthority, name },
+        },
+        { upsert: true }
+      )
+    ).acknowledged;
+  }
 }
