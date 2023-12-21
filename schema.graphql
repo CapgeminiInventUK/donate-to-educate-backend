@@ -33,7 +33,7 @@ type JoinRequest {
   name: String!
   localAuthority: String!
   type: String!
-  requestTime: Int!
+  requestTime: Float!
   status: String!
 }
 
