@@ -59,7 +59,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
             Content: {
               Template: {
                 TemplateName:
-                  status === 'APPROVED' ? 'join-request-approved' : 'join-request-rejected',
+                  status === 'APPROVED' ? 'join-request-approved' : 'join-request-declined',
                 TemplateData: JSON.stringify({
                   subject: 'Your Donate to Educate application results',
                   name,
