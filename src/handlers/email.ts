@@ -1,7 +1,8 @@
 import { Handler } from 'aws-lambda';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { JoinRequest, LocalAuthorityUser } from '../../appsync';
-
+import { generate } from 'randomstring';
+import { SignUpDataRepository } from '../repository/signUpDataRepository';
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
 
 interface MongoDBEvent {
@@ -10,6 +11,8 @@ interface MongoDBEvent {
     ns: { db: string; coll: string };
   };
 }
+
+const signUpDataRepository = SignUpDataRepository.getInstance();
 
 export const handler: Handler = async (event: MongoDBEvent, context, callback): Promise<void> => {
   // eslint-disable-next-line no-console
@@ -29,8 +32,12 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
     switch (ns.coll) {
       case 'LocalAuthority':
         {
+          const randomString = generate({ charset: 'alphabetic', length: 50 });
+          const { email } = fullDocument as LocalAuthorityUser;
+
+          await signUpDataRepository.insert({ id: randomString, email });
           // TODO need to add email template for this
-          // const { email, firstName } = fullDocument as LocalAuthorityUser;
+
           // const res = await sesClient.send(
           //   new SendEmailCommand({
           //     FromEmailAddress: email,
