@@ -32,7 +32,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
 
     switch (ns.coll) {
       case 'LocalAuthority': {
-        const randomString = generate({ charset: 'alphabetic', length: 50 });
+        const randomString = generate({ charset: 'alphabetic', length: 100 });
         const { email, firstName, name } = fullDocument as LocalAuthorityUser;
 
         await signUpDataRepository.insert({ id: randomString, email });
