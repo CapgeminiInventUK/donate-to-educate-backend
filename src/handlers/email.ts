@@ -18,6 +18,7 @@ const signUpDataRepository = SignUpDataRepository.getInstance();
 export const handler: Handler = async (event: MongoDBEvent, context, callback): Promise<void> => {
   // eslint-disable-next-line no-console
   console.log(event);
+  context.callbackWaitsForEmptyEventLoop = false;
 
   try {
     // TODO add validation here
