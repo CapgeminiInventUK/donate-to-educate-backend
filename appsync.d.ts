@@ -16,6 +16,7 @@ export type Scalars = {
 
 export type JoinRequest = {
   __typename?: 'JoinRequest';
+  email: Scalars['String']['output'];
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
   requestTime: Scalars['Float']['output'];

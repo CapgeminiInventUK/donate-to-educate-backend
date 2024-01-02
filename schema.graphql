@@ -35,6 +35,7 @@ type JoinRequest {
   type: String!
   requestTime: Float!
   status: String!
+  email: String!
 }
 
 type Query {
