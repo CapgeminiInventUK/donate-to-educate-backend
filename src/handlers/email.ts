@@ -3,6 +3,7 @@ import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { JoinRequest, LocalAuthorityUser } from '../../appsync';
 import { generate } from 'randomstring';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
+
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
 
 interface MongoDBEvent {
@@ -30,34 +31,21 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
     const { fullDocument, ns } = event.detail;
 
     switch (ns.coll) {
-      case 'LocalAuthority':
-        {
-          const randomString = generate({ charset: 'alphabetic', length: 50 });
-          const { email } = fullDocument as LocalAuthorityUser;
+      case 'LocalAuthority': {
+        const randomString = generate({ charset: 'alphabetic', length: 50 });
+        const { email, firstName, name } = fullDocument as LocalAuthorityUser;
 
-          await signUpDataRepository.insert({ id: randomString, email });
-          // TODO need to add email template for this
+        await signUpDataRepository.insert({ id: randomString, email });
 
-          // const res = await sesClient.send(
-          //   new SendEmailCommand({
-          //     FromEmailAddress: email,
-          //     Destination: { ToAddresses: [email] },
-          //     Content: {
-          //       Template: {
-          //         TemplateName: 'Test',
-          //         TemplateData: JSON.stringify({
-          //           subject: 'This is a test email',
-          //           greeting: `Hello ${firstName}!`,
-          //           body: 'This is a test! <p style="color: blue;">test!</p>',
-          //         }),
-          //       },
-          //     },
-          //   })
-          // );
-          // eslint-disable-next-line no-console
-          // console.log(res);
-        }
+        await sendEmail(email, 'create-account-la', {
+          subject: 'Complete your sign up to Donate to Educate',
+          name: firstName,
+          la: name,
+          signUpLink: `https://www.donatetoeducate.org.uk/add-user?id=${randomString}`,
+        });
         break;
+      }
+
       case 'JoinRequests': {
         const { email, name, status } = fullDocument as JoinRequest;
 
