@@ -20,6 +20,8 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
     if (!event?.detail?.fullDocument?.email) {
       // eslint-disable-next-line no-console
       console.log('No email address provided');
+      callback('No email address provided', null);
+      return;
     }
 
     const { fullDocument, ns } = event.detail;
@@ -52,25 +54,14 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
       case 'JoinRequests': {
         const { email, name, status } = fullDocument as JoinRequest;
 
-        const res = await sesClient.send(
-          new SendEmailCommand({
-            FromEmailAddress: email,
-            Destination: { ToAddresses: [email] },
-            Content: {
-              Template: {
-                TemplateName:
-                  status === 'APPROVED' ? 'join-request-approved' : 'join-request-declined',
-                TemplateData: JSON.stringify({
-                  subject: 'Your Donate to Educate application results',
-                  name,
-                }),
-              },
-            },
-          })
+        await sendEmail(
+          email,
+          status === 'APPROVED' ? 'join-request-approved' : 'join-request-declined',
+          {
+            subject: 'Your Donate to Educate application results',
+            name,
+          }
         );
-
-        // eslint-disable-next-line no-console
-        console.log(res);
         break;
       }
       default:
@@ -82,4 +73,26 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
   }
 
   callback(null, 'Finished');
+};
+
+const sendEmail = async (
+  email: string,
+  templateName: string,
+  templateData: Record<string, string>
+): Promise<void> => {
+  const res = await sesClient.send(
+    new SendEmailCommand({
+      FromEmailAddress: 'ryan.b.smith@capgemini.com', // TODO get from env vars
+      Destination: { ToAddresses: [email] },
+      Content: {
+        Template: {
+          TemplateName: templateName,
+          TemplateData: JSON.stringify(templateData),
+        },
+      },
+    })
+  );
+
+  // eslint-disable-next-line no-console
+  console.log(res);
 };

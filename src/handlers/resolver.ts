@@ -9,6 +9,10 @@ import {
   SchoolProfile,
   MutationUpdateSchoolProfileArgs,
   MutationUpdateJoinRequestArgs,
+  QueryGetSignUpDataArgs,
+  MutationInsertSignUpDataArgs,
+  QueryGetSchoolProfileArgs,
+  SignUpData,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -16,16 +20,22 @@ import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRe
 import { LocalAuthorityRepository } from '../repository/localAuthorityRepository';
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
+import { SignUpDataRepository } from '../repository/signUpDataRepository';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
 const localAuthorityRepository = LocalAuthorityRepository.getInstance();
 const joinRequestsRepository = JoinRequestsRepository.getInstance();
 const schoolProfileRepository = SchoolProfileRepository.getInstance();
+const signUpDataRepository = SignUpDataRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
-  QueryGetSchoolByNameArgs | QueryGetSchoolsByLaArgs | MutationRegisterLocalAuthorityArgs,
-  School | School[] | LocalAuthority[] | JoinRequest[] | boolean | SchoolProfile
+  | QueryGetSchoolByNameArgs
+  | QueryGetSchoolsByLaArgs
+  | MutationRegisterLocalAuthorityArgs
+  | QueryGetSignUpDataArgs
+  | MutationInsertSignUpDataArgs,
+  School | School[] | LocalAuthority[] | JoinRequest[] | boolean | SchoolProfile | SignUpData
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
@@ -35,7 +45,7 @@ export const handler: AppSyncResolverHandler<
 
   switch (info.fieldName) {
     case 'getSchoolByName': {
-      const { name } = params;
+      const { name } = params as QueryGetSchoolByNameArgs;
       const school = await schoolDataRepository.getByName(name);
       if (!school) {
         callback(null);
@@ -45,7 +55,7 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getSchoolsByLa': {
-      const { name } = params;
+      const { name } = params as QueryGetSchoolsByLaArgs;
       const schools = await schoolDataRepository.getByLa(name);
       const filteredSchools = schools.map((school) =>
         removeFields<School>(info.selectionSetList, school)
@@ -90,7 +100,7 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getSchoolProfile': {
-      const { name } = params;
+      const { name } = params as QueryGetSchoolProfileArgs;
       const res = await schoolProfileRepository.getByName(name);
       callback(null, res);
       break;
@@ -104,6 +114,18 @@ export const handler: AppSyncResolverHandler<
     case 'updateSchoolProfile': {
       const { name, key, value } = params as MutationUpdateSchoolProfileArgs;
       const res = await schoolProfileRepository.updateKey(name, key, value);
+      callback(null, res);
+      break;
+    }
+    case 'getSignUpData': {
+      const { id } = params as QueryGetSignUpDataArgs;
+      const res = await signUpDataRepository.getById(id);
+      callback(null, res);
+      break;
+    }
+    case 'insertSignUpData': {
+      const { id, email } = params as MutationInsertSignUpDataArgs;
+      const res = await signUpDataRepository.insert({ id, email });
       callback(null, res);
       break;
     }
