@@ -124,8 +124,8 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'insertSignUpData': {
-      const { id, email } = params as MutationInsertSignUpDataArgs;
-      const res = await signUpDataRepository.insert({ id, email });
+      const { id, email, type } = params as MutationInsertSignUpDataArgs;
+      const res = await signUpDataRepository.insert({ id, email, type });
       callback(null, res);
       break;
     }

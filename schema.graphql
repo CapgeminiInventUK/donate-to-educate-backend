@@ -1,6 +1,7 @@
 type SignUpData {
   id: String!
   email: String!
+  type: String!
 }
 
 type School {
@@ -71,7 +72,7 @@ type Mutation {
   updateSchoolProfile(name: String!, key: String!, value: String!): Boolean!
   updateJoinRequest(localAuthority: String!, name: String!, status: String!): Boolean!
 
-  insertSignUpData(id: String!, email: String!): Boolean!
+  insertSignUpData(id: String!, email: String!, type: String!): Boolean!
 }
 
 schema {

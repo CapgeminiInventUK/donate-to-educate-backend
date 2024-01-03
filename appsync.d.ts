@@ -55,6 +55,7 @@ export type Mutation = {
 export type MutationInsertSignUpDataArgs = {
   email: Scalars['String']['input'];
   id: Scalars['String']['input'];
+  type: Scalars['String']['input'];
 };
 
 
@@ -134,4 +135,5 @@ export type SignUpData = {
   __typename?: 'SignUpData';
   email: Scalars['String']['output'];
   id: Scalars['String']['output'];
+  type: Scalars['String']['output'];
 };
