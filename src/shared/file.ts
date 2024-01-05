@@ -19,7 +19,7 @@ export const loadCsvDataFromZip = async <T>(zipFile: string, extractPath: string
       headers: school_data_headers,
     }).fromFile(filepath);
 
-    const data2 = parse(file, { columns: true, skip_empty_lines: true }) as T;
+    const data2 = parse(file, { columns: true, skip_empty_lines: true, bom: true }) as T;
     logger.info(data2);
 
     return data as T;
