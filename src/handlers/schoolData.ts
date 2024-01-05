@@ -17,9 +17,7 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
   await downloadSchoolDataFileLocally();
 
   const zipFile = `${os.tmpdir()}/extract.zip`;
-  const extractPath = `${os.tmpdir()}/extracted`; // TODO check if hash is same as last one and if so do nothing.
-
-  const data = await loadCsvDataFromZip<Record<string, string>[]>(zipFile, extractPath);
+  const data = loadCsvDataFromZip<Record<string, string>[]>(zipFile);
 
   const openSchools = data.filter(
     ({

@@ -8,7 +8,7 @@ describe('File', () => {
   });
 
   it('check we can correctly extract data from csv and convert to json', async () => {
-    const data = await loadCsvDataFromZip('./mockData/tmp/extract.zip', './mockData/tmp/extracted');
+    const data = await loadCsvDataFromZip('./mockData/tmp/extract.zip');
 
     expect(data).toEqual(expectedData);
   });
