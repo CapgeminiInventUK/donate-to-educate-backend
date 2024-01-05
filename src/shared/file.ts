@@ -3,7 +3,7 @@ import { unzip } from './zip';
 import { logger } from './logger';
 import csv from 'csvtojson';
 import { school_data_headers } from './globals';
-import { parse } from 'csv-parse';
+import { parse } from 'csv-parse/sync';
 
 export const loadCsvDataFromZip = async <T>(zipFile: string, extractPath: string): Promise<T> => {
   try {
@@ -19,7 +19,7 @@ export const loadCsvDataFromZip = async <T>(zipFile: string, extractPath: string
       headers: school_data_headers,
     }).fromFile(filepath);
 
-    const data2 = parse(file, { columns: true, skip_empty_lines: true });
+    const data2 = parse(file, { columns: true, skip_empty_lines: true }) as T;
     logger.info(data2);
 
     return data as T;
