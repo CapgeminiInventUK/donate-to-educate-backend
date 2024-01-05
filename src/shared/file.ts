@@ -29,6 +29,7 @@ export const loadCsvDataFromZip = async <T>(zipFile: string, extractPath: string
       ltrim: true,
       trim: true,
       relax_quotes: true,
+      escape: '\\',
     }) as T;
     logger.info(data2);
 
