@@ -12,5 +12,5 @@ export const convertEastingNorthingtoLatLng = (
     return [0, 0];
   }
 
-  return proj4(osgb, wgs84, [easting, northing]);
+  return proj4(osgb, wgs84, [Number(easting), Number(northing)]);
 };

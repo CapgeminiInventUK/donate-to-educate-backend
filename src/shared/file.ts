@@ -1,8 +1,9 @@
-import { readdirSync, unlinkSync } from 'fs';
+import { readdirSync, unlinkSync, readFileSync } from 'fs';
 import { unzip } from './zip';
 import { logger } from './logger';
 import csv from 'csvtojson';
 import { school_data_headers } from './globals';
+import { parse } from 'csv-parse';
 
 export const loadCsvDataFromZip = async <T>(zipFile: string, extractPath: string): Promise<T> => {
   try {
@@ -10,12 +11,16 @@ export const loadCsvDataFromZip = async <T>(zipFile: string, extractPath: string
 
     const filename = readdirSync(extractPath).pop();
     const filepath = `${extractPath}/${filename}`;
+    const file = readFileSync(filepath);
 
     const data = await csv({
       trim: true,
       // noheader: false,
       headers: school_data_headers,
     }).fromFile(filepath);
+
+    const data2 = parse(file, { columns: true, skip_empty_lines: true });
+    logger.info(data2);
 
     return data as T;
   } catch (error) {
