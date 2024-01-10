@@ -13,7 +13,14 @@ type School {
 }
 
 type SchoolProfile {
-  request: String
+  request: {
+    items: String
+    banner: String
+    helpBannerTitle: String
+    helpBannerBody: String
+    whatToExpect: String
+    actionText: String
+  }
   donate: String
   excess: String
 }
