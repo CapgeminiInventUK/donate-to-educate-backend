@@ -8,7 +8,7 @@ export const convertEastingNorthingtoLatLng = (
   easting: number,
   northing: number
 ): [number, number] => {
-  if (isNaN(easting) || isNaN(northing)) {
+  if (!easting || !northing || isNaN(easting) || isNaN(northing)) {
     return [0, 0];
   }
 
