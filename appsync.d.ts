@@ -84,6 +84,16 @@ export type MutationUpdateSchoolProfileArgs = {
   value: Scalars['String']['input'];
 };
 
+export type ProfileItems = {
+  __typename?: 'ProfileItems';
+  actionText?: Maybe<Scalars['String']['output']>;
+  banner?: Maybe<Scalars['String']['output']>;
+  helpBannerBody?: Maybe<Scalars['String']['output']>;
+  helpBannerTitle?: Maybe<Scalars['String']['output']>;
+  items?: Maybe<Scalars['String']['output']>;
+  whatToExpect?: Maybe<Scalars['String']['output']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   getJoinRequests: Array<JoinRequest>;
@@ -126,9 +136,9 @@ export type School = {
 
 export type SchoolProfile = {
   __typename?: 'SchoolProfile';
-  donate?: Maybe<Scalars['String']['output']>;
-  excess?: Maybe<Scalars['String']['output']>;
-  request?: Maybe<Scalars['String']['output']>;
+  donate?: Maybe<ProfileItems>;
+  excess?: Maybe<ProfileItems>;
+  request?: Maybe<ProfileItems>;
 };
 
 export type SignUpData = {

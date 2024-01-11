@@ -12,17 +12,19 @@ type School {
   registered: Boolean!
 }
 
+type ProfileItems {
+  items: String
+  banner: String
+  helpBannerTitle: String
+  helpBannerBody: String
+  whatToExpect: String
+  actionText: String
+}
+
 type SchoolProfile {
-  request: {
-    items: String
-    banner: String
-    helpBannerTitle: String
-    helpBannerBody: String
-    whatToExpect: String
-    actionText: String
-  }
-  donate: String
-  excess: String
+  request: ProfileItems
+  donate: ProfileItems
+  excess: ProfileItems
 }
 
 type LocalAuthorityUser {
