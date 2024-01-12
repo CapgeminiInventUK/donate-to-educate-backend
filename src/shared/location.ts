@@ -5,10 +5,10 @@ const osgb =
 const wgs84 = '+proj=longlat +datum=WGS84 +no_defs ';
 
 export const convertEastingNorthingtoLatLng = (
-  easting: number,
-  northing: number
+  easting: number | string | null,
+  northing: number | string | null
 ): [number, number] => {
-  if (!easting || !northing || isNaN(easting) || isNaN(northing)) {
+  if (!easting || !northing || isNaN(Number(easting)) || isNaN(Number(northing))) {
     return [0, 0];
   }
 

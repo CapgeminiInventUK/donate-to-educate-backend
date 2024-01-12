@@ -61,10 +61,7 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
         const match = currentSchools.find((school) => school.urn === urn);
         logger.info(`${easting} ${northing}`);
 
-        const [longitude, latitude] = convertEastingNorthingtoLatLng(
-          Number(easting),
-          Number(northing)
-        );
+        const [longitude, latitude] = convertEastingNorthingtoLatLng(easting, northing);
 
         const entry = {
           urn,
