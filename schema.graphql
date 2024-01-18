@@ -22,7 +22,14 @@ type ProfileItems {
 }
 
 type SchoolProfile {
-  request: ProfileItems!
+  request: {
+    items: String
+    banner: String
+    helpBannerTitle: String
+    helpBannerBody: String
+    whatToExpect: String
+    actionText: String
+  }
   donate: ProfileItems!
   excess: ProfileItems!
 }
