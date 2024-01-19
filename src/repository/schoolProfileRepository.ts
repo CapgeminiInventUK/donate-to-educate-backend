@@ -44,7 +44,7 @@ export class SchoolProfileRepository {
       await this.collection.updateOne(
         { name },
         {
-          $set: { [key]: value },
+          $set: { [key]: { test: 2 } },
           $setOnInsert: { name },
         },
         { upsert: true }
