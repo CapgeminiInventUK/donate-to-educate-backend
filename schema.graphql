@@ -13,25 +13,18 @@ type School {
 }
 
 type ProfileItems {
-  items: String
-  banner: String
-  helpBannerTitle: String
-  helpBannerBody: String
-  whatToExpect: String
-  actionText: String
+  items: String!
+  banner: String!
+  helpBannerTitle: String!
+  helpBannerBody: String!
+  whatToExpect: String!
+  actionText: String!
 }
 
 type SchoolProfile {
-  request: {
-    items: String
-    banner: String
-    helpBannerTitle: String
-    helpBannerBody: String
-    whatToExpect: String
-    actionText: String
-  }
-  donate: ProfileItems!
-  excess: ProfileItems!
+  request: ProfileItems
+  donate: ProfileItems
+  excess: ProfileItems
 }
 
 type LocalAuthorityUser {
