@@ -10,6 +10,7 @@ type School {
   localAuthority: String!
   postcode: String
   registered: Boolean!
+  isLocalAuthorityRegistered: Boolean
 }
 
 type ProfileItems {

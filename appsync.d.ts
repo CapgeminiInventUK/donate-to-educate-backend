@@ -86,12 +86,12 @@ export type MutationUpdateSchoolProfileArgs = {
 
 export type ProfileItems = {
   __typename?: 'ProfileItems';
-  actionText?: Maybe<Scalars['String']['output']>;
-  banner?: Maybe<Scalars['String']['output']>;
-  helpBannerBody?: Maybe<Scalars['String']['output']>;
-  helpBannerTitle?: Maybe<Scalars['String']['output']>;
-  items?: Maybe<Scalars['String']['output']>;
-  whatToExpect?: Maybe<Scalars['String']['output']>;
+  actionText: Scalars['String']['output'];
+  banner: Scalars['String']['output'];
+  helpBannerBody: Scalars['String']['output'];
+  helpBannerTitle: Scalars['String']['output'];
+  items: Scalars['String']['output'];
+  whatToExpect: Scalars['String']['output'];
 };
 
 export type Query = {
@@ -127,6 +127,7 @@ export type QueryGetSignUpDataArgs = {
 
 export type School = {
   __typename?: 'School';
+  isLocalAuthorityRegistered?: Maybe<Scalars['Boolean']['output']>;
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
   postcode?: Maybe<Scalars['String']['output']>;
