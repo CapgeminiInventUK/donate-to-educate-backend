@@ -68,7 +68,18 @@ export const handler: AppSyncResolverHandler<
       const filteredSchools = schools.map((school) =>
         removeFields<School>(info.selectionSetList, school)
       );
-      callback(null, filteredSchools);
+      const localAuthorities = await localAuthorityDataRepository.list();
+      const filteredLas = localAuthorities.map((la) =>
+        removeFields<LocalAuthority>(info.selectionSetList, la)
+      );
+      const mappedSchools = filteredSchools.map((school) => {
+        const { localAuthority } = school;
+        const isLocalAuthorityRegistered = filteredLas.find(
+          ({ name }) => name === localAuthority
+        )?.registered;
+        return { ...school, isLocalAuthorityRegistered };
+      });
+      callback(null, mappedSchools);
       break;
     }
     case 'getLocalAuthorities': {
