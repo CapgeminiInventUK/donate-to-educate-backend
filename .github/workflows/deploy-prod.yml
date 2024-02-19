@@ -1,0 +1,47 @@
+name: 'Backend Prod'
+
+on:
+  workflow_dispatch:
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: 'eu-west-2'
+
+jobs:
+  build_and_deploy_job:
+    runs-on: ubuntu-latest
+    name: Build and Deploy Job
+    steps:
+      - name: 'Checkout GitHub Action'
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      - name: Install
+        run: |
+          npm install
+
+      - name: Start LocalStack
+        run: |
+          pip install localstack awscli-local[ver1]
+          docker pull localstack/localstack
+          localstack start -d
+
+          echo "Waiting for LocalStack startup..."
+          localstack wait -t 30
+          echo "Startup complete"
+
+      - name: Build
+        run: npm run build
+
+      - name: Move Zip files
+        run: |
+          mkdir archives
+          mv .serverless/*.zip archives
+
+      - name: Copy Zip files to S3
+        run: aws s3 cp archives s3://d2e-lambda-s3-bucket-prod --recursive
+
+      - name: Copy GraphQL schema to S3
+        run: aws s3 cp --content-type text/plain schema.graphql s3://d2e-lambda-s3-bucket-prod
