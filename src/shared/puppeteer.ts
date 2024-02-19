@@ -10,7 +10,7 @@ export const downloadSchoolDataFileLocally = async (): Promise<void> => {
     executablePath: await chromium.executablePath(
       `https://github.com/Sparticuz/chromium/releases/download/v117.0.0/chromium-v117.0.0-pack.tar`
     ),
-    headless: chromium.headless,
+    headless: true,
     ignoreHTTPSErrors: true,
   });
 
