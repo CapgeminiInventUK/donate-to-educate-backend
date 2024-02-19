@@ -31,6 +31,12 @@ export type LocalAuthority = {
   registered: Scalars['Boolean']['output'];
 };
 
+export type LocalAuthorityProfile = {
+  __typename?: 'LocalAuthorityProfile';
+  localAuthority: LocalAuthority;
+  user: LocalAuthorityUser;
+};
+
 export type LocalAuthorityUser = {
   __typename?: 'LocalAuthorityUser';
   department: Scalars['String']['output'];
@@ -48,6 +54,7 @@ export type Mutation = {
   insertSignUpData: Scalars['Boolean']['output'];
   registerLocalAuthority: Scalars['Boolean']['output'];
   updateJoinRequest: Scalars['Boolean']['output'];
+  updateLocalAuthorityProfile: Scalars['Boolean']['output'];
   updateSchoolProfile: Scalars['Boolean']['output'];
 };
 
@@ -78,6 +85,12 @@ export type MutationUpdateJoinRequestArgs = {
 };
 
 
+export type MutationUpdateLocalAuthorityProfileArgs = {
+  localAuthority: Scalars['String']['input'];
+  localAuthorityUser: Scalars['String']['input'];
+};
+
+
 export type MutationUpdateSchoolProfileArgs = {
   key: Scalars['String']['input'];
   name: Scalars['String']['input'];
@@ -97,12 +110,18 @@ export type ProfileItems = {
 export type Query = {
   __typename?: 'Query';
   getJoinRequests: Array<JoinRequest>;
+  getLaByUser: LocalAuthority;
   getLocalAuthorities: Array<LocalAuthority>;
   getSchoolByName: School;
   getSchoolProfile: SchoolProfile;
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
   getSignUpData?: Maybe<SignUpData>;
+};
+
+
+export type QueryGetLaByUserArgs = {
+  email: Scalars['String']['input'];
 };
 
 

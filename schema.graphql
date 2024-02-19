@@ -45,6 +45,11 @@ type LocalAuthority {
   registered: Boolean!
 }
 
+type LocalAuthorityProfile {
+  user: LocalAuthorityUser!
+  localAuthority: LocalAuthority!
+}
+
 type JoinRequest {
   name: String!
   localAuthority: String!
@@ -64,6 +69,8 @@ type Query {
 
   getSchoolProfile(name: String!): SchoolProfile!
 
+  getLaByUser(email: String!): LocalAuthority!
+
   getSignUpData(id: String!): SignUpData
 }
 
@@ -81,6 +88,7 @@ type Mutation {
 
   updateSchoolProfile(name: String!, key: String!, value: String!): Boolean!
   updateJoinRequest(localAuthority: String!, name: String!, status: String!): Boolean!
+  updateLocalAuthorityProfile(localAuthority: String!, localAuthorityUser: String!): Boolean!
 
   insertSignUpData(id: String!, email: String!, type: String!): Boolean!
 }
