@@ -44,6 +44,7 @@ export class SchoolProfileRepository {
       await this.collection.updateOne(
         { name },
         {
+          // eslint-disable-next-line
           $set: { [key]: JSON.parse(value) },
           $setOnInsert: { name },
         },
