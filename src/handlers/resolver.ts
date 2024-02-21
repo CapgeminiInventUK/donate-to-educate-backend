@@ -12,7 +12,9 @@ import {
   QueryGetSignUpDataArgs,
   MutationInsertSignUpDataArgs,
   QueryGetSchoolProfileArgs,
+  QueryGetLocalAuthorityUserArgs,
   SignUpData,
+  LocalAuthorityUser,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -21,6 +23,7 @@ import { LocalAuthorityRepository } from '../repository/localAuthorityRepository
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
+import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
@@ -28,6 +31,7 @@ const localAuthorityRepository = LocalAuthorityRepository.getInstance();
 const joinRequestsRepository = JoinRequestsRepository.getInstance();
 const schoolProfileRepository = SchoolProfileRepository.getInstance();
 const signUpDataRepository = SignUpDataRepository.getInstance();
+const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
   | QueryGetSchoolByNameArgs
@@ -35,7 +39,14 @@ export const handler: AppSyncResolverHandler<
   | MutationRegisterLocalAuthorityArgs
   | QueryGetSignUpDataArgs
   | MutationInsertSignUpDataArgs,
-  School | School[] | LocalAuthority[] | JoinRequest[] | boolean | SchoolProfile | SignUpData
+  | School
+  | School[]
+  | LocalAuthority[]
+  | JoinRequest[]
+  | boolean
+  | SchoolProfile
+  | SignUpData
+  | LocalAuthorityUser
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
@@ -52,6 +63,17 @@ export const handler: AppSyncResolverHandler<
         break;
       }
       callback(null, removeFields<School>(info.selectionSetList, school));
+      break;
+    }
+    case 'getLocalAuthorityUser': {
+      const { email } = params as QueryGetLocalAuthorityUserArgs;
+      const la = await localAuthorityUserRepository.getByUser(email);
+
+      if (!la) {
+        callback(null);
+        break;
+      }
+      callback(null, la);
       break;
     }
     case 'getSchoolsByLa': {

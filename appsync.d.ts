@@ -54,7 +54,6 @@ export type Mutation = {
   insertSignUpData: Scalars['Boolean']['output'];
   registerLocalAuthority: Scalars['Boolean']['output'];
   updateJoinRequest: Scalars['Boolean']['output'];
-  updateLocalAuthorityProfile: Scalars['Boolean']['output'];
   updateSchoolProfile: Scalars['Boolean']['output'];
 };
 
@@ -85,12 +84,6 @@ export type MutationUpdateJoinRequestArgs = {
 };
 
 
-export type MutationUpdateLocalAuthorityProfileArgs = {
-  localAuthority: Scalars['String']['input'];
-  localAuthorityUser: Scalars['String']['input'];
-};
-
-
 export type MutationUpdateSchoolProfileArgs = {
   key: Scalars['String']['input'];
   name: Scalars['String']['input'];
@@ -110,8 +103,8 @@ export type ProfileItems = {
 export type Query = {
   __typename?: 'Query';
   getJoinRequests: Array<JoinRequest>;
-  getLaByUser: LocalAuthority;
   getLocalAuthorities: Array<LocalAuthority>;
+  getLocalAuthorityUser: LocalAuthorityUser;
   getSchoolByName: School;
   getSchoolProfile: SchoolProfile;
   getSchools: Array<School>;
@@ -120,7 +113,7 @@ export type Query = {
 };
 
 
-export type QueryGetLaByUserArgs = {
+export type QueryGetLocalAuthorityUserArgs = {
   email: Scalars['String']['input'];
 };
 
