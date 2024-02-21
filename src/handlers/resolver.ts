@@ -12,10 +12,9 @@ import {
   QueryGetSignUpDataArgs,
   MutationInsertSignUpDataArgs,
   QueryGetSchoolProfileArgs,
-  QueryGetLaByUserArgs,
+  QueryGetLocalAuthorityUserArgs,
   SignUpData,
-  LocalAuthorityProfile,
-  MutationUpdateLocalAuthorityProfileArgs,
+  LocalAuthorityUser,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -24,7 +23,7 @@ import { LocalAuthorityRepository } from '../repository/localAuthorityRepository
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
-import { LocalAuthorityProfileRepository } from '../repository/localAuthorityProfileRepository';
+import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
@@ -32,13 +31,12 @@ const localAuthorityRepository = LocalAuthorityRepository.getInstance();
 const joinRequestsRepository = JoinRequestsRepository.getInstance();
 const schoolProfileRepository = SchoolProfileRepository.getInstance();
 const signUpDataRepository = SignUpDataRepository.getInstance();
-const localAuthorityProfileRepository = LocalAuthorityProfileRepository.getInstance();
+const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
   | QueryGetSchoolByNameArgs
   | QueryGetSchoolsByLaArgs
   | MutationRegisterLocalAuthorityArgs
-  | MutationUpdateLocalAuthorityProfileArgs
   | QueryGetSignUpDataArgs
   | MutationInsertSignUpDataArgs,
   | School
@@ -48,7 +46,7 @@ export const handler: AppSyncResolverHandler<
   | boolean
   | SchoolProfile
   | SignUpData
-  | LocalAuthorityProfile
+  | LocalAuthorityUser
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
@@ -67,26 +65,15 @@ export const handler: AppSyncResolverHandler<
       callback(null, removeFields<School>(info.selectionSetList, school));
       break;
     }
-    case 'getLaByUser': {
-      const { email } = params as QueryGetLaByUserArgs;
-      const la = await localAuthorityProfileRepository.getByUser(email);
+    case 'getLocalAuthorityUser': {
+      const { email } = params as QueryGetLocalAuthorityUserArgs;
+      const la = await localAuthorityUserRepository.getByUser(email);
 
       if (!la) {
         callback(null);
         break;
       }
       callback(null, la);
-      break;
-    }
-    case 'updateLaProfile': {
-      const { localAuthority, localAuthorityUser } =
-        params as MutationUpdateLocalAuthorityProfileArgs;
-
-      const res = await localAuthorityProfileRepository.updateLaProfile(
-        localAuthority,
-        localAuthorityUser
-      );
-      callback(null, res);
       break;
     }
     case 'getSchoolsByLa': {

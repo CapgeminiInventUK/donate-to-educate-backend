@@ -63,14 +63,10 @@ type Query {
   getSchoolByName(name: String!): School!
   getSchoolsByLa(name: String!): [School!]!
   getSchools: [School!]!
-
   getLocalAuthorities: [LocalAuthority!]!
   getJoinRequests: [JoinRequest!]!
-
   getSchoolProfile(name: String!): SchoolProfile!
-
-  getLaByUser(email: String!): LocalAuthority!
-
+  getLocalAuthorityUser(email: String!): LocalAuthorityUser!
   getSignUpData(id: String!): SignUpData
 }
 
@@ -88,7 +84,6 @@ type Mutation {
 
   updateSchoolProfile(name: String!, key: String!, value: String!): Boolean!
   updateJoinRequest(localAuthority: String!, name: String!, status: String!): Boolean!
-  updateLocalAuthorityProfile(localAuthority: String!, localAuthorityUser: String!): Boolean!
 
   insertSignUpData(id: String!, email: String!, type: String!): Boolean!
 }
