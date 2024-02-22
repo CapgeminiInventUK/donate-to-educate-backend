@@ -67,13 +67,14 @@ export const handler: AppSyncResolverHandler<
     }
     case 'getLocalAuthorityUser': {
       const { email } = params as QueryGetLocalAuthorityUserArgs;
-      const la = await localAuthorityUserRepository.getByUser(email);
+      const laUser = await localAuthorityUserRepository.getByUser(email);
 
-      if (!la) {
+      if (!laUser) {
         callback(null);
         break;
       }
-      callback(null, la);
+
+      callback(null, removeFields<LocalAuthorityUser>(info.selectionSetList, laUser));
       break;
     }
     case 'getSchoolsByLa': {
