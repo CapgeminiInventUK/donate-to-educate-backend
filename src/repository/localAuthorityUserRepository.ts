@@ -24,19 +24,18 @@ export class LocalAuthorityUserRepository {
     return this.instance;
   }
 
-  public async getByUser(email: string): Promise<LocalAuthorityUser> {
-    return (await this.getByQuery({ email })).at(0)!;
+  public async getByUser(email: string): Promise<WithId<LocalAuthorityUser> | undefined> {
+    return await this.getOne({ email });
   }
 
-  private async getByQuery(
+  private async getOne(
     query: Filter<LocalAuthorityUser>
-  ): Promise<WithId<LocalAuthorityUser>[]> {
-    const cursor = this.collection.find(query);
-
-    if (!(await cursor.hasNext())) {
-      return [];
+  ): Promise<WithId<LocalAuthorityUser> | undefined> {
+    const result = await this.collection.findOne(query);
+    if (!result) {
+      return undefined;
     }
 
-    return await cursor.toArray();
+    return result;
   }
 }
