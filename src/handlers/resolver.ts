@@ -23,7 +23,6 @@ import { LocalAuthorityRepository } from '../repository/localAuthorityRepository
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
-import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
@@ -31,7 +30,6 @@ const localAuthorityRepository = LocalAuthorityRepository.getInstance();
 const joinRequestsRepository = JoinRequestsRepository.getInstance();
 const schoolProfileRepository = SchoolProfileRepository.getInstance();
 const signUpDataRepository = SignUpDataRepository.getInstance();
-const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
   | QueryGetSchoolByNameArgs
@@ -67,13 +65,12 @@ export const handler: AppSyncResolverHandler<
     }
     case 'getLocalAuthorityUser': {
       const { email } = params as QueryGetLocalAuthorityUserArgs;
-      const laUser = await localAuthorityUserRepository.getByUser(email);
+      const laUser = await localAuthorityRepository.getByEmail(email);
 
       if (!laUser) {
         callback(null);
         break;
       }
-
       callback(null, removeFields<LocalAuthorityUser>(info.selectionSetList, laUser));
       break;
     }

@@ -40,6 +40,22 @@ export class LocalAuthorityRepository {
     return await cursor.toArray();
   }
 
+  private async getOne(
+    query: Filter<LocalAuthorityUser>
+  ): Promise<WithId<LocalAuthorityUser> | undefined> {
+    const result = await this.collection.findOne(query);
+
+    if (!result) {
+      return undefined;
+    }
+
+    return result;
+  }
+
+  public async getByEmail(email: string): Promise<WithId<LocalAuthorityUser> | undefined> {
+    return await this.getOne({ email });
+  }
+
   public async list(): Promise<WithId<LocalAuthorityUser>[]> {
     return await this.getByQuery({});
   }
