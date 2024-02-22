@@ -11,7 +11,10 @@ export class SchoolDataRepository {
     this.client = new MongoClient(
       process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/',
       {
-        auth: { username: 'user', password: 'user' },
+        auth: {
+          username: process?.env?.MONGODB_ADMIN_USERNAME,
+          password: process?.env?.MONGODB_ADMIN_PASSWORD,
+        },
       }
     );
     this.db = this.client.db('D2E');
