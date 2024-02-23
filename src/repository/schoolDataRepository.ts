@@ -58,4 +58,8 @@ export class SchoolDataRepository {
   public async getByName(name: string): Promise<WithId<School> | undefined> {
     return await this.getOne({ name });
   }
+
+  public async getRegistered(): Promise<WithId<School>[]> {
+    return await this.getByQuery({ registered: true });
+  }
 }

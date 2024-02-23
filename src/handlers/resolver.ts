@@ -160,6 +160,11 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
+    case 'getRegisteredSchools': {
+      const res = await schoolDataRepository.getRegistered();
+      callback(null, res);
+      break;
+    }
     default: {
       callback(`Unexpected type ${info.fieldName}`);
       throw new Error(`Unexpected type ${info.fieldName}`);

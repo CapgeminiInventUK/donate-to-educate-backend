@@ -105,6 +105,7 @@ export type Query = {
   getJoinRequests: Array<JoinRequest>;
   getLocalAuthorities: Array<LocalAuthority>;
   getLocalAuthorityUser: LocalAuthorityUser;
+  getRegisteredSchools: Array<School>;
   getSchoolByName: School;
   getSchoolProfile: SchoolProfile;
   getSchools: Array<School>;
