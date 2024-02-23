@@ -19,14 +19,14 @@ import {
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
-import { LocalAuthorityRepository } from '../repository/localAuthorityRepository';
+import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
-const localAuthorityRepository = LocalAuthorityRepository.getInstance();
+const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 const joinRequestsRepository = JoinRequestsRepository.getInstance();
 const schoolProfileRepository = SchoolProfileRepository.getInstance();
 const signUpDataRepository = SignUpDataRepository.getInstance();
@@ -65,7 +65,7 @@ export const handler: AppSyncResolverHandler<
     }
     case 'getLocalAuthorityUser': {
       const { email } = params as QueryGetLocalAuthorityUserArgs;
-      const laUser = await localAuthorityRepository.getByEmail(email);
+      const laUser = await localAuthorityUserRepository.getByEmail(email);
 
       if (!laUser) {
         callback(null);
@@ -117,7 +117,7 @@ export const handler: AppSyncResolverHandler<
       const { name, firstName, lastName, email, phone, department, jobTitle, notes } =
         params as MutationRegisterLocalAuthorityArgs;
       const register = await localAuthorityDataRepository.setToRegistered(name);
-      const insert = await localAuthorityRepository.insert({
+      const insert = await localAuthorityUserRepository.insert({
         name,
         firstName,
         lastName,
