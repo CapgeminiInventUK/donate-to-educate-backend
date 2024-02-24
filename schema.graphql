@@ -28,6 +28,12 @@ type SchoolProfile {
   excess: ProfileItems
 }
 
+type CharityProfile {
+  request: ProfileItems
+  donate: ProfileItems
+  excess: ProfileItems
+}
+
 type LocalAuthorityUser {
   name: String!
   firstName: String!

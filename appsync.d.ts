@@ -14,6 +14,13 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type CharityProfile = {
+  __typename?: 'CharityProfile';
+  donate?: Maybe<ProfileItems>;
+  excess?: Maybe<ProfileItems>;
+  request?: Maybe<ProfileItems>;
+};
+
 export type JoinRequest = {
   __typename?: 'JoinRequest';
   email: Scalars['String']['output'];
