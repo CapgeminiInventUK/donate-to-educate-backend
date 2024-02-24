@@ -21,6 +21,13 @@ export type CharityProfile = {
   request?: Maybe<ProfileItems>;
 };
 
+export type CharityUser = {
+  __typename?: 'CharityUser';
+  firstName: Scalars['String']['output'];
+  lastName: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+};
+
 export type JoinRequest = {
   __typename?: 'JoinRequest';
   email: Scalars['String']['output'];
@@ -160,6 +167,13 @@ export type SchoolProfile = {
   donate?: Maybe<ProfileItems>;
   excess?: Maybe<ProfileItems>;
   request?: Maybe<ProfileItems>;
+};
+
+export type SchoolUser = {
+  __typename?: 'SchoolUser';
+  firstName: Scalars['String']['output'];
+  lastName: Scalars['String']['output'];
+  name: Scalars['String']['output'];
 };
 
 export type SignUpData = {

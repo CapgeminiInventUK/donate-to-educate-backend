@@ -45,6 +45,18 @@ type LocalAuthorityUser {
   notes: String
 }
 
+type SchoolUser {
+  name: String!
+  firstName: String!
+  lastName: String!
+}
+
+type CharityUser {
+  name: String!
+  firstName: String!
+  lastName: String!
+}
+
 type LocalAuthority {
   code: String!
   name: String!
