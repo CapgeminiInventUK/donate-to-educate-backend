@@ -10,10 +10,10 @@ import { AnyBulkWriteOperation, MongoClient } from 'mongodb';
 // TODO fully replace with repo
 // const schoolDataRepository = SchoolDataRepository.getInstance();
 
-const uri = process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/';
-const username = process?.env?.MONGODB_ADMIN_USERNAME;
-const password = process?.env?.MONGODB_ADMIN_PASSWORD;
-const mongoClient = new MongoClient(uri, { auth: { username, password } });
+const mongoClient = new MongoClient(
+  process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/',
+  { authMechanism: 'MONGODB-AWS', authSource: '$external' }
+);
 
 export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
   await downloadSchoolDataFileLocally();

@@ -55,12 +55,6 @@ functions:
       - http:
           path: school-data
           method: get
-  resolver:
-    handler: ./src/handlers/resolver.handler
-    events:
-      - http:
-          path: graphql
-          method: post
   publicResolver:
     handler: ./src/handlers/publicResolver.handler
     events:

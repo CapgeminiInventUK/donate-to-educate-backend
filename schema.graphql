@@ -87,7 +87,6 @@ type Query {
   getSchoolProfile(name: String!): SchoolProfile!
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
   getSignUpData(id: String!): SignUpData
-  testPublic: [SignUpData]!
 }
 
 type Mutation {
@@ -106,7 +105,6 @@ type Mutation {
   updateJoinRequest(localAuthority: String!, name: String!, status: String!): Boolean!
 
   insertSignUpData(id: String!, email: String!, type: String!): Boolean!
-  testPrivate: Boolean!
 }
 
 schema {

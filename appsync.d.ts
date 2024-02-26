@@ -67,7 +67,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   insertSignUpData: Scalars['Boolean']['output'];
   registerLocalAuthority: Scalars['Boolean']['output'];
-  testPrivate: Scalars['Boolean']['output'];
   updateJoinRequest: Scalars['Boolean']['output'];
   updateSchoolProfile: Scalars['Boolean']['output'];
 };
@@ -126,7 +125,6 @@ export type Query = {
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
   getSignUpData?: Maybe<SignUpData>;
-  testPublic: Array<Maybe<SignUpData>>;
 };
 
 
