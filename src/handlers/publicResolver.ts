@@ -26,8 +26,13 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'testPrivate': {
-      const { id, email, type } = params;
-      const res = (await collection.insertOne({ id, email, type })).acknowledged;
+      const res = (
+        await collection.insertOne({
+          id: new Date().getTime().toString(),
+          email: 'test',
+          type: 'school',
+        })
+      ).acknowledged;
       callback(null, res);
       break;
     }
