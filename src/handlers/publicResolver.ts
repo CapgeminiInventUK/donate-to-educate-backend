@@ -5,7 +5,7 @@ import { MongoClient } from 'mongodb';
 
 const client = new MongoClient(
   process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/',
-  { authMechanism: 'MONGODB-AWS', authSource: 'external' }
+  { authMechanism: 'MONGODB-AWS', authSource: '$external' }
 );
 
 const db = client.db('D2E');
