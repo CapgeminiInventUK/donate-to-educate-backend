@@ -1,11 +1,15 @@
 import { AppSyncResolverHandler } from 'aws-lambda';
-import { School, QueryGetSchoolByNameArgs } from '../../appsync';
+import { QueryGetSchoolByNameArgs, SignUpData } from '../../appsync';
 import { logger } from '../shared/logger';
-import { SchoolDataRepository } from '../repository/schoolDataRepository';
+import { MongoClient } from 'mongodb';
 
-const schoolDataRepository = SchoolDataRepository.getInstance();
+const client = new MongoClient(
+  process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/'
+);
 
-export const handler: AppSyncResolverHandler<QueryGetSchoolByNameArgs, School> = async (
+const db = client.db('D2E');
+const collection = db.collection<SignUpData>('SignUps');
+export const handler: AppSyncResolverHandler<QueryGetSchoolByNameArgs, SignUpData[]> = async (
   event,
   context,
   callback
@@ -17,14 +21,9 @@ export const handler: AppSyncResolverHandler<QueryGetSchoolByNameArgs, School> =
   logger.info(`${JSON.stringify(params)}`);
 
   switch (info.fieldName) {
-    case 'getSchoolByNamePublic': {
-      const { name } = params;
-      const school = await schoolDataRepository.getByName(name);
-      if (!school) {
-        callback(null);
-        break;
-      }
-      callback(null, removeFields<School>(info.selectionSetList, school));
+    case 'testPublic': {
+      const res = await collection.find({}).toArray();
+      callback(null, res);
       break;
     }
     default: {
@@ -34,13 +33,4 @@ export const handler: AppSyncResolverHandler<QueryGetSchoolByNameArgs, School> =
   }
 
   throw new Error('An unknown error occurred');
-};
-
-const removeFields = <T extends object>(selectionSetList: string[], obj: T): T => {
-  return Object.entries(obj).reduce((acc, [key, value]) => {
-    if (selectionSetList.includes(key)) {
-      acc = { ...acc, [key]: value as string };
-    }
-    return acc;
-  }, {} as T);
 };

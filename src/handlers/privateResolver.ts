@@ -1,9 +1,14 @@
 import { AppSyncResolverHandler } from 'aws-lambda';
-import { MutationInsertSignUpDataArgs } from '../../appsync';
+import { MutationInsertSignUpDataArgs, SignUpData } from '../../appsync';
 import { logger } from '../shared/logger';
-import { SignUpDataRepository } from '../repository/signUpDataRepository';
+import { MongoClient } from 'mongodb';
 
-const signUpDataRepository = SignUpDataRepository.getInstance();
+const client = new MongoClient(
+  process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/'
+);
+
+const db = client.db('D2E');
+const collection = db.collection<SignUpData>('SignUps');
 
 export const handler: AppSyncResolverHandler<MutationInsertSignUpDataArgs, boolean> = async (
   event,
@@ -17,9 +22,9 @@ export const handler: AppSyncResolverHandler<MutationInsertSignUpDataArgs, boole
   logger.info(`${JSON.stringify(params)}`);
 
   switch (info.fieldName) {
-    case 'insertSignUpDataPrivate': {
+    case 'testPrivate': {
       const { id, email, type } = params;
-      const res = await signUpDataRepository.insert({ id, email, type });
+      const res = (await collection.insertOne({ id, email, type })).acknowledged;
       callback(null, res);
       break;
     }
