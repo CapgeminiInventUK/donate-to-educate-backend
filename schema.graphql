@@ -52,6 +52,8 @@ type JoinRequest {
   requestTime: Float!
   status: String!
   email: String!
+  schoolSignUpDetails: SchoolUser
+  charitySignUpDetails: CharitySignUpDetails
 }
 
 type Query {
@@ -81,6 +83,16 @@ type Mutation {
 
   updateSchoolProfile(name: String!, key: String!, value: String!): Boolean!
   updateJoinRequest(localAuthority: String!, name: String!, status: String!): Boolean!
+  insertJoinRequest(
+    name: String!
+    localAuthority: String!
+    type: String!
+    requestTime: Float!
+    status: String!
+    email: String!
+    schoolSignUpDetails: SchoolUser
+    charitySignUpDetails: CharitySignUpDetails
+  ): Boolean!
 
   insertSignUpData(id: String!, email: String!, type: String!): Boolean!
 }
@@ -88,4 +100,31 @@ type Mutation {
 schema {
   query: Query
   mutation: Mutation
+}
+
+type SchoolUser {
+  name: String!
+  school: String!
+  jobTitle: String!
+  email: String!
+  phone: String!
+}
+
+type CharityUser {
+  name: String!
+  jobTitle: String!
+  email: String!
+  phone: String!
+}
+
+type CharityDetails {
+  name: String!
+  address: String!
+  localAuthority: String!
+  about: String
+}
+
+type CharitySignUpDetails {
+  charityUser: CharityUser!
+  charityDetails: CharityDetails!
 }

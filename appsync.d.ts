@@ -14,12 +14,36 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type CharityDetails = {
+  __typename?: 'CharityDetails';
+  about?: Maybe<Scalars['String']['output']>;
+  address: Scalars['String']['output'];
+  localAuthority: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+};
+
+export type CharitySignUpDetails = {
+  __typename?: 'CharitySignUpDetails';
+  charityDetails: CharityDetails;
+  charityUser: CharityUser;
+};
+
+export type CharityUser = {
+  __typename?: 'CharityUser';
+  email: Scalars['String']['output'];
+  jobTitle: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  phone: Scalars['String']['output'];
+};
+
 export type JoinRequest = {
   __typename?: 'JoinRequest';
+  charitySignUpDetails?: Maybe<CharitySignUpDetails>;
   email: Scalars['String']['output'];
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
   requestTime: Scalars['Float']['output'];
+  schoolSignUpDetails?: Maybe<SchoolUser>;
   status: Scalars['String']['output'];
   type: Scalars['String']['output'];
 };
@@ -45,10 +69,23 @@ export type LocalAuthorityUser = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  insertJoinRequest: Scalars['Boolean']['output'];
   insertSignUpData: Scalars['Boolean']['output'];
   registerLocalAuthority: Scalars['Boolean']['output'];
   updateJoinRequest: Scalars['Boolean']['output'];
   updateSchoolProfile: Scalars['Boolean']['output'];
+};
+
+
+export type MutationInsertJoinRequestArgs = {
+  charitySignUpDetails?: InputMaybe<CharitySignUpDetails>;
+  email: Scalars['String']['input'];
+  localAuthority: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  requestTime: Scalars['Float']['input'];
+  schoolSignUpDetails?: InputMaybe<SchoolUser>;
+  status: Scalars['String']['input'];
+  type: Scalars['String']['input'];
 };
 
 
@@ -140,6 +177,15 @@ export type SchoolProfile = {
   donate?: Maybe<ProfileItems>;
   excess?: Maybe<ProfileItems>;
   request?: Maybe<ProfileItems>;
+};
+
+export type SchoolUser = {
+  __typename?: 'SchoolUser';
+  email: Scalars['String']['output'];
+  jobTitle: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  phone: Scalars['String']['output'];
+  school: Scalars['String']['output'];
 };
 
 export type SignUpData = {

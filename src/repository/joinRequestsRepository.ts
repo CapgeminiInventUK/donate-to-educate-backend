@@ -55,4 +55,8 @@ export class JoinRequestsRepository {
       )
     ).acknowledged;
   }
+
+  public async insert(user: JoinRequest): Promise<boolean> {
+    return (await this.collection.insertOne(user)).acknowledged;
+  }
 }

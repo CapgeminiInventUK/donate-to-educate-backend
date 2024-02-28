@@ -13,6 +13,7 @@ import {
   MutationInsertSignUpDataArgs,
   QueryGetSchoolProfileArgs,
   SignUpData,
+  MutationInsertJoinRequestArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -137,6 +138,11 @@ export const handler: AppSyncResolverHandler<
     case 'insertSignUpData': {
       const { id, email, type } = params as MutationInsertSignUpDataArgs;
       const res = await signUpDataRepository.insert({ id, email, type });
+      callback(null, res);
+      break;
+    }
+    case 'insertJoinRequest': {
+      const res = await joinRequestsRepository.insert(params as MutationInsertJoinRequestArgs);
       callback(null, res);
       break;
     }
