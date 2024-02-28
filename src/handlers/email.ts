@@ -35,14 +35,14 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
       case 'LocalAuthorityUser': {
         const randomString = generate({ charset: 'alphabetic', length: 100 });
         const { email, firstName, name } = fullDocument as LocalAuthorityUser;
-
+        const domainName = process.env.DOMAIN_NAME ?? '';
         await signUpDataRepository.insert({ id: randomString, email, type: 'localAuthority' });
 
         await sendEmail(email, 'create-account-la', {
           subject: 'Complete your sign up to Donate to Educate',
           name: firstName,
           la: name,
-          signUpLink: `https://www.donatetoeducate.org.uk/add-user?id=${randomString}`,
+          signUpLink: `https://${domainName}/add-user?id=${randomString}`,
         });
         break;
       }
