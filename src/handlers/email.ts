@@ -61,7 +61,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
         break;
       }
       case 'ItemQueries': {
-        const { email, name, type, message, who, phone } = fullDocument as ItemQuery;
+        const { email, name, type, message, who, phone, connection } = fullDocument as ItemQuery;
         const { subject, intro } = getContentFromType(type);
 
         await sendEmail('ryan.b.smith@capgemini.com', 'request', {
@@ -72,6 +72,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
           phone,
           message,
           name,
+          ...(connection && { connection }),
         });
         break;
       }
