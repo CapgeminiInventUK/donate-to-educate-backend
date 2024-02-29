@@ -81,7 +81,7 @@ export const handler: AppSyncResolverHandler<
         message,
         who,
         phone,
-        connection,
+        ...(connection && { connection }),
       });
       callback(null, res);
       break;
