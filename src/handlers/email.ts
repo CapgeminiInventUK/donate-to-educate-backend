@@ -1,6 +1,6 @@
 import { Handler } from 'aws-lambda';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
-import { JoinRequest, LocalAuthorityUser } from '../../appsync';
+import { ItemQuery, JoinRequest, LocalAuthorityUser } from '../../appsync';
 import { generate } from 'randomstring';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 
@@ -8,7 +8,7 @@ const sesClient = new SESv2Client({ region: 'eu-west-2' });
 
 interface MongoDBEvent {
   detail: {
-    fullDocument: LocalAuthorityUser | JoinRequest;
+    fullDocument: LocalAuthorityUser | JoinRequest | ItemQuery;
     ns: { db: string; coll: string };
   };
 }
@@ -58,6 +58,20 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
             name,
           }
         );
+        break;
+      }
+      case 'ItemQueries': {
+        const { email, name, type, message, who, phone } = fullDocument as ItemQuery;
+
+        await sendEmail('ryan.b.smith@capgemini.com', 'request', {
+          subject: 'Donation request',
+          intro: type,
+          type: who,
+          email,
+          phone,
+          message,
+          name,
+        });
         break;
       }
       default:
