@@ -30,6 +30,7 @@ export type CharityUser = {
 
 export type ItemQuery = {
   __typename?: 'ItemQuery';
+  connection?: Maybe<Scalars['String']['output']>;
   email: Scalars['String']['output'];
   message: Scalars['String']['output'];
   name: Scalars['String']['output'];
@@ -84,6 +85,7 @@ export type Mutation = {
 
 
 export type MutationInsertItemQueryArgs = {
+  connection?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
   message: Scalars['String']['input'];
   name: Scalars['String']['input'];

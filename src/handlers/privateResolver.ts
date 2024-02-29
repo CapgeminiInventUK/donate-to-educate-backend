@@ -72,8 +72,17 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'insertItemQuery': {
-      const { name, email, type, message, who, phone } = params as MutationInsertItemQueryArgs;
-      const res = await itemQueriesRepository.insert({ name, email, type, message, who, phone });
+      const { name, email, type, message, who, phone, connection } =
+        params as MutationInsertItemQueryArgs;
+      const res = await itemQueriesRepository.insert({
+        name,
+        email,
+        type,
+        message,
+        who,
+        phone,
+        connection,
+      });
       callback(null, res);
       break;
     }
