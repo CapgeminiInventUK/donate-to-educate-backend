@@ -62,10 +62,11 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
       }
       case 'ItemQueries': {
         const { email, name, type, message, who, phone } = fullDocument as ItemQuery;
+        const { subject, intro } = getContentFromType(type);
 
         await sendEmail('ryan.b.smith@capgemini.com', 'request', {
-          subject: 'Donation request',
-          intro: type,
+          subject,
+          intro,
           type: who,
           email,
           phone,
@@ -105,4 +106,26 @@ const sendEmail = async (
 
   // eslint-disable-next-line no-console
   console.log(res);
+};
+
+const getContentFromType = (type: string): { subject: string; intro: string } => {
+  switch (type) {
+    case 'tick':
+      return {
+        subject: 'Product request',
+        intro: 'Someone has requested products from your school.',
+      };
+    case 'heart':
+      return {
+        subject: 'Donation request',
+        intro: 'Someone wants to donate products to your school.',
+      };
+    case 'plus':
+      return {
+        subject: 'Excess product assistance',
+        intro: 'Someone wants to help you with the extra stock at your school.',
+      };
+    default:
+      throw new Error(`Unknown type ${type}`);
+  }
 };
