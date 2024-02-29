@@ -4,6 +4,7 @@ import {
   MutationUpdateSchoolProfileArgs,
   MutationUpdateJoinRequestArgs,
   MutationInsertSignUpDataArgs,
+  MutationInsertItemQueryArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
@@ -11,18 +12,21 @@ import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRe
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
+import { ItemQueriesRepository } from '../repository/itemQueriesRepository';
 
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
 const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 const joinRequestsRepository = JoinRequestsRepository.getInstance();
 const schoolProfileRepository = SchoolProfileRepository.getInstance();
 const signUpDataRepository = SignUpDataRepository.getInstance();
+const itemQueriesRepository = ItemQueriesRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
   | MutationRegisterLocalAuthorityArgs
   | MutationInsertSignUpDataArgs
   | MutationUpdateSchoolProfileArgs
-  | MutationUpdateJoinRequestArgs,
+  | MutationUpdateJoinRequestArgs
+  | MutationInsertItemQueryArgs,
   boolean
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
@@ -67,6 +71,13 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
+    case 'insertItemQuery': {
+      const { name, email, type, message, who, phone } = params as MutationInsertItemQueryArgs;
+      const res = await itemQueriesRepository.insert({ name, email, type, message, who, phone });
+      callback(null, res);
+      break;
+    }
+
     default: {
       callback(`Unexpected type ${info.fieldName}`);
       throw new Error(`Unexpected type ${info.fieldName}`);

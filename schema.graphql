@@ -77,6 +77,15 @@ type JoinRequest {
   email: String!
 }
 
+type ItemQuery {
+  name: String!
+  type: String!
+  who: String!
+  email: String!
+  phone: String!
+  message: String!
+}
+
 type Query {
   getSchoolByName(name: String!): School!
   getSchoolsByLa(name: String!): [School!]!
@@ -105,6 +114,14 @@ type Mutation {
   updateJoinRequest(localAuthority: String!, name: String!, status: String!): Boolean!
 
   insertSignUpData(id: String!, email: String!, type: String!): Boolean!
+  insertItemQuery(
+    name: String!
+    email: String!
+    type: String!
+    message: String!
+    who: String!
+    phone: String!
+  ): Boolean!
 }
 
 schema {
