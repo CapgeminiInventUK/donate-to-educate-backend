@@ -10,9 +10,7 @@ export class SchoolDataRepository {
   private constructor() {
     this.client = new MongoClient(
       process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/',
-      {
-        auth: { username: 'user', password: 'user' },
-      }
+      { authMechanism: 'MONGODB-AWS', authSource: '$external' }
     );
     this.db = this.client.db('D2E');
     this.collection = this.db.collection<School>('SchoolData');
@@ -54,5 +52,9 @@ export class SchoolDataRepository {
 
   public async getByName(name: string): Promise<WithId<School> | undefined> {
     return await this.getOne({ name });
+  }
+
+  public async getRegistered(): Promise<WithId<School>[]> {
+    return await this.getByQuery({ registered: true });
   }
 }

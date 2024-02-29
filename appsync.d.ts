@@ -22,6 +22,13 @@ export type CharityDetails = {
   name: Scalars['String']['output'];
 };
 
+export type CharityProfile = {
+  __typename?: 'CharityProfile';
+  donate?: Maybe<ProfileItems>;
+  excess?: Maybe<ProfileItems>;
+  request?: Maybe<ProfileItems>;
+};
+
 export type CharitySignUpDetails = {
   __typename?: 'CharitySignUpDetails';
   charityDetails: CharityDetails;
@@ -55,6 +62,12 @@ export type LocalAuthority = {
   registered: Scalars['Boolean']['output'];
 };
 
+export type LocalAuthorityProfile = {
+  __typename?: 'LocalAuthorityProfile';
+  localAuthority: LocalAuthority;
+  user: LocalAuthorityUser;
+};
+
 export type LocalAuthorityUser = {
   __typename?: 'LocalAuthorityUser';
   department: Scalars['String']['output'];
@@ -78,12 +91,16 @@ export type Mutation = {
 
 
 export type MutationInsertJoinRequestArgs = {
-  charitySignUpDetails?: InputMaybe<CharitySignUpDetails>;
+  aboutCharity?: InputMaybe<Scalars['String']['input']>;
+  charityAddress?: InputMaybe<Scalars['String']['input']>;
+  charityName?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
+  jobTitle?: InputMaybe<Scalars['String']['input']>;
   localAuthority: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  phone?: InputMaybe<Scalars['String']['input']>;
   requestTime: Scalars['Float']['input'];
-  schoolSignUpDetails?: InputMaybe<SchoolUser>;
+  school?: InputMaybe<Scalars['String']['input']>;
   status: Scalars['String']['input'];
   type: Scalars['String']['input'];
 };
@@ -135,11 +152,18 @@ export type Query = {
   __typename?: 'Query';
   getJoinRequests: Array<JoinRequest>;
   getLocalAuthorities: Array<LocalAuthority>;
+  getLocalAuthorityUser: LocalAuthorityUser;
+  getRegisteredSchools: Array<School>;
   getSchoolByName: School;
   getSchoolProfile: SchoolProfile;
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
   getSignUpData?: Maybe<SignUpData>;
+};
+
+
+export type QueryGetLocalAuthorityUserArgs = {
+  email: Scalars['String']['input'];
 };
 
 

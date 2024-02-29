@@ -5,27 +5,25 @@ import {
   QueryGetSchoolsByLaArgs,
   LocalAuthority,
   JoinRequest,
-  MutationRegisterLocalAuthorityArgs,
   SchoolProfile,
-  MutationUpdateSchoolProfileArgs,
-  MutationUpdateJoinRequestArgs,
   QueryGetSignUpDataArgs,
-  MutationInsertSignUpDataArgs,
   QueryGetSchoolProfileArgs,
+  QueryGetLocalAuthorityUserArgs,
   SignUpData,
-  MutationInsertJoinRequestArgs,
+  LocalAuthorityUser,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
-import { LocalAuthorityRepository } from '../repository/localAuthorityRepository';
+import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
+import { removeFields } from '../shared/graphql';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
-const localAuthorityRepository = LocalAuthorityRepository.getInstance();
+const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 const joinRequestsRepository = JoinRequestsRepository.getInstance();
 const schoolProfileRepository = SchoolProfileRepository.getInstance();
 const signUpDataRepository = SignUpDataRepository.getInstance();
@@ -33,10 +31,16 @@ const signUpDataRepository = SignUpDataRepository.getInstance();
 export const handler: AppSyncResolverHandler<
   | QueryGetSchoolByNameArgs
   | QueryGetSchoolsByLaArgs
-  | MutationRegisterLocalAuthorityArgs
   | QueryGetSignUpDataArgs
-  | MutationInsertSignUpDataArgs,
-  School | School[] | LocalAuthority[] | JoinRequest[] | boolean | SchoolProfile | SignUpData
+  | QueryGetLocalAuthorityUserArgs,
+  | School
+  | School[]
+  | LocalAuthority[]
+  | JoinRequest[]
+  | boolean
+  | SchoolProfile
+  | SignUpData
+  | LocalAuthorityUser
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
@@ -53,6 +57,17 @@ export const handler: AppSyncResolverHandler<
         break;
       }
       callback(null, removeFields<School>(info.selectionSetList, school));
+      break;
+    }
+    case 'getLocalAuthorityUser': {
+      const { email } = params as QueryGetLocalAuthorityUserArgs;
+      const laUser = await localAuthorityUserRepository.getByEmail(email);
+
+      if (!laUser) {
+        callback(null);
+        break;
+      }
+      callback(null, removeFields<LocalAuthorityUser>(info.selectionSetList, laUser));
       break;
     }
     case 'getSchoolsByLa': {
@@ -94,38 +109,9 @@ export const handler: AppSyncResolverHandler<
       callback(null, requests);
       break;
     }
-    case 'registerLocalAuthority': {
-      const { name, firstName, lastName, email, phone, department, jobTitle, notes } =
-        params as MutationRegisterLocalAuthorityArgs;
-      const register = await localAuthorityDataRepository.setToRegistered(name);
-      const insert = await localAuthorityRepository.insert({
-        name,
-        firstName,
-        lastName,
-        email,
-        phone,
-        department,
-        jobTitle,
-        notes,
-      });
-      callback(null, register && insert);
-      break;
-    }
     case 'getSchoolProfile': {
       const { name } = params as QueryGetSchoolProfileArgs;
       const res = await schoolProfileRepository.getByName(name);
-      callback(null, res);
-      break;
-    }
-    case 'updateJoinRequest': {
-      const { localAuthority, name, status } = params as MutationUpdateJoinRequestArgs;
-      const res = await joinRequestsRepository.updateStatus(localAuthority, name, status);
-      callback(null, res);
-      break;
-    }
-    case 'updateSchoolProfile': {
-      const { name, key, value } = params as MutationUpdateSchoolProfileArgs;
-      const res = await schoolProfileRepository.updateKey(name, key, value);
       callback(null, res);
       break;
     }
@@ -135,14 +121,8 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
-    case 'insertSignUpData': {
-      const { id, email, type } = params as MutationInsertSignUpDataArgs;
-      const res = await signUpDataRepository.insert({ id, email, type });
-      callback(null, res);
-      break;
-    }
-    case 'insertJoinRequest': {
-      const res = await joinRequestsRepository.insert(params as MutationInsertJoinRequestArgs);
+    case 'getRegisteredSchools': {
+      const res = await schoolDataRepository.getRegistered();
       callback(null, res);
       break;
     }
@@ -153,13 +133,4 @@ export const handler: AppSyncResolverHandler<
   }
 
   throw new Error('An unknown error occurred');
-};
-
-const removeFields = <T extends object>(selectionSetList: string[], obj: T): T => {
-  return Object.entries(obj).reduce((acc, [key, value]) => {
-    if (selectionSetList.includes(key)) {
-      acc = { ...acc, [key]: value as string };
-    }
-    return acc;
-  }, {} as T);
 };

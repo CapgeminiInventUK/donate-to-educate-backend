@@ -28,6 +28,12 @@ type SchoolProfile {
   excess: ProfileItems
 }
 
+type CharityProfile {
+  request: ProfileItems
+  donate: ProfileItems
+  excess: ProfileItems
+}
+
 type LocalAuthorityUser {
   name: String!
   firstName: String!
@@ -45,6 +51,11 @@ type LocalAuthority {
   registered: Boolean!
 }
 
+type LocalAuthorityProfile {
+  user: LocalAuthorityUser!
+  localAuthority: LocalAuthority!
+}
+
 type JoinRequest {
   name: String!
   localAuthority: String!
@@ -60,12 +71,11 @@ type Query {
   getSchoolByName(name: String!): School!
   getSchoolsByLa(name: String!): [School!]!
   getSchools: [School!]!
-
+  getRegisteredSchools: [School!]!
   getLocalAuthorities: [LocalAuthority!]!
   getJoinRequests: [JoinRequest!]!
-
   getSchoolProfile(name: String!): SchoolProfile!
-
+  getLocalAuthorityUser(email: String!): LocalAuthorityUser!
   getSignUpData(id: String!): SignUpData
 }
 
@@ -90,8 +100,12 @@ type Mutation {
     requestTime: Float!
     status: String!
     email: String!
-    schoolSignUpDetails: SchoolUser
-    charitySignUpDetails: CharitySignUpDetails
+    school: String
+    jobTitle: String
+    phone: String
+    charityName: String
+    charityAddress: String
+    aboutCharity: String
   ): Boolean!
 
   insertSignUpData(id: String!, email: String!, type: String!): Boolean!

@@ -10,9 +10,7 @@ export class SignUpDataRepository {
   private constructor() {
     this.client = new MongoClient(
       process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/',
-      {
-        auth: { username: 'user', password: 'user' },
-      }
+      { authMechanism: 'MONGODB-AWS', authSource: '$external' }
     );
     this.db = this.client.db('D2E');
     this.collection = this.db.collection<SignUpData>('SignUps');

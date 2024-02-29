@@ -32,7 +32,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
     const { fullDocument, ns } = event.detail;
 
     switch (ns.coll) {
-      case 'LocalAuthority': {
+      case 'LocalAuthorityUser': {
         const randomString = generate({ charset: 'alphabetic', length: 100 });
         const { email, firstName, name } = fullDocument as LocalAuthorityUser;
 
