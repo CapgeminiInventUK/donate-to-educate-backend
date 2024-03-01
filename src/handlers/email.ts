@@ -9,6 +9,7 @@ const sesClient = new SESv2Client({ region: 'eu-west-2' });
 interface MongoDBEvent {
   detail: {
     fullDocument: LocalAuthorityUser | JoinRequest | ItemQuery;
+    fullDocumentBeforeChange: JoinRequest;
     ns: { db: string; coll: string };
   };
 }
@@ -22,14 +23,14 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
 
   try {
     // TODO add validation here
-    if (!event?.detail?.fullDocument?.email) {
+    if (!event?.detail?.fullDocument?.email || !event?.detail?.fullDocumentBeforeChange?.email) {
       // eslint-disable-next-line no-console
       console.log('No email address provided');
       callback('No email address provided', null);
       return;
     }
 
-    const { fullDocument, ns } = event.detail;
+    const { fullDocument, ns, fullDocumentBeforeChange } = event.detail;
 
     switch (ns.coll) {
       case 'LocalAuthorityUser': {
@@ -48,16 +49,21 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
       }
 
       case 'JoinRequests': {
-        const { email, name, status } = fullDocument as JoinRequest;
+        if (fullDocument) {
+          const { email, name } = fullDocument as JoinRequest;
 
-        await sendEmail(
-          email,
-          status === 'APPROVED' ? 'join-request-approved' : 'join-request-declined',
-          {
+          await sendEmail(email, 'join-request-approved', {
             subject: 'Your Donate to Educate application results',
             name,
-          }
-        );
+          });
+        } else {
+          const { email, name } = fullDocumentBeforeChange;
+
+          await sendEmail(email, 'join-request-declined', {
+            subject: 'Your Donate to Educate application results',
+            name,
+          });
+        }
         break;
       }
       case 'ItemQueries': {
