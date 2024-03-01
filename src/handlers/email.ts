@@ -3,6 +3,7 @@ import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { ItemQuery, JoinRequest, LocalAuthorityUser } from '../../appsync';
 import { generate } from 'randomstring';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
+import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
 
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
 
@@ -15,6 +16,7 @@ interface MongoDBEvent {
 }
 
 const signUpDataRepository = SignUpDataRepository.getInstance();
+const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 
 export const handler: Handler = async (event: MongoDBEvent, context, callback): Promise<void> => {
   // eslint-disable-next-line no-console
@@ -31,12 +33,13 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
     }
 
     const { fullDocument, ns, fullDocumentBeforeChange } = event.detail;
+    const domainName = process.env.DOMAIN_NAME ?? '';
 
     switch (ns.coll) {
       case 'LocalAuthorityUser': {
         const randomString = generate({ charset: 'alphabetic', length: 100 });
         const { email, firstName, name } = fullDocument as LocalAuthorityUser;
-        const domainName = process.env.DOMAIN_NAME ?? '';
+
         await signUpDataRepository.insert({ id: randomString, email, type: 'localAuthority' });
 
         await sendEmail(email, 'create-account-la', {
@@ -50,18 +53,32 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
 
       case 'JoinRequests': {
         if (fullDocument) {
-          const { email, name } = fullDocument as JoinRequest;
+          const { email, name, localAuthority } = fullDocument as JoinRequest;
 
           await sendEmail(email, 'join-request-approved', {
             subject: 'Your Donate to Educate application results',
             name,
           });
+
+          const la = await localAuthorityUserRepository.getByName(localAuthority);
+
+          await sendEmail(la?.email ?? '', 'reviewed-requests-to-join', {
+            subject: "We've reviewed your requests to join",
+            reviewLink: `https://${domainName}/login`,
+          });
         } else {
-          const { email, name } = fullDocumentBeforeChange;
+          const { email, name, localAuthority } = fullDocumentBeforeChange;
 
           await sendEmail(email, 'join-request-declined', {
             subject: 'Your Donate to Educate application results',
             name,
+          });
+
+          const la = await localAuthorityUserRepository.getByName(localAuthority);
+
+          await sendEmail(la?.email ?? '', 'reviewed-requests-to-join', {
+            subject: "We've reviewed your requests to join",
+            reviewLink: `https://${domainName}/login`,
           });
         }
         break;

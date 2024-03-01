@@ -51,6 +51,10 @@ export class LocalAuthorityUserRepository {
     return await this.getOne({ email });
   }
 
+  public async getByName(name: string): Promise<WithId<LocalAuthorityUser> | undefined> {
+    return await this.getOne({ name });
+  }
+
   public async list(): Promise<WithId<LocalAuthorityUser>[]> {
     return await this.getByQuery({});
   }
