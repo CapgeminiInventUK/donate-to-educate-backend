@@ -63,8 +63,12 @@ type JoinRequest {
   requestTime: Float!
   status: String!
   email: String!
-  schoolSignUpDetails: SchoolUser
-  charitySignUpDetails: CharitySignUpDetails
+  school: String
+  jobTitle: String
+  phone: String
+  charityName: String
+  charityAddress: String
+  aboutCharity: String
 }
 
 type ItemQuery {
