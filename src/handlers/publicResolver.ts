@@ -105,7 +105,7 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getJoinRequests': {
-      const requests = await joinRequestsRepository.list();
+      const requests = await joinRequestsRepository.getNewJoinRequests();
       callback(null, requests);
       break;
     }
