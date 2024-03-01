@@ -79,6 +79,13 @@ export type LocalAuthorityProfile = {
   user: LocalAuthorityUser;
 };
 
+export type LocalAuthorityRegisterRequest = {
+  __typename?: 'LocalAuthorityRegisterRequest';
+  email: Scalars['String']['output'];
+  message: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+};
+
 export type LocalAuthorityUser = {
   __typename?: 'LocalAuthorityUser';
   department: Scalars['String']['output'];
@@ -95,6 +102,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   insertItemQuery: Scalars['Boolean']['output'];
   insertJoinRequest: Scalars['Boolean']['output'];
+  insertLocalAuthorityRegisterRequest: Scalars['Boolean']['output'];
   insertSignUpData: Scalars['Boolean']['output'];
   registerLocalAuthority: Scalars['Boolean']['output'];
   updateJoinRequest: Scalars['Boolean']['output'];
@@ -126,6 +134,13 @@ export type MutationInsertJoinRequestArgs = {
   school?: InputMaybe<Scalars['String']['input']>;
   status: Scalars['String']['input'];
   type: Scalars['String']['input'];
+};
+
+
+export type MutationInsertLocalAuthorityRegisterRequestArgs = {
+  email: Scalars['String']['input'];
+  message: Scalars['String']['input'];
+  name: Scalars['String']['input'];
 };
 
 
