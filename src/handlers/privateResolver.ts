@@ -78,7 +78,13 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'insertJoinRequest': {
-      const res = await joinRequestsRepository.insert(params as MutationInsertJoinRequestArgs);
+      const status = 'NEW';
+      const requestTime = Number(new Date());
+      const res = await joinRequestsRepository.insert({
+        ...params,
+        status,
+        requestTime,
+      } as MutationInsertJoinRequestArgs);
       callback(null, res);
       break;
     }
