@@ -23,7 +23,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
 
   try {
     // TODO add validation here
-    if (!event?.detail?.fullDocument?.email || !event?.detail?.fullDocumentBeforeChange?.email) {
+    if (!event?.detail?.fullDocument?.email && !event?.detail?.fullDocumentBeforeChange?.email) {
       // eslint-disable-next-line no-console
       console.log('No email address provided');
       callback('No email address provided', null);
