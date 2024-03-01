@@ -14,6 +14,14 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type CharityDetails = {
+  __typename?: 'CharityDetails';
+  about?: Maybe<Scalars['String']['output']>;
+  address: Scalars['String']['output'];
+  localAuthority: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+};
+
 export type CharityProfile = {
   __typename?: 'CharityProfile';
   donate?: Maybe<ProfileItems>;
@@ -21,11 +29,18 @@ export type CharityProfile = {
   request?: Maybe<ProfileItems>;
 };
 
+export type CharitySignUpDetails = {
+  __typename?: 'CharitySignUpDetails';
+  charityDetails: CharityDetails;
+  charityUser: CharityUser;
+};
+
 export type CharityUser = {
   __typename?: 'CharityUser';
-  firstName: Scalars['String']['output'];
-  lastName: Scalars['String']['output'];
+  email: Scalars['String']['output'];
+  jobTitle: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  phone: Scalars['String']['output'];
 };
 
 export type ItemQuery = {
@@ -41,10 +56,12 @@ export type ItemQuery = {
 
 export type JoinRequest = {
   __typename?: 'JoinRequest';
+  charitySignUpDetails?: Maybe<CharitySignUpDetails>;
   email: Scalars['String']['output'];
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
   requestTime: Scalars['Float']['output'];
+  schoolSignUpDetails?: Maybe<SchoolUser>;
   status: Scalars['String']['output'];
   type: Scalars['String']['output'];
 };
@@ -77,6 +94,7 @@ export type LocalAuthorityUser = {
 export type Mutation = {
   __typename?: 'Mutation';
   insertItemQuery: Scalars['Boolean']['output'];
+  insertJoinRequest: Scalars['Boolean']['output'];
   insertSignUpData: Scalars['Boolean']['output'];
   registerLocalAuthority: Scalars['Boolean']['output'];
   updateJoinRequest: Scalars['Boolean']['output'];
@@ -92,6 +110,22 @@ export type MutationInsertItemQueryArgs = {
   phone: Scalars['String']['input'];
   type: Scalars['String']['input'];
   who: Scalars['String']['input'];
+};
+
+
+export type MutationInsertJoinRequestArgs = {
+  aboutCharity?: InputMaybe<Scalars['String']['input']>;
+  charityAddress?: InputMaybe<Scalars['String']['input']>;
+  charityName?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['String']['input'];
+  jobTitle?: InputMaybe<Scalars['String']['input']>;
+  localAuthority: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  phone?: InputMaybe<Scalars['String']['input']>;
+  requestTime: Scalars['Float']['input'];
+  school?: InputMaybe<Scalars['String']['input']>;
+  status: Scalars['String']['input'];
+  type: Scalars['String']['input'];
 };
 
 
@@ -194,9 +228,11 @@ export type SchoolProfile = {
 
 export type SchoolUser = {
   __typename?: 'SchoolUser';
-  firstName: Scalars['String']['output'];
-  lastName: Scalars['String']['output'];
+  email: Scalars['String']['output'];
+  jobTitle: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  phone: Scalars['String']['output'];
+  school: Scalars['String']['output'];
 };
 
 export type SignUpData = {

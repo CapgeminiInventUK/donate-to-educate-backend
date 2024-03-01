@@ -29,17 +29,14 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
     }) => status === 'Open' && !type.includes('independent') && laName !== 'Does not apply'
   );
 
-  const localAuthorities = openSchools.reduce(
-    (acc, { 'LA (name)': name, 'LA (code)': code }) => {
-      const match = acc.find((la) => la.code === code);
-      if (!match) {
-        acc.push({ name, code });
-      }
+  const localAuthorities = openSchools.reduce((acc, { 'LA (name)': name, 'LA (code)': code }) => {
+    const match = acc.find((la) => la.code === code);
+    if (!match) {
+      acc.push({ name, code });
+    }
 
-      return acc;
-    },
-    [] as Record<string, string>[]
-  );
+    return acc;
+  }, [] as Record<string, string>[]);
 
   logger.info(`Total schools: ${openSchools.length}`);
   logger.info(`Total local authorities: ${localAuthorities.length}`);
