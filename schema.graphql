@@ -67,6 +67,16 @@ type JoinRequest {
   charitySignUpDetails: CharitySignUpDetails
 }
 
+type ItemQuery {
+  name: String!
+  type: String!
+  who: String!
+  email: String!
+  phone: String!
+  message: String!
+  connection: String
+}
+
 type Query {
   getSchoolByName(name: String!): School!
   getSchoolsByLa(name: String!): [School!]!
@@ -109,6 +119,15 @@ type Mutation {
   ): Boolean!
 
   insertSignUpData(id: String!, email: String!, type: String!): Boolean!
+  insertItemQuery(
+    name: String!
+    email: String!
+    type: String!
+    message: String!
+    who: String!
+    phone: String!
+    connection: String
+  ): Boolean!
 }
 
 schema {

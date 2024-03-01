@@ -43,6 +43,17 @@ export type CharityUser = {
   phone: Scalars['String']['output'];
 };
 
+export type ItemQuery = {
+  __typename?: 'ItemQuery';
+  connection?: Maybe<Scalars['String']['output']>;
+  email: Scalars['String']['output'];
+  message: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  phone: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+  who: Scalars['String']['output'];
+};
+
 export type JoinRequest = {
   __typename?: 'JoinRequest';
   charitySignUpDetails?: Maybe<CharitySignUpDetails>;
@@ -82,11 +93,23 @@ export type LocalAuthorityUser = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  insertItemQuery: Scalars['Boolean']['output'];
   insertJoinRequest: Scalars['Boolean']['output'];
   insertSignUpData: Scalars['Boolean']['output'];
   registerLocalAuthority: Scalars['Boolean']['output'];
   updateJoinRequest: Scalars['Boolean']['output'];
   updateSchoolProfile: Scalars['Boolean']['output'];
+};
+
+
+export type MutationInsertItemQueryArgs = {
+  connection?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['String']['input'];
+  message: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  phone: Scalars['String']['input'];
+  type: Scalars['String']['input'];
+  who: Scalars['String']['input'];
 };
 
 

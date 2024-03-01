@@ -1,6 +1,6 @@
 import { Handler } from 'aws-lambda';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
-import { JoinRequest, LocalAuthorityUser } from '../../appsync';
+import { ItemQuery, JoinRequest, LocalAuthorityUser } from '../../appsync';
 import { generate } from 'randomstring';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 
@@ -8,7 +8,7 @@ const sesClient = new SESv2Client({ region: 'eu-west-2' });
 
 interface MongoDBEvent {
   detail: {
-    fullDocument: LocalAuthorityUser | JoinRequest;
+    fullDocument: LocalAuthorityUser | JoinRequest | ItemQuery;
     ns: { db: string; coll: string };
   };
 }
@@ -35,14 +35,14 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
       case 'LocalAuthorityUser': {
         const randomString = generate({ charset: 'alphabetic', length: 100 });
         const { email, firstName, name } = fullDocument as LocalAuthorityUser;
-
+        const domainName = process.env.DOMAIN_NAME ?? '';
         await signUpDataRepository.insert({ id: randomString, email, type: 'localAuthority' });
 
         await sendEmail(email, 'create-account-la', {
           subject: 'Complete your sign up to Donate to Educate',
           name: firstName,
           la: name,
-          signUpLink: `https://www.donatetoeducate.org.uk/add-user?id=${randomString}`,
+          signUpLink: `https://${domainName}/add-user?id=${randomString}`,
         });
         break;
       }
@@ -58,6 +58,22 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
             name,
           }
         );
+        break;
+      }
+      case 'ItemQueries': {
+        const { email, name, type, message, who, phone, connection } = fullDocument as ItemQuery;
+        const { subject, intro } = getContentFromType(type);
+
+        await sendEmail('ryan.b.smith@capgemini.com', 'request', {
+          subject,
+          intro,
+          type: who,
+          email,
+          phone,
+          message,
+          name,
+          ...(connection && { connection }),
+        });
         break;
       }
       default:
@@ -91,4 +107,26 @@ const sendEmail = async (
 
   // eslint-disable-next-line no-console
   console.log(res);
+};
+
+const getContentFromType = (type: string): { subject: string; intro: string } => {
+  switch (type) {
+    case 'tick':
+      return {
+        subject: 'Product request',
+        intro: 'Someone has requested products from your school.',
+      };
+    case 'heart':
+      return {
+        subject: 'Donation request',
+        intro: 'Someone wants to donate products to your school.',
+      };
+    case 'plus':
+      return {
+        subject: 'Excess product assistance',
+        intro: 'Someone wants to help you with the extra stock at your school.',
+      };
+    default:
+      throw new Error(`Unknown type ${type}`);
+  }
 };
