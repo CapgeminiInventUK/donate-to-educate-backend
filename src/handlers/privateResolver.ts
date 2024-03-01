@@ -6,6 +6,7 @@ import {
   MutationInsertSignUpDataArgs,
   MutationInsertJoinRequestArgs,
   MutationInsertItemQueryArgs,
+  MutationInsertLocalAuthorityRegisterRequestArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
@@ -14,6 +15,7 @@ import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { ItemQueriesRepository } from '../repository/itemQueriesRepository';
+import { LocalAuthorityRegisterRequestsRepository } from '../repository/localAuthorityRegisterRequestsRepository';
 
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
 const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
@@ -21,13 +23,16 @@ const joinRequestsRepository = JoinRequestsRepository.getInstance();
 const schoolProfileRepository = SchoolProfileRepository.getInstance();
 const signUpDataRepository = SignUpDataRepository.getInstance();
 const itemQueriesRepository = ItemQueriesRepository.getInstance();
+const localAuthorityRegisterRequestsRepository =
+  LocalAuthorityRegisterRequestsRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
   | MutationRegisterLocalAuthorityArgs
   | MutationInsertSignUpDataArgs
   | MutationUpdateSchoolProfileArgs
   | MutationUpdateJoinRequestArgs
-  | MutationInsertItemQueryArgs,
+  | MutationInsertItemQueryArgs
+  | MutationInsertLocalAuthorityRegisterRequestArgs,
   boolean
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
@@ -89,6 +94,12 @@ export const handler: AppSyncResolverHandler<
         phone,
         ...(connection && { connection }),
       });
+      callback(null, res);
+      break;
+    }
+    case 'insertLocalAuthorityRegisterRequest': {
+      const { name, email, message } = params as MutationInsertLocalAuthorityRegisterRequestArgs;
+      const res = await localAuthorityRegisterRequestsRepository.insert({ name, email, message });
       callback(null, res);
       break;
     }
