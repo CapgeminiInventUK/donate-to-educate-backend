@@ -32,6 +32,7 @@ export const handler: AppSyncResolverHandler<
   | MutationUpdateSchoolProfileArgs
   | MutationUpdateJoinRequestArgs
   | MutationInsertItemQueryArgs
+  | MutationInsertJoinRequestArgs
   | MutationInsertLocalAuthorityRegisterRequestArgs,
   boolean
 > = async (event, context, callback) => {
@@ -81,10 +82,10 @@ export const handler: AppSyncResolverHandler<
       const status = 'NEW';
       const requestTime = Number(new Date());
       const res = await joinRequestsRepository.insert({
-        ...params,
+        ...(params as MutationInsertJoinRequestArgs),
         status,
         requestTime,
-      } as MutationInsertJoinRequestArgs);
+      });
       callback(null, res);
       break;
     }

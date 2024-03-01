@@ -134,9 +134,7 @@ export type MutationInsertJoinRequestArgs = {
   localAuthority: Scalars['String']['input'];
   name: Scalars['String']['input'];
   phone?: InputMaybe<Scalars['String']['input']>;
-  requestTime: Scalars['Float']['input'];
   school?: InputMaybe<Scalars['String']['input']>;
-  status: Scalars['String']['input'];
   type: Scalars['String']['input'];
 };
 

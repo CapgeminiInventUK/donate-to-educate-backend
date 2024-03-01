@@ -111,8 +111,6 @@ type Mutation {
     name: String!
     localAuthority: String!
     type: String!
-    requestTime: Float!
-    status: String!
     email: String!
     school: String
     jobTitle: String
