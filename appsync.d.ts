@@ -104,6 +104,7 @@ export type LocalAuthorityUser = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  deleteDeniedJoinRequest: Scalars['Boolean']['output'];
   insertItemQuery: Scalars['Boolean']['output'];
   insertJoinRequest: Scalars['Boolean']['output'];
   insertLocalAuthorityRegisterRequest: Scalars['Boolean']['output'];
@@ -111,6 +112,11 @@ export type Mutation = {
   registerLocalAuthority: Scalars['Boolean']['output'];
   updateJoinRequest: Scalars['Boolean']['output'];
   updateSchoolProfile: Scalars['Boolean']['output'];
+};
+
+
+export type MutationDeleteDeniedJoinRequestArgs = {
+  name: Scalars['String']['input'];
 };
 
 

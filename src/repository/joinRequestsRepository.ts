@@ -61,4 +61,8 @@ export class JoinRequestsRepository {
   public async insert(user: JoinRequest): Promise<boolean> {
     return (await this.collection.insertOne(user)).acknowledged;
   }
+
+  public async deleteDenied(name: string): Promise<boolean> {
+    return (await this.collection.deleteOne({ name, status: 'DENIED' })).acknowledged;
+  }
 }

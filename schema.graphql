@@ -132,6 +132,8 @@ type Mutation {
     phone: String!
     connection: String
   ): Boolean!
+
+  deleteDeniedJoinRequest(name: String!): Boolean!
 }
 
 schema {

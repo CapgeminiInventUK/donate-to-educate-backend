@@ -7,6 +7,7 @@ import {
   MutationInsertJoinRequestArgs,
   MutationInsertItemQueryArgs,
   MutationInsertLocalAuthorityRegisterRequestArgs,
+  MutationDeleteDeniedJoinRequestArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
@@ -33,6 +34,7 @@ export const handler: AppSyncResolverHandler<
   | MutationUpdateJoinRequestArgs
   | MutationInsertItemQueryArgs
   | MutationInsertJoinRequestArgs
+  | MutationDeleteDeniedJoinRequestArgs
   | MutationInsertLocalAuthorityRegisterRequestArgs,
   boolean
 > = async (event, context, callback) => {
@@ -107,6 +109,12 @@ export const handler: AppSyncResolverHandler<
     case 'insertLocalAuthorityRegisterRequest': {
       const { name, email, message } = params as MutationInsertLocalAuthorityRegisterRequestArgs;
       const res = await localAuthorityRegisterRequestsRepository.insert({ name, email, message });
+      callback(null, res);
+      break;
+    }
+    case 'deleteDeniedJoinRequest': {
+      const { name } = params as MutationDeleteDeniedJoinRequestArgs;
+      const res = await joinRequestsRepository.deleteDenied(name);
       callback(null, res);
       break;
     }
