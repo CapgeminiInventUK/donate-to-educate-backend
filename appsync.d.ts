@@ -56,12 +56,16 @@ export type ItemQuery = {
 
 export type JoinRequest = {
   __typename?: 'JoinRequest';
-  charitySignUpDetails?: Maybe<CharitySignUpDetails>;
+  aboutCharity?: Maybe<Scalars['String']['output']>;
+  charityAddress?: Maybe<Scalars['String']['output']>;
+  charityName?: Maybe<Scalars['String']['output']>;
   email: Scalars['String']['output'];
+  jobTitle?: Maybe<Scalars['String']['output']>;
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  phone?: Maybe<Scalars['String']['output']>;
   requestTime: Scalars['Float']['output'];
-  schoolSignUpDetails?: Maybe<SchoolUser>;
+  school?: Maybe<Scalars['String']['output']>;
   status: Scalars['String']['output'];
   type: Scalars['String']['output'];
 };
