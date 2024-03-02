@@ -87,7 +87,6 @@ export const handler: AppSyncResolverHandler<
     }
     case 'getSchools': {
       const schools = await schoolDataRepository.list(projectedFields);
-      logger.info(schools);
       const localAuthorities = await localAuthorityDataRepository.list();
       const filteredLas = localAuthorities.map((la) =>
         removeFields<LocalAuthority>(info.selectionSetList, la)
