@@ -52,17 +52,6 @@ jobs:
         run: aws s3 cp --content-type text/plain schema.graphql s3://d2e-lambda-s3-bucket
 
       - name: Trigger Terraform
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: donate-to-educate-terraform,
-              workflow_id: 'terraform.yml',
-              ref: 'main',
-            })
-
-      - name: Trigger Terraform
         run: |
           curl -L \
           -X POST \
