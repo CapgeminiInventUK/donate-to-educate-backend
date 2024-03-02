@@ -52,13 +52,8 @@ jobs:
         run: aws s3 cp --content-type text/plain schema.graphql s3://d2e-lambda-s3-bucket
 
       - name: Trigger Terraform
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.PAT }} # Fine-grained GitHub PAT that was saved as repository secret
-          script: |
-            await github.rest.actions.createworkflowDispatch({
-                owner: 'CapgeminiInventUK',
-                repo: 'donate-to-educate-terraform',
-                workflow_id: 'terraform.yml',
-                ref: 'main'
-            })
+        run: |
+          curl -H "Accept: application/vnd.github.everest-preview+json" \
+          -H "Authorization: token ${{ secrets.PAT }}" \
+          --request POST \
+          --data '{"event_type": "be_workflow"}' https://api.github.com/repos/donate-to-educate-terraform/dispatches
