@@ -23,8 +23,13 @@ export class SchoolDataRepository {
     return this.instance;
   }
 
-  private async getByQuery(query: Filter<School>): Promise<WithId<School>[]> {
-    const cursor = this.collection.find(query);
+  private async getByQuery(
+    query: Filter<School>,
+    projectedFields?: Record<string, 0 | 1>
+  ): Promise<WithId<School>[]> {
+    const cursor = projectedFields
+      ? this.collection.find(query).project<WithId<School>>(projectedFields)
+      : this.collection.find(query);
 
     if (!(await cursor.hasNext())) {
       return [];
@@ -42,8 +47,8 @@ export class SchoolDataRepository {
     return result;
   }
 
-  public async list(): Promise<WithId<School>[]> {
-    return await this.getByQuery({});
+  public async list(projectedFields: Record<string, 0 | 1>): Promise<WithId<School>[]> {
+    return await this.getByQuery({}, projectedFields);
   }
 
   public async getByLa(localAuthority: string): Promise<WithId<School>[]> {

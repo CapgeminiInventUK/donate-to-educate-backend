@@ -48,6 +48,9 @@ export const handler: AppSyncResolverHandler<
   const { arguments: params, info } = event;
   logger.info(`${JSON.stringify(params)}`);
 
+  const projectedFields = info.selectionSetList.reduce((acc, item) => ({ ...acc, [item]: 1 }), {});
+  logger.info(`Projected fields ${JSON.stringify(projectedFields)}`);
+
   switch (info.fieldName) {
     case 'getSchoolByName': {
       const { name } = params as QueryGetSchoolByNameArgs;
@@ -80,15 +83,12 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getSchools': {
-      const schools = await schoolDataRepository.list();
-      const filteredSchools = schools.map((school) =>
-        removeFields<School>(info.selectionSetList, school)
-      );
+      const schools = await schoolDataRepository.list(projectedFields);
       const localAuthorities = await localAuthorityDataRepository.list();
       const filteredLas = localAuthorities.map((la) =>
         removeFields<LocalAuthority>(info.selectionSetList, la)
       );
-      const mappedSchools = filteredSchools.map((school) => {
+      const mappedSchools = schools.map((school) => {
         const { localAuthority } = school;
         const isLocalAuthorityRegistered = filteredLas.find(
           ({ name }) => name === localAuthority
