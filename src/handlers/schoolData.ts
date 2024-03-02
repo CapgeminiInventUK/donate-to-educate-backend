@@ -61,6 +61,13 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
           Postcode: postcode,
           Easting: easting,
           Northing: northing,
+          TelephoneNum: phone,
+          Street: street,
+          Locality: locality,
+          Address3: address3,
+          Town: town,
+          'County (name)': county,
+          SchoolWebsite: website,
         }
       ) => {
         const match = currentSchools.find((school) => school.urn === urn);
@@ -77,6 +84,13 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
           northing,
           latitude,
           longitude,
+          phone,
+          street,
+          locality,
+          address3,
+          town,
+          county,
+          website,
         };
 
         if (!match || !checkIfObjectValuesMatch(Object.keys(entry), match, entry)) {
