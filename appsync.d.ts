@@ -234,12 +234,19 @@ export type QueryGetSignUpDataArgs = {
 
 export type School = {
   __typename?: 'School';
+  address3?: Maybe<Scalars['String']['output']>;
+  county?: Maybe<Scalars['String']['output']>;
   isLocalAuthorityRegistered?: Maybe<Scalars['Boolean']['output']>;
   localAuthority: Scalars['String']['output'];
+  locality?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
+  phone?: Maybe<Scalars['String']['output']>;
   postcode?: Maybe<Scalars['String']['output']>;
   registered: Scalars['Boolean']['output'];
+  street?: Maybe<Scalars['String']['output']>;
+  town?: Maybe<Scalars['String']['output']>;
   urn: Scalars['ID']['output'];
+  website?: Maybe<Scalars['String']['output']>;
 };
 
 export type SchoolProfile = {

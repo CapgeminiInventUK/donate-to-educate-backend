@@ -11,6 +11,13 @@ type School {
   postcode: String
   registered: Boolean!
   isLocalAuthorityRegistered: Boolean
+  address3: String
+  county: String
+  locality: String
+  street: String
+  phone: String
+  town: String
+  website: String
 }
 
 type ProfileItems {
