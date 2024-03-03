@@ -1,6 +1,6 @@
 import { downloadSchoolDataFileLocally } from '../shared/puppeteer';
 import { loadCsvDataFromZip } from '../shared/file';
-import { checkIfObjectValuesMatch } from '../shared/object';
+import { checkIfObjectValuesMatch, removePropertiesFromObject } from '../shared/object';
 import { logger } from '../shared/logger';
 import { convertEastingNorthingtoLatLng } from '../shared/location';
 import os from 'os';
@@ -94,11 +94,18 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
         };
 
         if (!match || !checkIfObjectValuesMatch(Object.keys(entry), match, entry)) {
+          const updatedEntry = {
+            ...removePropertiesFromObject(['latitude', 'longitude'], entry),
+            location: {
+              type: 'Point',
+              coordinates: [longitude, latitude],
+            },
+          };
           acc.push({
             updateOne: {
               filter: { urn },
               update: {
-                $set: entry,
+                $set: updatedEntry,
                 $setOnInsert: { registered: false },
               },
               upsert: true,
