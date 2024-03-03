@@ -129,6 +129,14 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
+    case 'getSchoolsNearby': {
+      const ten_miles = 16000;
+      const longitude = 1.14822;
+      const latitude = 52.056736;
+      const res = await schoolDataRepository.getSchoolsNearby(longitude, latitude, ten_miles);
+      callback(null, res);
+      break;
+    }
     default: {
       callback(`Unexpected type ${info.fieldName}`);
       throw new Error(`Unexpected type ${info.fieldName}`);

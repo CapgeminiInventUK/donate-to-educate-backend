@@ -18,6 +18,7 @@ type School {
   phone: String
   town: String
   website: String
+  distance: String
 }
 
 type ProfileItems {
@@ -98,6 +99,7 @@ type Query {
   getSchoolProfile(name: String!): SchoolProfile!
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
   getSignUpData(id: String!): SignUpData
+  getSchoolsNearby: [School]
 }
 
 type Mutation {

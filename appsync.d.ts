@@ -204,6 +204,7 @@ export type Query = {
   getSchoolProfile: SchoolProfile;
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
+  getSchoolsNearby?: Maybe<Array<Maybe<School>>>;
   getSignUpData?: Maybe<SignUpData>;
 };
 
@@ -236,6 +237,7 @@ export type School = {
   __typename?: 'School';
   address3?: Maybe<Scalars['String']['output']>;
   county?: Maybe<Scalars['String']['output']>;
+  distance?: Maybe<Scalars['String']['output']>;
   isLocalAuthorityRegistered?: Maybe<Scalars['Boolean']['output']>;
   localAuthority: Scalars['String']['output'];
   locality?: Maybe<Scalars['String']['output']>;

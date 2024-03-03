@@ -62,4 +62,25 @@ export class SchoolDataRepository {
   public async getRegistered(): Promise<WithId<School>[]> {
     return await this.getByQuery({ registered: true });
   }
+
+  public async getSchoolsNearby(
+    longitude: number,
+    latitude: number,
+    maxDistance: number
+  ): Promise<School[]> {
+    const res = this.collection.aggregate<School>([
+      {
+        $geoNear: {
+          near: {
+            type: 'Point',
+            coordinates: [longitude, latitude],
+          },
+          distanceField: 'distance',
+          maxDistance,
+        },
+      },
+    ]);
+
+    return await res.toArray();
+  }
 }
