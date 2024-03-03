@@ -78,8 +78,6 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
           name,
           localAuthority,
           postcode,
-          easting,
-          northing,
           latitude,
           longitude,
           phone,
