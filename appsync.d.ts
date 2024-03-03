@@ -229,6 +229,12 @@ export type QueryGetSchoolsByLaArgs = {
 };
 
 
+export type QueryGetSchoolsNearbyArgs = {
+  distance: Scalars['Float']['input'];
+  postcode: Scalars['String']['input'];
+};
+
+
 export type QueryGetSignUpDataArgs = {
   id: Scalars['String']['input'];
 };

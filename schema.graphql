@@ -99,7 +99,7 @@ type Query {
   getSchoolProfile(name: String!): SchoolProfile!
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
   getSignUpData(id: String!): SignUpData
-  getSchoolsNearby: [School]
+  getSchoolsNearby(postcode: String!, distance: Float!): [School]
 }
 
 type Mutation {

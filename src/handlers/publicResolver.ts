@@ -11,6 +11,7 @@ import {
   QueryGetLocalAuthorityUserArgs,
   SignUpData,
   LocalAuthorityUser,
+  QueryGetSchoolsNearbyArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -20,6 +21,7 @@ import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { removeFields } from '../shared/graphql';
+import { convertPostcodeToLatLng } from '../shared/postcode';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
@@ -32,6 +34,7 @@ export const handler: AppSyncResolverHandler<
   | QueryGetSchoolByNameArgs
   | QueryGetSchoolsByLaArgs
   | QueryGetSignUpDataArgs
+  | QueryGetSchoolsNearbyArgs
   | QueryGetLocalAuthorityUserArgs,
   | School
   | School[]
@@ -130,10 +133,11 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getSchoolsNearby': {
-      const ten_miles = 16000;
-      const longitude = 1.14822;
-      const latitude = 52.056736;
-      const res = await schoolDataRepository.getSchoolsNearby(longitude, latitude, ten_miles);
+      const { postcode, distance } = params as QueryGetSchoolsNearbyArgs;
+
+      const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
+
+      const res = await schoolDataRepository.getSchoolsNearby(longitude, latitude, distance);
       callback(null, res);
       break;
     }
