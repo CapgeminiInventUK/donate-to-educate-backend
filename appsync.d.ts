@@ -204,7 +204,7 @@ export type Query = {
   getSchoolProfile: SchoolProfile;
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
-  getSchoolsNearby?: Maybe<Array<Maybe<School>>>;
+  getSchoolsNearby: Array<School>;
   getSignUpData?: Maybe<SignUpData>;
 };
 
