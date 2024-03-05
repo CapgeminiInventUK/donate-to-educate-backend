@@ -2,6 +2,7 @@ type SignUpData {
   id: String!
   email: String!
   type: String!
+  name: String!
 }
 
 type School {
@@ -131,7 +132,7 @@ type Mutation {
 
   insertLocalAuthorityRegisterRequest(name: String!, email: String!, message: String!): Boolean!
 
-  insertSignUpData(id: String!, email: String!, type: String!): Boolean!
+  insertSignUpData(id: String!, email: String!, type: String!, name: String!): Boolean!
   insertItemQuery(
     name: String!
     email: String!

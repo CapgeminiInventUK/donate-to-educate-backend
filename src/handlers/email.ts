@@ -40,7 +40,12 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
         const randomString = generate({ charset: 'alphabetic', length: 100 });
         const { email, firstName, name } = fullDocument as LocalAuthorityUser;
 
-        await signUpDataRepository.insert({ id: randomString, email, type: 'localAuthority' });
+        await signUpDataRepository.insert({
+          id: randomString,
+          email,
+          type: 'localAuthority',
+          name,
+        });
 
         await sendEmail(email, 'create-account-la', {
           subject: 'Complete your sign up to Donate to Educate',

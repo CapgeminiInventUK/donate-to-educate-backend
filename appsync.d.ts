@@ -155,6 +155,7 @@ export type MutationInsertLocalAuthorityRegisterRequestArgs = {
 export type MutationInsertSignUpDataArgs = {
   email: Scalars['String']['input'];
   id: Scalars['String']['input'];
+  name: Scalars['String']['input'];
   type: Scalars['String']['input'];
 };
 
@@ -277,5 +278,6 @@ export type SignUpData = {
   __typename?: 'SignUpData';
   email: Scalars['String']['output'];
   id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
   type: Scalars['String']['output'];
 };
