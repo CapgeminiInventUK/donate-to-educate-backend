@@ -45,6 +45,7 @@ export const handler: AppSyncResolverHandler<
   | SignUpData
   | LocalAuthorityUser
 > = async (event, context, callback) => {
+  logger.info(JSON.stringify(context));
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
 
