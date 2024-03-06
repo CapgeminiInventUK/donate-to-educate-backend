@@ -96,7 +96,7 @@ type Query {
   getSchools: [School!]!
   getRegisteredSchools: [School!]!
   getLocalAuthorities: [LocalAuthority!]!
-  getJoinRequests: [JoinRequest!]!
+  getJoinRequests: [JoinRequest!]! @aws_auth
   getSchoolProfile(name: String!): SchoolProfile!
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
   getSignUpData(id: String!): SignUpData
