@@ -69,8 +69,12 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'updateSchoolProfile': {
-      const { name, key, value } = params as MutationUpdateSchoolProfileArgs;
-      const res = await schoolProfileRepository.updateKey(name, key, value);
+      const { key, value } = params as MutationUpdateSchoolProfileArgs;
+      const { institution, institutionId } = info.variables as {
+        institution: string;
+        institutionId: string;
+      };
+      const res = await schoolProfileRepository.updateKey(institution, institutionId, key, value);
       callback(null, res);
       break;
     }

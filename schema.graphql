@@ -96,7 +96,7 @@ type Query {
   getSchools: [School!]!
   getRegisteredSchools: [School!]!
   getLocalAuthorities: [LocalAuthority!]!
-  getJoinRequests: [JoinRequest!]! @aws_cognito_user_pools
+  getJoinRequests: [JoinRequest!]!
   getSchoolProfile(name: String!): SchoolProfile!
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
   getSignUpData(id: String!): SignUpData
@@ -115,7 +115,7 @@ type Mutation {
     notes: String
   ): Boolean!
 
-  updateSchoolProfile(name: String!, key: String!, value: String!): Boolean!
+  updateSchoolProfile(key: String!, value: String!): Boolean! @aws_cognito_user_pools
   updateJoinRequest(localAuthority: String!, name: String!, status: String!): Boolean!
   insertJoinRequest(
     name: String!

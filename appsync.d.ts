@@ -181,7 +181,6 @@ export type MutationUpdateJoinRequestArgs = {
 
 export type MutationUpdateSchoolProfileArgs = {
   key: Scalars['String']['input'];
-  name: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
 
