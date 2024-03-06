@@ -122,7 +122,12 @@ type Mutation {
     aboutCharity: String
   ): Boolean!
 
-  insertLocalAuthorityRegisterRequest(name: String!, email: String!, message: String!): Boolean!
+  insertLocalAuthorityRegisterRequest(
+    name: String!
+    localAuthority: String!
+    email: String!
+    message: String!
+  ): Boolean!
 
   insertSignUpData(id: String!, email: String!, type: String!): Boolean!
   insertItemQuery(
@@ -172,4 +177,5 @@ type LocalAuthorityRegisterRequest {
   name: String!
   email: String!
   message: String!
+  localAuthority: String!
 }
