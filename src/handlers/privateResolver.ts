@@ -46,7 +46,7 @@ export const handler: AppSyncResolverHandler<
 
   switch (info.fieldName) {
     case 'registerLocalAuthority': {
-      const { name, firstName, lastName, email, phone, department, jobTitle, notes } =
+      const { name, firstName, lastName, email, phone, department, jobTitle, notes, nameId } =
         params as MutationRegisterLocalAuthorityArgs;
       const register = await localAuthorityDataRepository.setToRegistered(name);
       const insert = await localAuthorityUserRepository.insert({
@@ -58,6 +58,7 @@ export const handler: AppSyncResolverHandler<
         department,
         jobTitle,
         notes,
+        nameId,
       });
       callback(null, register && insert);
       break;
@@ -79,8 +80,8 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'insertSignUpData': {
-      const { id, email, type, name } = params as MutationInsertSignUpDataArgs;
-      const res = await signUpDataRepository.insert({ id, email, type, name });
+      const { id, email, type, name, nameId } = params as MutationInsertSignUpDataArgs;
+      const res = await signUpDataRepository.insert({ id, email, type, name, nameId });
       callback(null, res);
       break;
     }

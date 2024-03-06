@@ -98,6 +98,7 @@ export type LocalAuthorityUser = {
   jobTitle: Scalars['String']['output'];
   lastName: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  nameId: Scalars['String']['output'];
   notes?: Maybe<Scalars['String']['output']>;
   phone: Scalars['String']['output'];
 };
@@ -156,6 +157,7 @@ export type MutationInsertSignUpDataArgs = {
   email: Scalars['String']['input'];
   id: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  nameId: Scalars['String']['input'];
   type: Scalars['String']['input'];
 };
 
@@ -167,6 +169,7 @@ export type MutationRegisterLocalAuthorityArgs = {
   jobTitle: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  nameId: Scalars['String']['input'];
   notes?: InputMaybe<Scalars['String']['input']>;
   phone: Scalars['String']['input'];
 };
@@ -278,5 +281,6 @@ export type SignUpData = {
   email: Scalars['String']['output'];
   id: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  nameId: Scalars['String']['output'];
   type: Scalars['String']['output'];
 };

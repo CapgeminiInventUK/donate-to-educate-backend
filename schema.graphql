@@ -3,6 +3,7 @@ type SignUpData {
   email: String!
   type: String!
   name: String!
+  nameId: String!
 }
 
 type School {
@@ -52,6 +53,7 @@ type LocalAuthorityUser {
   email: String!
   phone: String!
   notes: String
+  nameId: String!
 }
 
 type LocalAuthority {
@@ -113,6 +115,7 @@ type Mutation {
     email: String!
     phone: String!
     notes: String
+    nameId: String!
   ): Boolean!
 
   updateSchoolProfile(key: String!, value: String!): Boolean! @aws_cognito_user_pools
@@ -132,7 +135,13 @@ type Mutation {
 
   insertLocalAuthorityRegisterRequest(name: String!, email: String!, message: String!): Boolean!
 
-  insertSignUpData(id: String!, email: String!, type: String!, name: String!): Boolean!
+  insertSignUpData(
+    id: String!
+    email: String!
+    type: String!
+    name: String!
+    nameId: String!
+  ): Boolean!
   insertItemQuery(
     name: String!
     email: String!
