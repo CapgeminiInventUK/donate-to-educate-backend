@@ -7,6 +7,7 @@ import {
   MutationInsertJoinRequestArgs,
   MutationInsertItemQueryArgs,
   MutationInsertLocalAuthorityRegisterRequestArgs,
+  MutationDeleteDeniedJoinRequestArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
@@ -32,6 +33,8 @@ export const handler: AppSyncResolverHandler<
   | MutationUpdateSchoolProfileArgs
   | MutationUpdateJoinRequestArgs
   | MutationInsertItemQueryArgs
+  | MutationInsertJoinRequestArgs
+  | MutationDeleteDeniedJoinRequestArgs
   | MutationInsertLocalAuthorityRegisterRequestArgs,
   boolean
 > = async (event, context, callback) => {
@@ -43,7 +46,7 @@ export const handler: AppSyncResolverHandler<
 
   switch (info.fieldName) {
     case 'registerLocalAuthority': {
-      const { name, firstName, lastName, email, phone, department, jobTitle, notes } =
+      const { name, firstName, lastName, email, phone, department, jobTitle, notes, nameId } =
         params as MutationRegisterLocalAuthorityArgs;
       const register = await localAuthorityDataRepository.setToRegistered(name);
       const insert = await localAuthorityUserRepository.insert({
@@ -55,6 +58,7 @@ export const handler: AppSyncResolverHandler<
         department,
         jobTitle,
         notes,
+        nameId,
       });
       callback(null, register && insert);
       break;
@@ -66,14 +70,18 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'updateSchoolProfile': {
-      const { name, key, value } = params as MutationUpdateSchoolProfileArgs;
-      const res = await schoolProfileRepository.updateKey(name, key, value);
+      const { key, value } = params as MutationUpdateSchoolProfileArgs;
+      const { institution, institutionId } = info.variables as {
+        institution: string;
+        institutionId: string;
+      };
+      const res = await schoolProfileRepository.updateKey(institution, institutionId, key, value);
       callback(null, res);
       break;
     }
     case 'insertSignUpData': {
-      const { id, email, type } = params as MutationInsertSignUpDataArgs;
-      const res = await signUpDataRepository.insert({ id, email, type });
+      const { id, email, type, name, nameId } = params as MutationInsertSignUpDataArgs;
+      const res = await signUpDataRepository.insert({ id, email, type, name, nameId });
       callback(null, res);
       break;
     }
@@ -81,10 +89,10 @@ export const handler: AppSyncResolverHandler<
       const status = 'NEW';
       const requestTime = Number(new Date());
       const res = await joinRequestsRepository.insert({
-        ...params,
+        ...(params as MutationInsertJoinRequestArgs),
         status,
         requestTime,
-      } as MutationInsertJoinRequestArgs);
+      });
       callback(null, res);
       break;
     }
@@ -112,6 +120,12 @@ export const handler: AppSyncResolverHandler<
         email,
         message,
       });
+      callback(null, res);
+      break;
+    }
+    case 'deleteDeniedJoinRequest': {
+      const { name } = params as MutationDeleteDeniedJoinRequestArgs;
+      const res = await joinRequestsRepository.deleteDenied(name);
       callback(null, res);
       break;
     }

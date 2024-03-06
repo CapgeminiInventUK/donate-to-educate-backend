@@ -1,6 +1,6 @@
 import { downloadSchoolDataFileLocally } from '../shared/puppeteer';
 import { loadCsvDataFromZip } from '../shared/file';
-import { checkIfObjectValuesMatch } from '../shared/object';
+import { checkIfObjectValuesMatch, removePropertiesFromObject } from '../shared/object';
 import { logger } from '../shared/logger';
 import { convertEastingNorthingtoLatLng } from '../shared/location';
 import os from 'os';
@@ -29,14 +29,17 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
     }) => status === 'Open' && !type.includes('independent') && laName !== 'Does not apply'
   );
 
-  const localAuthorities = openSchools.reduce((acc, { 'LA (name)': name, 'LA (code)': code }) => {
-    const match = acc.find((la) => la.code === code);
-    if (!match) {
-      acc.push({ name, code });
-    }
+  const localAuthorities = openSchools.reduce(
+    (acc, { 'LA (name)': name, 'LA (code)': code }) => {
+      const match = acc.find((la) => la.code === code);
+      if (!match) {
+        acc.push({ name, code });
+      }
 
-    return acc;
-  }, [] as Record<string, string>[]);
+      return acc;
+    },
+    [] as Record<string, string>[]
+  );
 
   logger.info(`Total schools: ${openSchools.length}`);
   logger.info(`Total local authorities: ${localAuthorities.length}`);
@@ -58,11 +61,16 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
           Postcode: postcode,
           Easting: easting,
           Northing: northing,
+          TelephoneNum: phone,
+          Street: street,
+          Locality: locality,
+          Address3: address3,
+          Town: town,
+          'County (name)': county,
+          SchoolWebsite: website,
         }
       ) => {
         const match = currentSchools.find((school) => school.urn === urn);
-        logger.info(`${easting} ${northing}`);
-
         const [longitude, latitude] = convertEastingNorthingtoLatLng(easting, northing);
 
         const entry = {
@@ -70,18 +78,30 @@ export const lambdaHandler = async (): Promise<{ statusCode: number }> => {
           name,
           localAuthority,
           postcode,
-          easting,
-          northing,
           latitude,
           longitude,
+          phone,
+          street,
+          locality,
+          address3,
+          town,
+          county,
+          website,
         };
 
         if (!match || !checkIfObjectValuesMatch(Object.keys(entry), match, entry)) {
+          const updatedEntry = {
+            ...removePropertiesFromObject(['latitude', 'longitude'], entry),
+            location: {
+              type: 'Point',
+              coordinates: [longitude, latitude],
+            },
+          };
           acc.push({
             updateOne: {
               filter: { urn },
               update: {
-                $set: entry,
+                $set: updatedEntry,
                 $setOnInsert: { registered: false },
               },
               upsert: true,

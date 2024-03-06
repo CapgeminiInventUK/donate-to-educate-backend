@@ -11,6 +11,7 @@ import {
   QueryGetLocalAuthorityUserArgs,
   SignUpData,
   LocalAuthorityUser,
+  QueryGetSchoolsNearbyArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -20,6 +21,7 @@ import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { removeFields } from '../shared/graphql';
+import { convertPostcodeToLatLng } from '../shared/postcode';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
@@ -32,6 +34,7 @@ export const handler: AppSyncResolverHandler<
   | QueryGetSchoolByNameArgs
   | QueryGetSchoolsByLaArgs
   | QueryGetSignUpDataArgs
+  | QueryGetSchoolsNearbyArgs
   | QueryGetLocalAuthorityUserArgs,
   | School
   | School[]
@@ -47,6 +50,12 @@ export const handler: AppSyncResolverHandler<
 
   const { arguments: params, info } = event;
   logger.info(`${JSON.stringify(params)}`);
+
+  const projectedFields = info.selectionSetList
+    .replace(/\[|\]/gm, '')
+    .split(', ')
+    .reduce((acc, item) => ({ ...acc, [item]: 1 }), {});
+  logger.info(`Projected fields ${JSON.stringify(projectedFields)}`);
 
   switch (info.fieldName) {
     case 'getSchoolByName': {
@@ -80,15 +89,12 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getSchools': {
-      const schools = await schoolDataRepository.list();
-      const filteredSchools = schools.map((school) =>
-        removeFields<School>(info.selectionSetList, school)
-      );
+      const schools = await schoolDataRepository.list(projectedFields);
       const localAuthorities = await localAuthorityDataRepository.list();
       const filteredLas = localAuthorities.map((la) =>
         removeFields<LocalAuthority>(info.selectionSetList, la)
       );
-      const mappedSchools = filteredSchools.map((school) => {
+      const mappedSchools = schools.map((school) => {
         const { localAuthority } = school;
         const isLocalAuthorityRegistered = filteredLas.find(
           ({ name }) => name === localAuthority
@@ -105,7 +111,7 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getJoinRequests': {
-      const requests = await joinRequestsRepository.list();
+      const requests = await joinRequestsRepository.getNewJoinRequests();
       callback(null, requests);
       break;
     }
@@ -123,6 +129,15 @@ export const handler: AppSyncResolverHandler<
     }
     case 'getRegisteredSchools': {
       const res = await schoolDataRepository.getRegistered();
+      callback(null, res);
+      break;
+    }
+    case 'getSchoolsNearby': {
+      const { postcode, distance } = params as QueryGetSchoolsNearbyArgs;
+
+      const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
+
+      const res = await schoolDataRepository.getSchoolsNearby(longitude, latitude, distance);
       callback(null, res);
       break;
     }

@@ -99,12 +99,14 @@ export type LocalAuthorityUser = {
   jobTitle: Scalars['String']['output'];
   lastName: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  nameId: Scalars['String']['output'];
   notes?: Maybe<Scalars['String']['output']>;
   phone: Scalars['String']['output'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  deleteDeniedJoinRequest: Scalars['Boolean']['output'];
   insertItemQuery: Scalars['Boolean']['output'];
   insertJoinRequest: Scalars['Boolean']['output'];
   insertLocalAuthorityRegisterRequest: Scalars['Boolean']['output'];
@@ -112,6 +114,11 @@ export type Mutation = {
   registerLocalAuthority: Scalars['Boolean']['output'];
   updateJoinRequest: Scalars['Boolean']['output'];
   updateSchoolProfile: Scalars['Boolean']['output'];
+};
+
+
+export type MutationDeleteDeniedJoinRequestArgs = {
+  name: Scalars['String']['input'];
 };
 
 
@@ -135,9 +142,7 @@ export type MutationInsertJoinRequestArgs = {
   localAuthority: Scalars['String']['input'];
   name: Scalars['String']['input'];
   phone?: InputMaybe<Scalars['String']['input']>;
-  requestTime: Scalars['Float']['input'];
   school?: InputMaybe<Scalars['String']['input']>;
-  status: Scalars['String']['input'];
   type: Scalars['String']['input'];
 };
 
@@ -153,6 +158,8 @@ export type MutationInsertLocalAuthorityRegisterRequestArgs = {
 export type MutationInsertSignUpDataArgs = {
   email: Scalars['String']['input'];
   id: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  nameId: Scalars['String']['input'];
   type: Scalars['String']['input'];
 };
 
@@ -164,6 +171,7 @@ export type MutationRegisterLocalAuthorityArgs = {
   jobTitle: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  nameId: Scalars['String']['input'];
   notes?: InputMaybe<Scalars['String']['input']>;
   phone: Scalars['String']['input'];
 };
@@ -178,7 +186,6 @@ export type MutationUpdateJoinRequestArgs = {
 
 export type MutationUpdateSchoolProfileArgs = {
   key: Scalars['String']['input'];
-  name: Scalars['String']['input'];
   value: Scalars['String']['input'];
 };
 
@@ -202,6 +209,7 @@ export type Query = {
   getSchoolProfile: SchoolProfile;
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
+  getSchoolsNearby: Array<School>;
   getSignUpData?: Maybe<SignUpData>;
 };
 
@@ -226,18 +234,32 @@ export type QueryGetSchoolsByLaArgs = {
 };
 
 
+export type QueryGetSchoolsNearbyArgs = {
+  distance: Scalars['Float']['input'];
+  postcode: Scalars['String']['input'];
+};
+
+
 export type QueryGetSignUpDataArgs = {
   id: Scalars['String']['input'];
 };
 
 export type School = {
   __typename?: 'School';
+  address3?: Maybe<Scalars['String']['output']>;
+  county?: Maybe<Scalars['String']['output']>;
+  distance?: Maybe<Scalars['String']['output']>;
   isLocalAuthorityRegistered?: Maybe<Scalars['Boolean']['output']>;
   localAuthority: Scalars['String']['output'];
+  locality?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
+  phone?: Maybe<Scalars['String']['output']>;
   postcode?: Maybe<Scalars['String']['output']>;
   registered: Scalars['Boolean']['output'];
+  street?: Maybe<Scalars['String']['output']>;
+  town?: Maybe<Scalars['String']['output']>;
   urn: Scalars['ID']['output'];
+  website?: Maybe<Scalars['String']['output']>;
 };
 
 export type SchoolProfile = {
@@ -260,5 +282,7 @@ export type SignUpData = {
   __typename?: 'SignUpData';
   email: Scalars['String']['output'];
   id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  nameId: Scalars['String']['output'];
   type: Scalars['String']['output'];
 };

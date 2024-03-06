@@ -3,17 +3,20 @@ import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { ItemQuery, JoinRequest, LocalAuthorityUser } from '../../appsync';
 import { generate } from 'randomstring';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
+import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
 
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
 
 interface MongoDBEvent {
   detail: {
     fullDocument: LocalAuthorityUser | JoinRequest | ItemQuery;
+    fullDocumentBeforeChange: JoinRequest;
     ns: { db: string; coll: string };
   };
 }
 
 const signUpDataRepository = SignUpDataRepository.getInstance();
+const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 
 export const handler: Handler = async (event: MongoDBEvent, context, callback): Promise<void> => {
   // eslint-disable-next-line no-console
@@ -22,21 +25,28 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
 
   try {
     // TODO add validation here
-    if (!event?.detail?.fullDocument?.email) {
+    if (!event?.detail?.fullDocument?.email && !event?.detail?.fullDocumentBeforeChange?.email) {
       // eslint-disable-next-line no-console
       console.log('No email address provided');
       callback('No email address provided', null);
       return;
     }
 
-    const { fullDocument, ns } = event.detail;
+    const { fullDocument, ns, fullDocumentBeforeChange } = event.detail;
+    const domainName = process.env.DOMAIN_NAME ?? '';
 
     switch (ns.coll) {
       case 'LocalAuthorityUser': {
         const randomString = generate({ charset: 'alphabetic', length: 100 });
-        const { email, firstName, name } = fullDocument as LocalAuthorityUser;
-        const domainName = process.env.DOMAIN_NAME ?? '';
-        await signUpDataRepository.insert({ id: randomString, email, type: 'localAuthority' });
+        const { email, firstName, name, nameId } = fullDocument as LocalAuthorityUser;
+
+        await signUpDataRepository.insert({
+          id: randomString,
+          email,
+          type: 'localAuthority',
+          name,
+          nameId,
+        });
 
         await sendEmail(email, 'create-account-la', {
           subject: 'Complete your sign up to Donate to Educate',
@@ -48,16 +58,35 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
       }
 
       case 'JoinRequests': {
-        const { email, name, status } = fullDocument as JoinRequest;
+        if (fullDocument) {
+          const { email, name, localAuthority } = fullDocument as JoinRequest;
 
-        await sendEmail(
-          email,
-          status === 'APPROVED' ? 'join-request-approved' : 'join-request-declined',
-          {
+          await sendEmail(email, 'join-request-approved', {
             subject: 'Your Donate to Educate application results',
             name,
-          }
-        );
+          });
+
+          const la = await localAuthorityUserRepository.getByName(localAuthority);
+
+          await sendEmail(la?.email ?? '', 'reviewed-requests-to-join', {
+            subject: "We've reviewed your requests to join",
+            reviewLink: `https://${domainName}/login`,
+          });
+        } else {
+          const { email, name, localAuthority } = fullDocumentBeforeChange;
+
+          await sendEmail(email, 'join-request-declined', {
+            subject: 'Your Donate to Educate application results',
+            name,
+          });
+
+          const la = await localAuthorityUserRepository.getByName(localAuthority);
+
+          await sendEmail(la?.email ?? '', 'reviewed-requests-to-join', {
+            subject: "We've reviewed your requests to join",
+            reviewLink: `https://${domainName}/login`,
+          });
+        }
         break;
       }
       case 'ItemQueries': {

@@ -2,6 +2,8 @@ type SignUpData {
   id: String!
   email: String!
   type: String!
+  name: String!
+  nameId: String!
 }
 
 type School {
@@ -11,6 +13,14 @@ type School {
   postcode: String
   registered: Boolean!
   isLocalAuthorityRegistered: Boolean
+  address3: String
+  county: String
+  locality: String
+  street: String
+  phone: String
+  town: String
+  website: String
+  distance: String
 }
 
 type ProfileItems {
@@ -43,6 +53,7 @@ type LocalAuthorityUser {
   email: String!
   phone: String!
   notes: String
+  nameId: String!
 }
 
 type LocalAuthority {
@@ -91,6 +102,7 @@ type Query {
   getSchoolProfile(name: String!): SchoolProfile!
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
   getSignUpData(id: String!): SignUpData
+  getSchoolsNearby(postcode: String!, distance: Float!): [School!]!
 }
 
 type Mutation {
@@ -103,16 +115,15 @@ type Mutation {
     email: String!
     phone: String!
     notes: String
+    nameId: String!
   ): Boolean!
 
-  updateSchoolProfile(name: String!, key: String!, value: String!): Boolean!
+  updateSchoolProfile(key: String!, value: String!): Boolean! @aws_cognito_user_pools
   updateJoinRequest(localAuthority: String!, name: String!, status: String!): Boolean!
   insertJoinRequest(
     name: String!
     localAuthority: String!
     type: String!
-    requestTime: Float!
-    status: String!
     email: String!
     school: String
     jobTitle: String
@@ -129,7 +140,13 @@ type Mutation {
     message: String!
   ): Boolean!
 
-  insertSignUpData(id: String!, email: String!, type: String!): Boolean!
+  insertSignUpData(
+    id: String!
+    email: String!
+    type: String!
+    name: String!
+    nameId: String!
+  ): Boolean!
   insertItemQuery(
     name: String!
     email: String!
@@ -139,6 +156,8 @@ type Mutation {
     phone: String!
     connection: String
   ): Boolean!
+
+  deleteDeniedJoinRequest(name: String!): Boolean!
 }
 
 schema {

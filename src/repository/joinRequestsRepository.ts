@@ -37,6 +37,10 @@ export class JoinRequestsRepository {
     return await this.getByQuery({});
   }
 
+  public async getNewJoinRequests(): Promise<WithId<JoinRequest>[]> {
+    return await this.getByQuery({ status: 'NEW' });
+  }
+
   public async updateStatus(
     localAuthority: string,
     name: string,
@@ -56,5 +60,9 @@ export class JoinRequestsRepository {
 
   public async insert(user: JoinRequest): Promise<boolean> {
     return (await this.collection.insertOne(user)).acknowledged;
+  }
+
+  public async deleteDenied(name: string): Promise<boolean> {
+    return (await this.collection.deleteOne({ name, status: 'DENIED' })).acknowledged;
   }
 }

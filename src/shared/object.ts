@@ -5,3 +5,15 @@ export const checkIfObjectValuesMatch = (
 ): boolean => {
   return keys.every((key) => firstObject[key] === secondObject[key]);
 };
+
+export const removePropertiesFromObject = (
+  keysToDelete: string[],
+  object: Record<string, unknown>
+): Record<string, unknown> => {
+  keysToDelete.forEach((item) => {
+    if (item in object) {
+      delete object[item];
+    }
+  });
+  return object;
+};
