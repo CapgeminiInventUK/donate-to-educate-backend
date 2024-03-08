@@ -33,8 +33,8 @@ export class SchoolProfileRepository {
     return result;
   }
 
-  public async getByName(name: string): Promise<WithId<SchoolProfile> | undefined> {
-    return await this.getOne({ name });
+  public async getByName(name: string, id: string): Promise<WithId<SchoolProfile> | undefined> {
+    return await this.getOne({ name, id });
   }
 
   public async updateKey(id: string, name: string, key: string, value: string): Promise<boolean> {

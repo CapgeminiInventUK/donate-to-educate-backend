@@ -116,8 +116,8 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getSchoolProfile': {
-      const { name } = params as QueryGetSchoolProfileArgs;
-      const res = await schoolProfileRepository.getByName(name);
+      const { name, id } = params as QueryGetSchoolProfileArgs;
+      const res = await schoolProfileRepository.getByName(name, id);
       callback(null, res);
       break;
     }

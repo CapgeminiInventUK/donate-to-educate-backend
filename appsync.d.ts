@@ -222,6 +222,7 @@ export type QueryGetSchoolByNameArgs = {
 
 
 export type QueryGetSchoolProfileArgs = {
+  id: Scalars['String']['input'];
   name: Scalars['String']['input'];
 };
 

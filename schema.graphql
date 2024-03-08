@@ -97,7 +97,7 @@ type Query {
   getRegisteredSchools: [School!]!
   getLocalAuthorities: [LocalAuthority!]!
   getJoinRequests: [JoinRequest!]!
-  getSchoolProfile(name: String!): SchoolProfile!
+  getSchoolProfile(name: String!, id: String!): SchoolProfile!
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
   getSignUpData(id: String!): SignUpData
   getSchoolsNearby(postcode: String!, distance: Float!): [School!]!
