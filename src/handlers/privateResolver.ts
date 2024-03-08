@@ -79,8 +79,8 @@ export const handler: AppSyncResolverHandler<
       };
       const { localAuthority = '' } = (await schoolDataRepository.getByName(institution)) ?? {};
       const res = await schoolProfileRepository.updateKey(
-        institution,
         institutionId,
+        institution,
         key,
         value,
         localAuthority
