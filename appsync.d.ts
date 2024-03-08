@@ -204,7 +204,7 @@ export type Query = {
   getRegisteredSchools: Array<School>;
   getRegisteredSchoolsByLa: Array<School>;
   getSchoolByName: School;
-  getSchoolProfile: SchoolProfile;
+  getSchoolProfile?: Maybe<SchoolProfile>;
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
   getSchoolsNearby: Array<School>;
