@@ -12,6 +12,7 @@ import {
   SignUpData,
   LocalAuthorityUser,
   QueryGetSchoolsNearbyArgs,
+  QueryGetSchoolProfilesByLaArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -35,6 +36,7 @@ export const handler: AppSyncResolverHandler<
   | QueryGetSchoolsByLaArgs
   | QueryGetSignUpDataArgs
   | QueryGetSchoolsNearbyArgs
+  | QueryGetSchoolProfilesByLaArgs
   | QueryGetLocalAuthorityUserArgs,
   | School
   | School[]
@@ -42,6 +44,7 @@ export const handler: AppSyncResolverHandler<
   | JoinRequest[]
   | boolean
   | SchoolProfile
+  | SchoolProfile[]
   | SignUpData
   | LocalAuthorityUser
 > = async (event, context, callback) => {
@@ -138,6 +141,17 @@ export const handler: AppSyncResolverHandler<
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
       const res = await schoolDataRepository.getSchoolsNearby(longitude, latitude, distance);
+      callback(null, res);
+      break;
+    }
+    case 'getSchoolProfiles': {
+      const res = await schoolProfileRepository.list();
+      callback(null, res);
+      break;
+    }
+    case 'getSchoolProfilesByLa': {
+      const { localAuthority } = params as QueryGetSchoolProfilesByLaArgs;
+      const res = await schoolProfileRepository.getByLa(localAuthority);
       callback(null, res);
       break;
     }
