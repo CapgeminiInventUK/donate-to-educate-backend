@@ -24,9 +24,9 @@ type School {
 }
 
 type ProfileItems {
-  items: String!
-  whatToExpect: String!
-  actionText: String!
+  items: String
+  whatToExpect: String
+  actionText: String
 }
 
 type SchoolProfile {

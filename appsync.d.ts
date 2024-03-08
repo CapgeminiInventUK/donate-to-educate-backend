@@ -191,9 +191,9 @@ export type MutationUpdateSchoolProfileArgs = {
 
 export type ProfileItems = {
   __typename?: 'ProfileItems';
-  actionText: Scalars['String']['output'];
-  items: Scalars['String']['output'];
-  whatToExpect: Scalars['String']['output'];
+  actionText?: Maybe<Scalars['String']['output']>;
+  items?: Maybe<Scalars['String']['output']>;
+  whatToExpect?: Maybe<Scalars['String']['output']>;
 };
 
 export type Query = {
