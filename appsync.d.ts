@@ -49,6 +49,7 @@ export type ItemQuery = {
   email: Scalars['String']['output'];
   message: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  organisationType: Scalars['String']['output'];
   phone: Scalars['String']['output'];
   type: Scalars['String']['output'];
   who: Scalars['String']['output'];
@@ -126,6 +127,7 @@ export type MutationInsertItemQueryArgs = {
   email: Scalars['String']['input'];
   message: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  organisationType: Scalars['String']['input'];
   phone: Scalars['String']['input'];
   type: Scalars['String']['input'];
   who: Scalars['String']['input'];

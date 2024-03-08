@@ -90,6 +90,7 @@ type ItemQuery {
   phone: String!
   message: String!
   connection: String
+  organisationType: String!
 }
 
 type Query {
@@ -150,6 +151,7 @@ type Mutation {
     who: String!
     phone: String!
     connection: String
+    organisationType: String!
   ): Boolean!
 
   deleteDeniedJoinRequest(name: String!): Boolean!
