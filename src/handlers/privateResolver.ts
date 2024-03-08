@@ -8,6 +8,8 @@ import {
   MutationInsertItemQueryArgs,
   MutationInsertLocalAuthorityRegisterRequestArgs,
   MutationDeleteDeniedJoinRequestArgs,
+  SchoolProfile,
+  QueryGetSchoolProfilesByLaArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
@@ -37,8 +39,9 @@ export const handler: AppSyncResolverHandler<
   | MutationInsertItemQueryArgs
   | MutationInsertJoinRequestArgs
   | MutationDeleteDeniedJoinRequestArgs
-  | MutationInsertLocalAuthorityRegisterRequestArgs,
-  boolean
+  | MutationInsertLocalAuthorityRegisterRequestArgs
+  | QueryGetSchoolProfilesByLaArgs,
+  boolean | SchoolProfile[]
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
@@ -133,6 +136,18 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
+    case 'getSchoolProfiles': {
+      const res = await schoolProfileRepository.list();
+      callback(null, res);
+      break;
+    }
+    case 'getSchoolProfilesByLa': {
+      const { localAuthority } = params as QueryGetSchoolProfilesByLaArgs;
+      const res = await schoolProfileRepository.getByLa(localAuthority);
+      callback(null, res);
+      break;
+    }
+
     default: {
       callback(`Unexpected type ${info.fieldName}`);
       throw new Error(`Unexpected type ${info.fieldName}`);
