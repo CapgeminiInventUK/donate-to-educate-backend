@@ -204,8 +204,6 @@ export type Query = {
   getRegisteredSchools: Array<School>;
   getSchoolByName: School;
   getSchoolProfile: SchoolProfile;
-  getSchoolProfiles?: Maybe<Array<Maybe<SchoolProfile>>>;
-  getSchoolProfilesByLa?: Maybe<Array<Maybe<SchoolProfile>>>;
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
   getSchoolsNearby: Array<School>;
@@ -226,11 +224,6 @@ export type QueryGetSchoolByNameArgs = {
 export type QueryGetSchoolProfileArgs = {
   id: Scalars['String']['input'];
   name: Scalars['String']['input'];
-};
-
-
-export type QueryGetSchoolProfilesByLaArgs = {
-  localAuthority: Scalars['String']['input'];
 };
 
 
@@ -271,9 +264,6 @@ export type SchoolProfile = {
   __typename?: 'SchoolProfile';
   donate?: Maybe<ProfileItems>;
   excess?: Maybe<ProfileItems>;
-  id: Scalars['String']['output'];
-  localAuthority: Scalars['String']['output'];
-  name: Scalars['String']['output'];
   request?: Maybe<ProfileItems>;
 };
 
