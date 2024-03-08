@@ -49,6 +49,7 @@ export type ItemQuery = {
   email: Scalars['String']['output'];
   message: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  organisationType: Scalars['String']['output'];
   phone: Scalars['String']['output'];
   type: Scalars['String']['output'];
   who: Scalars['String']['output'];
@@ -127,6 +128,7 @@ export type MutationInsertItemQueryArgs = {
   email: Scalars['String']['input'];
   message: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  organisationType: Scalars['String']['input'];
   phone: Scalars['String']['input'];
   type: Scalars['String']['input'];
   who: Scalars['String']['input'];
@@ -192,9 +194,6 @@ export type MutationUpdateSchoolProfileArgs = {
 export type ProfileItems = {
   __typename?: 'ProfileItems';
   actionText: Scalars['String']['output'];
-  banner: Scalars['String']['output'];
-  helpBannerBody: Scalars['String']['output'];
-  helpBannerTitle: Scalars['String']['output'];
   items: Scalars['String']['output'];
   whatToExpect: Scalars['String']['output'];
 };
@@ -225,6 +224,7 @@ export type QueryGetSchoolByNameArgs = {
 
 
 export type QueryGetSchoolProfileArgs = {
+  id: Scalars['String']['input'];
   name: Scalars['String']['input'];
 };
 

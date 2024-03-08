@@ -4,6 +4,8 @@ import { ItemQuery, JoinRequest, LocalAuthorityUser } from '../../appsync';
 import { generate } from 'randomstring';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
+import { SchoolDataRepository } from '../repository/schoolDataRepository';
+import { v4 as uuidv4 } from 'uuid';
 
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
 
@@ -17,6 +19,7 @@ interface MongoDBEvent {
 
 const signUpDataRepository = SignUpDataRepository.getInstance();
 const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
+const schoolDataRepository = SchoolDataRepository.getInstance();
 
 export const handler: Handler = async (event: MongoDBEvent, context, callback): Promise<void> => {
   // eslint-disable-next-line no-console
@@ -59,11 +62,37 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
 
       case 'JoinRequests': {
         if (fullDocument) {
-          const { email, name, localAuthority } = fullDocument as JoinRequest;
+          const randomString = generate({ charset: 'alphabetic', length: 100 });
+          const { email, name, localAuthority, type, school, charityName } =
+            fullDocument as JoinRequest;
+
+          if (type === 'school') {
+            const schoolName = school?.split(' - ')[0];
+            const { urn = '' } = (await schoolDataRepository.getByName(schoolName ?? '')) ?? {};
+
+            await signUpDataRepository.insert({
+              id: randomString,
+              email,
+              type,
+              name: schoolName ?? '',
+              nameId: urn,
+            });
+          } else if (type === 'charity') {
+            await signUpDataRepository.insert({
+              id: randomString,
+              email,
+              type,
+              name: charityName ?? '',
+              nameId: uuidv4(),
+            });
+          } else {
+            throw new Error(`Invalid type ${type}`);
+          }
 
           await sendEmail(email, 'join-request-approved', {
             subject: 'Your Donate to Educate application results',
             name,
+            signUpLink: `https://${domainName}/add-user?id=${randomString}`,
           });
 
           const la = await localAuthorityUserRepository.getByName(localAuthority);
