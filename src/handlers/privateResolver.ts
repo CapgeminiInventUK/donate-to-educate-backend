@@ -8,6 +8,8 @@ import {
   MutationInsertItemQueryArgs,
   MutationInsertLocalAuthorityRegisterRequestArgs,
   MutationDeleteDeniedJoinRequestArgs,
+  SchoolProfile,
+  QueryGetSchoolProfilesByLaArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
@@ -37,8 +39,9 @@ export const handler: AppSyncResolverHandler<
   | MutationInsertItemQueryArgs
   | MutationInsertJoinRequestArgs
   | MutationDeleteDeniedJoinRequestArgs
-  | MutationInsertLocalAuthorityRegisterRequestArgs,
-  boolean
+  | MutationInsertLocalAuthorityRegisterRequestArgs
+  | QueryGetSchoolProfilesByLaArgs,
+  boolean | SchoolProfile[]
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
@@ -79,8 +82,8 @@ export const handler: AppSyncResolverHandler<
       };
       const { localAuthority = '' } = (await schoolDataRepository.getByName(institution)) ?? {};
       const res = await schoolProfileRepository.updateKey(
-        institution,
         institutionId,
+        institution,
         key,
         value,
         localAuthority
@@ -130,6 +133,17 @@ export const handler: AppSyncResolverHandler<
     case 'deleteDeniedJoinRequest': {
       const { name } = params as MutationDeleteDeniedJoinRequestArgs;
       const res = await joinRequestsRepository.deleteDenied(name);
+      callback(null, res);
+      break;
+    }
+    case 'getSchoolProfiles': {
+      const res = await schoolProfileRepository.list();
+      callback(null, res);
+      break;
+    }
+    case 'getSchoolProfilesByLa': {
+      const { localAuthority } = params as QueryGetSchoolProfilesByLaArgs;
+      const res = await schoolProfileRepository.getByLa(localAuthority);
       callback(null, res);
       break;
     }

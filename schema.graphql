@@ -30,6 +30,9 @@ type ProfileItems {
 }
 
 type SchoolProfile {
+  name: String!
+  id: String!
+  localAuthority: String!
   request: ProfileItems
   donate: ProfileItems
   excess: ProfileItems
@@ -101,6 +104,8 @@ type Query {
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
   getSignUpData(id: String!): SignUpData
   getSchoolsNearby(postcode: String!, distance: Float!): [School!]!
+  getSchoolProfiles: [SchoolProfile]
+  getSchoolProfilesByLa(localAuthority: String!): [SchoolProfile]
 }
 
 type Mutation {

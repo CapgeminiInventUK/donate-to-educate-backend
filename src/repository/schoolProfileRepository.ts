@@ -33,6 +33,24 @@ export class SchoolProfileRepository {
     return result;
   }
 
+  private async getByQuery(query: Filter<SchoolProfile>): Promise<WithId<SchoolProfile>[]> {
+    const cursor = this.collection.find(query);
+
+    if (!(await cursor.hasNext())) {
+      return [];
+    }
+
+    return await cursor.toArray();
+  }
+
+  public async list(): Promise<WithId<SchoolProfile>[]> {
+    return await this.getByQuery({});
+  }
+
+  public async getByLa(localAuthority: string): Promise<WithId<SchoolProfile>[]> {
+    return await this.getByQuery({ localAuthority });
+  }
+
   public async getByName(name: string, id: string): Promise<WithId<SchoolProfile> | undefined> {
     return await this.getOne({ name, id });
   }
