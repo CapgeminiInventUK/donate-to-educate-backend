@@ -192,9 +192,6 @@ export type MutationUpdateSchoolProfileArgs = {
 export type ProfileItems = {
   __typename?: 'ProfileItems';
   actionText: Scalars['String']['output'];
-  banner: Scalars['String']['output'];
-  helpBannerBody: Scalars['String']['output'];
-  helpBannerTitle: Scalars['String']['output'];
   items: Scalars['String']['output'];
   whatToExpect: Scalars['String']['output'];
 };

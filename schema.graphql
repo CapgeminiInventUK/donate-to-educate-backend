@@ -25,9 +25,6 @@ type School {
 
 type ProfileItems {
   items: String!
-  banner: String!
-  helpBannerTitle: String!
-  helpBannerBody: String!
   whatToExpect: String!
   actionText: String!
 }
