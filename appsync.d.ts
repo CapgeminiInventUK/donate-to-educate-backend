@@ -202,6 +202,7 @@ export type Query = {
   getLocalAuthorities: Array<LocalAuthority>;
   getLocalAuthorityUser: LocalAuthorityUser;
   getRegisteredSchools: Array<School>;
+  getRegisteredSchoolsByLa: Array<School>;
   getSchoolByName: School;
   getSchoolProfile: SchoolProfile;
   getSchools: Array<School>;
@@ -213,6 +214,11 @@ export type Query = {
 
 export type QueryGetLocalAuthorityUserArgs = {
   email: Scalars['String']['input'];
+};
+
+
+export type QueryGetRegisteredSchoolsByLaArgs = {
+  localAuthority: Scalars['String']['input'];
 };
 
 

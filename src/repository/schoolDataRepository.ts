@@ -63,6 +63,10 @@ export class SchoolDataRepository {
     return await this.getByQuery({ registered: true });
   }
 
+  public async getRegisteredByLa(localAuthority: string): Promise<WithId<School>[]> {
+    return await this.getByQuery({ registered: true, localAuthority });
+  }
+
   public async getSchoolsNearby(
     longitude: number,
     latitude: number,

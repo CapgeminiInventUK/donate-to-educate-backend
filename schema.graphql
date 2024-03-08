@@ -95,6 +95,7 @@ type Query {
   getSchoolsByLa(name: String!): [School!]!
   getSchools: [School!]!
   getRegisteredSchools: [School!]!
+  getRegisteredSchoolsByLa(localAuthority: String!): [School!]!
   getLocalAuthorities: [LocalAuthority!]!
   getJoinRequests: [JoinRequest!]!
   getSchoolProfile(name: String!, id: String!): SchoolProfile!

@@ -12,6 +12,7 @@ import {
   SignUpData,
   LocalAuthorityUser,
   QueryGetSchoolsNearbyArgs,
+  QueryGetRegisteredSchoolsByLaArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -35,6 +36,7 @@ export const handler: AppSyncResolverHandler<
   | QueryGetSchoolsByLaArgs
   | QueryGetSignUpDataArgs
   | QueryGetSchoolsNearbyArgs
+  | QueryGetRegisteredSchoolsByLaArgs
   | QueryGetLocalAuthorityUserArgs,
   | School
   | School[]
@@ -129,6 +131,12 @@ export const handler: AppSyncResolverHandler<
     }
     case 'getRegisteredSchools': {
       const res = await schoolDataRepository.getRegistered();
+      callback(null, res);
+      break;
+    }
+    case 'getRegisteredSchoolsByLa': {
+      const { localAuthority } = params as QueryGetRegisteredSchoolsByLaArgs;
+      const res = await schoolDataRepository.getRegisteredByLa(localAuthority);
       callback(null, res);
       break;
     }
