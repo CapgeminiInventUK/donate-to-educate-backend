@@ -37,13 +37,19 @@ export class SchoolProfileRepository {
     return await this.getOne({ name, id });
   }
 
-  public async updateKey(id: string, name: string, key: string, value: string): Promise<boolean> {
+  public async updateKey(
+    id: string,
+    name: string,
+    key: string,
+    value: string,
+    localAuthority: string
+  ): Promise<boolean> {
     return (
       await this.collection.updateOne(
         { name, id },
         {
           $set: { [key]: JSON.parse(value) as string },
-          $setOnInsert: { name, id },
+          $setOnInsert: { name, id, localAuthority },
         },
         { upsert: true }
       )

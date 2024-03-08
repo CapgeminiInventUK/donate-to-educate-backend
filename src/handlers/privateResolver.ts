@@ -17,6 +17,7 @@ import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { ItemQueriesRepository } from '../repository/itemQueriesRepository';
 import { LocalAuthorityRegisterRequestsRepository } from '../repository/localAuthorityRegisterRequestsRepository';
+import { SchoolDataRepository } from '../repository/schoolDataRepository';
 
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
 const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
@@ -26,6 +27,7 @@ const signUpDataRepository = SignUpDataRepository.getInstance();
 const itemQueriesRepository = ItemQueriesRepository.getInstance();
 const localAuthorityRegisterRequestsRepository =
   LocalAuthorityRegisterRequestsRepository.getInstance();
+const schoolDataRepository = SchoolDataRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
   | MutationRegisterLocalAuthorityArgs
@@ -75,7 +77,14 @@ export const handler: AppSyncResolverHandler<
         institution: string;
         institutionId: string;
       };
-      const res = await schoolProfileRepository.updateKey(institution, institutionId, key, value);
+      const { localAuthority = '' } = (await schoolDataRepository.getByName(institution)) ?? {};
+      const res = await schoolProfileRepository.updateKey(
+        institution,
+        institutionId,
+        key,
+        value,
+        localAuthority
+      );
       callback(null, res);
       break;
     }
