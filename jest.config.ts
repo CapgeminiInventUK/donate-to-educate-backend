@@ -16,4 +16,12 @@ export default {
   preset: '@shelf/jest-mongodb',
   testTimeout: 30000,
   watchPathIgnorePatterns: ['globalConfig'],
+  coverageThreshold: {
+    global: {
+      branches: 50,
+      functions: 50,
+      lines: 15,
+      statements: 15,
+    },
+  },
 };
