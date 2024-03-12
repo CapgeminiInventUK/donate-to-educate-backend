@@ -13,4 +13,7 @@ export default {
   coverageProvider: 'v8',
   collectCoverageFrom: ['./src/**'],
   testMatch: ['**.test.ts'],
+  preset: '@shelf/jest-mongodb',
+  testTimeout: 30000,
+  watchPathIgnorePatterns: ['globalConfig'],
 };

@@ -1,50 +1,24 @@
-import { Collection, Db, Filter, MongoClient, WithId } from 'mongodb';
+import { MongoClientOptions, WithId } from 'mongodb';
 import { School } from '../../appsync';
+import { BaseRepository } from './baseRepository';
 
-export class SchoolDataRepository {
+export class SchoolDataRepository extends BaseRepository<School> {
   private static instance: SchoolDataRepository;
-  private readonly client: MongoClient;
-  private readonly db: Db;
-  private readonly collection: Collection<School>;
 
-  private constructor() {
-    this.client = new MongoClient(
-      process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/',
-      { authMechanism: 'MONGODB-AWS', authSource: '$external' }
-    );
-    this.db = this.client.db('D2E');
-    this.collection = this.db.collection<School>('SchoolData');
-  }
-
-  static getInstance(): SchoolDataRepository {
+  static getInstance(
+    url = process?.env?.MONGODB_CONNECTION_STRING,
+    isTest = false
+  ): SchoolDataRepository {
     if (!this.instance) {
-      this.instance = new SchoolDataRepository();
+      const options: MongoClientOptions = {
+        authMechanism: 'MONGODB-AWS',
+        authSource: '$external',
+      };
+      this.instance = isTest
+        ? new SchoolDataRepository('SchoolData', url ?? '')
+        : new SchoolDataRepository('SchoolData', url ?? '', options);
     }
     return this.instance;
-  }
-
-  private async getByQuery(
-    query: Filter<School>,
-    projectedFields?: Record<string, 0 | 1>
-  ): Promise<WithId<School>[]> {
-    const cursor = projectedFields
-      ? this.collection.find(query).project<WithId<School>>(projectedFields)
-      : this.collection.find(query);
-
-    if (!(await cursor.hasNext())) {
-      return [];
-    }
-
-    return await cursor.toArray();
-  }
-
-  private async getOne(query: Filter<School>): Promise<WithId<School> | undefined> {
-    const result = await this.collection.findOne(query);
-    if (!result) {
-      return undefined;
-    }
-
-    return result;
   }
 
   public async list(projectedFields: Record<string, 0 | 1>): Promise<WithId<School>[]> {

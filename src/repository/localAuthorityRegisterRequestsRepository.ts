@@ -1,26 +1,26 @@
-import { Collection, Db, MongoClient } from 'mongodb';
+import { MongoClientOptions } from 'mongodb';
 import { LocalAuthorityRegisterRequest } from '../../appsync';
+import { BaseRepository } from './baseRepository';
 
-export class LocalAuthorityRegisterRequestsRepository {
+export class LocalAuthorityRegisterRequestsRepository extends BaseRepository<LocalAuthorityRegisterRequest> {
   private static instance: LocalAuthorityRegisterRequestsRepository;
-  private readonly client: MongoClient;
-  private readonly db: Db;
-  private readonly collection: Collection<LocalAuthorityRegisterRequest>;
 
-  private constructor() {
-    this.client = new MongoClient(
-      process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/',
-      { authMechanism: 'MONGODB-AWS', authSource: '$external' }
-    );
-    this.db = this.client.db('D2E');
-    this.collection = this.db.collection<LocalAuthorityRegisterRequest>(
-      'LocalAuthorityRegisterRequests'
-    );
-  }
-
-  static getInstance(): LocalAuthorityRegisterRequestsRepository {
+  static getInstance(
+    url = process?.env?.MONGODB_CONNECTION_STRING,
+    isTest = false
+  ): LocalAuthorityRegisterRequestsRepository {
     if (!this.instance) {
-      this.instance = new LocalAuthorityRegisterRequestsRepository();
+      const options: MongoClientOptions = {
+        authMechanism: 'MONGODB-AWS',
+        authSource: '$external',
+      };
+      this.instance = isTest
+        ? new LocalAuthorityRegisterRequestsRepository('LocalAuthorityRegisterRequests', url ?? '')
+        : new LocalAuthorityRegisterRequestsRepository(
+            'LocalAuthorityRegisterRequests',
+            url ?? '',
+            options
+          );
     }
     return this.instance;
   }
