@@ -1,6 +1,6 @@
-import { MongoClientOptions } from 'mongodb';
 import { LocalAuthorityRegisterRequest } from '../../appsync';
 import { BaseRepository } from './baseRepository';
+import { clientOptions } from './config';
 
 export class LocalAuthorityRegisterRequestsRepository extends BaseRepository<LocalAuthorityRegisterRequest> {
   private static instance: LocalAuthorityRegisterRequestsRepository;
@@ -10,16 +10,12 @@ export class LocalAuthorityRegisterRequestsRepository extends BaseRepository<Loc
     isTest = false
   ): LocalAuthorityRegisterRequestsRepository {
     if (!this.instance) {
-      const options: MongoClientOptions = {
-        authMechanism: 'MONGODB-AWS',
-        authSource: '$external',
-      };
       this.instance = isTest
         ? new LocalAuthorityRegisterRequestsRepository('LocalAuthorityRegisterRequests', url ?? '')
         : new LocalAuthorityRegisterRequestsRepository(
             'LocalAuthorityRegisterRequests',
             url ?? '',
-            options
+            clientOptions
           );
     }
     return this.instance;

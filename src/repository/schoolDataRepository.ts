@@ -1,6 +1,7 @@
-import { MongoClientOptions, WithId } from 'mongodb';
+import { WithId } from 'mongodb';
 import { School } from '../../appsync';
 import { BaseRepository } from './baseRepository';
+import { clientOptions } from './config';
 
 export class SchoolDataRepository extends BaseRepository<School> {
   private static instance: SchoolDataRepository;
@@ -10,13 +11,9 @@ export class SchoolDataRepository extends BaseRepository<School> {
     isTest = false
   ): SchoolDataRepository {
     if (!this.instance) {
-      const options: MongoClientOptions = {
-        authMechanism: 'MONGODB-AWS',
-        authSource: '$external',
-      };
       this.instance = isTest
         ? new SchoolDataRepository('SchoolData', url ?? '')
-        : new SchoolDataRepository('SchoolData', url ?? '', options);
+        : new SchoolDataRepository('SchoolData', url ?? '', clientOptions);
     }
     return this.instance;
   }

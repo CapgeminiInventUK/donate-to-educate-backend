@@ -1,6 +1,7 @@
-import { MongoClientOptions, WithId } from 'mongodb';
+import { WithId } from 'mongodb';
 import { SignUpData } from '../../appsync';
 import { BaseRepository } from './baseRepository';
+import { clientOptions } from './config';
 
 export class SignUpDataRepository extends BaseRepository<SignUpData> {
   private static instance: SignUpDataRepository;
@@ -10,13 +11,9 @@ export class SignUpDataRepository extends BaseRepository<SignUpData> {
     isTest = false
   ): SignUpDataRepository {
     if (!this.instance) {
-      const options: MongoClientOptions = {
-        authMechanism: 'MONGODB-AWS',
-        authSource: '$external',
-      };
       this.instance = isTest
         ? new SignUpDataRepository('SignUps', url ?? '')
-        : new SignUpDataRepository('SignUps', url ?? '', options);
+        : new SignUpDataRepository('SignUps', url ?? '', clientOptions);
     }
     return this.instance;
   }

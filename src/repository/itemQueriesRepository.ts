@@ -1,6 +1,6 @@
-import { MongoClientOptions } from 'mongodb';
 import { ItemQuery } from '../../appsync';
 import { BaseRepository } from './baseRepository';
+import { clientOptions } from './config';
 
 export class ItemQueriesRepository extends BaseRepository<ItemQuery> {
   private static instance: ItemQueriesRepository;
@@ -10,13 +10,9 @@ export class ItemQueriesRepository extends BaseRepository<ItemQuery> {
     isTest = false
   ): ItemQueriesRepository {
     if (!this.instance) {
-      const options: MongoClientOptions = {
-        authMechanism: 'MONGODB-AWS',
-        authSource: '$external',
-      };
       this.instance = isTest
         ? new ItemQueriesRepository('ItemQueries', url ?? '')
-        : new ItemQueriesRepository('ItemQueries', url ?? '', options);
+        : new ItemQueriesRepository('ItemQueries', url ?? '', clientOptions);
     }
     return this.instance;
   }

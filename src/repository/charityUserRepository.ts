@@ -1,6 +1,7 @@
-import { MongoClientOptions, WithId } from 'mongodb';
+import { WithId } from 'mongodb';
 import { CharityUser } from '../../appsync';
 import { BaseRepository } from './baseRepository';
+import { clientOptions } from './config';
 
 export class CharityUserRepository extends BaseRepository<CharityUser> {
   private static instance: CharityUserRepository;
@@ -10,13 +11,9 @@ export class CharityUserRepository extends BaseRepository<CharityUser> {
     isTest = false
   ): CharityUserRepository {
     if (!this.instance) {
-      const options: MongoClientOptions = {
-        authMechanism: 'MONGODB-AWS',
-        authSource: '$external',
-      };
       this.instance = isTest
         ? new CharityUserRepository('CharityUser', url ?? '')
-        : new CharityUserRepository('CharityUser', url ?? '', options);
+        : new CharityUserRepository('CharityUser', url ?? '', clientOptions);
     }
     return this.instance;
   }

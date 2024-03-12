@@ -1,6 +1,7 @@
-import { MongoClientOptions, WithId } from 'mongodb';
+import { WithId } from 'mongodb';
 import { LocalAuthorityUser } from '../../appsync';
 import { BaseRepository } from './baseRepository';
+import { clientOptions } from './config';
 
 export class LocalAuthorityUserRepository extends BaseRepository<LocalAuthorityUser> {
   private static instance: LocalAuthorityUserRepository;
@@ -10,13 +11,9 @@ export class LocalAuthorityUserRepository extends BaseRepository<LocalAuthorityU
     isTest = false
   ): LocalAuthorityUserRepository {
     if (!this.instance) {
-      const options: MongoClientOptions = {
-        authMechanism: 'MONGODB-AWS',
-        authSource: '$external',
-      };
       this.instance = isTest
         ? new LocalAuthorityUserRepository('LocalAuthorityUser', url ?? '')
-        : new LocalAuthorityUserRepository('LocalAuthorityUser', url ?? '', options);
+        : new LocalAuthorityUserRepository('LocalAuthorityUser', url ?? '', clientOptions);
     }
     return this.instance;
   }

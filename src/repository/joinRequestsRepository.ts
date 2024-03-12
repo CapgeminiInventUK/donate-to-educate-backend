@@ -1,6 +1,7 @@
-import { MongoClientOptions, WithId } from 'mongodb';
+import { WithId } from 'mongodb';
 import { JoinRequest } from '../../appsync';
 import { BaseRepository } from './baseRepository';
+import { clientOptions } from './config';
 
 export class JoinRequestsRepository extends BaseRepository<JoinRequest> {
   private static instance: JoinRequestsRepository;
@@ -10,13 +11,9 @@ export class JoinRequestsRepository extends BaseRepository<JoinRequest> {
     isTest = false
   ): JoinRequestsRepository {
     if (!this.instance) {
-      const options: MongoClientOptions = {
-        authMechanism: 'MONGODB-AWS',
-        authSource: '$external',
-      };
       this.instance = isTest
         ? new JoinRequestsRepository('JoinRequests', url ?? '')
-        : new JoinRequestsRepository('JoinRequests', url ?? '', options);
+        : new JoinRequestsRepository('JoinRequests', url ?? '', clientOptions);
     }
     return this.instance;
   }
