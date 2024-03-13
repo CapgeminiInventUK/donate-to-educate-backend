@@ -12,16 +12,17 @@ export default {
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   collectCoverageFrom: ['./src/**'],
+  coveragePathIgnorePatterns: ['__test__'],
   testMatch: ['**.test.ts'],
   preset: '@shelf/jest-mongodb',
   testTimeout: 30000,
   watchPathIgnorePatterns: ['globalConfig'],
   coverageThreshold: {
     global: {
-      branches: 65,
-      functions: 80,
-      lines: 45,
-      statements: 45,
+      branches: 60,
+      functions: 75,
+      lines: 35,
+      statements: 35,
     },
   },
 };

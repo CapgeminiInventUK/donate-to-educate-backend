@@ -53,16 +53,16 @@ export const handler: AppSyncResolverHandler<
   const { arguments: params, info } = event;
   logger.info(`${JSON.stringify(params)}`);
 
-  // const projectedFields = info.selectionSetList
-  //   .replace(/\[|\]/gm, '')
-  //   .split(', ')
-  //   .reduce((acc: Record<string, 0 | 1>, item: string) => ({ ...acc, [item]: 1 }), {});
+  logger.info(typeof info.selectionSetList);
 
-  const projectedFields = info.selectionSetList.reduce(
-    (acc: Record<string, number>, item: string) => {
-      return { ...acc, [item]: 1 };
-    },
-    {} as Record<string, number>
+  const selections =
+    typeof info.selectionSetList === 'string'
+      ? (info.selectionSetList as string).replace(/\[|\]/gm, '').split(', ')
+      : info.selectionSetList;
+
+  const projectedFields: Record<string, number> = selections.reduce(
+    (acc: Record<string, number>, item: string) => ({ ...acc, [item]: 1 }),
+    {}
   );
   logger.info(`Projected fields ${JSON.stringify(projectedFields)}`);
 
