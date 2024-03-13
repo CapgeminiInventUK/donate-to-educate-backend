@@ -20,7 +20,7 @@ export class SchoolDataRepository extends BaseRepository<School> {
     return this.instance;
   }
 
-  public async list(projectedFields: Record<string, 0 | 1>): Promise<WithId<School>[]> {
+  public async list(projectedFields: Record<string, number>): Promise<WithId<School>[]> {
     return await this.getByQuery({}, projectedFields);
   }
 

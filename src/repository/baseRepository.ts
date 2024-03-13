@@ -17,7 +17,7 @@ export abstract class BaseRepository<T extends Document> {
 
   protected async getByQuery(
     query: Filter<T>,
-    projectedFields?: Record<string, 0 | 1>
+    projectedFields?: Record<string, number>
   ): Promise<WithId<T>[]> {
     const cursor = projectedFields
       ? this.collection.find(query).project<WithId<T>>(projectedFields)
