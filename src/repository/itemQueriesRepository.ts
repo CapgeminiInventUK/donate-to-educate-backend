@@ -10,9 +10,11 @@ export class ItemQueriesRepository extends BaseRepository<ItemQuery> {
     isTest = false
   ): ItemQueriesRepository {
     if (!this.instance) {
-      this.instance = isTest
-        ? new ItemQueriesRepository('ItemQueries', url ?? '')
-        : new ItemQueriesRepository('ItemQueries', url ?? '', clientOptions);
+      this.instance = new ItemQueriesRepository(
+        'ItemQueries',
+        url ?? '',
+        isTest ? undefined : clientOptions
+      );
     }
     return this.instance;
   }

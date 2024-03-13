@@ -11,9 +11,11 @@ export class JoinRequestsRepository extends BaseRepository<JoinRequest> {
     isTest = false
   ): JoinRequestsRepository {
     if (!this.instance) {
-      this.instance = isTest
-        ? new JoinRequestsRepository('JoinRequests', url ?? '')
-        : new JoinRequestsRepository('JoinRequests', url ?? '', clientOptions);
+      this.instance = new JoinRequestsRepository(
+        'JoinRequests',
+        url ?? '',
+        isTest ? undefined : clientOptions
+      );
     }
     return this.instance;
   }

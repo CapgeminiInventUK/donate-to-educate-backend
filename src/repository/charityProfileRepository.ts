@@ -11,9 +11,11 @@ export class CharityProfileRepository extends BaseRepository<CharityProfile> {
     isTest = false
   ): CharityProfileRepository {
     if (!this.instance) {
-      this.instance = isTest
-        ? new CharityProfileRepository('CharityProfile', url ?? '')
-        : new CharityProfileRepository('CharityProfile', url ?? '', clientOptions);
+      this.instance = new CharityProfileRepository(
+        'CharityProfile',
+        url ?? '',
+        isTest ? undefined : clientOptions
+      );
     }
     return this.instance;
   }

@@ -11,9 +11,11 @@ export class LocalAuthorityUserRepository extends BaseRepository<LocalAuthorityU
     isTest = false
   ): LocalAuthorityUserRepository {
     if (!this.instance) {
-      this.instance = isTest
-        ? new LocalAuthorityUserRepository('LocalAuthorityUser', url ?? '')
-        : new LocalAuthorityUserRepository('LocalAuthorityUser', url ?? '', clientOptions);
+      this.instance = new LocalAuthorityUserRepository(
+        'LocalAuthorityUser',
+        url ?? '',
+        isTest ? undefined : clientOptions
+      );
     }
     return this.instance;
   }

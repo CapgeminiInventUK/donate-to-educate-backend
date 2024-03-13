@@ -11,9 +11,11 @@ export class SchoolUserRepository extends BaseRepository<SchoolUser> {
     isTest = false
   ): SchoolUserRepository {
     if (!this.instance) {
-      this.instance = isTest
-        ? new SchoolUserRepository('SchoolUser', url ?? '')
-        : new SchoolUserRepository('SchoolUser', url ?? '', clientOptions);
+      this.instance = new SchoolUserRepository(
+        'SchoolUser',
+        url ?? '',
+        isTest ? undefined : clientOptions
+      );
     }
     return this.instance;
   }

@@ -18,10 +18,10 @@ export default {
   watchPathIgnorePatterns: ['globalConfig'],
   coverageThreshold: {
     global: {
-      branches: 50,
-      functions: 50,
-      lines: 15,
-      statements: 15,
+      branches: 65,
+      functions: 80,
+      lines: 45,
+      statements: 45,
     },
   },
 };

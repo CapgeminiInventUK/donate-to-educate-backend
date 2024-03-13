@@ -11,9 +11,11 @@ export class SignUpDataRepository extends BaseRepository<SignUpData> {
     isTest = false
   ): SignUpDataRepository {
     if (!this.instance) {
-      this.instance = isTest
-        ? new SignUpDataRepository('SignUps', url ?? '')
-        : new SignUpDataRepository('SignUps', url ?? '', clientOptions);
+      this.instance = new SignUpDataRepository(
+        'SignUps',
+        url ?? '',
+        isTest ? undefined : clientOptions
+      );
     }
     return this.instance;
   }

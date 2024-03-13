@@ -11,9 +11,11 @@ export class SchoolProfileRepository extends BaseRepository<SchoolProfile> {
     isTest = false
   ): SchoolProfileRepository {
     if (!this.instance) {
-      this.instance = isTest
-        ? new SchoolProfileRepository('SchoolProfile', url ?? '')
-        : new SchoolProfileRepository('SchoolProfile', url ?? '', clientOptions);
+      this.instance = new SchoolProfileRepository(
+        'SchoolProfile',
+        url ?? '',
+        isTest ? undefined : clientOptions
+      );
     }
     return this.instance;
   }

@@ -10,13 +10,11 @@ export class LocalAuthorityRegisterRequestsRepository extends BaseRepository<Loc
     isTest = false
   ): LocalAuthorityRegisterRequestsRepository {
     if (!this.instance) {
-      this.instance = isTest
-        ? new LocalAuthorityRegisterRequestsRepository('LocalAuthorityRegisterRequests', url ?? '')
-        : new LocalAuthorityRegisterRequestsRepository(
-            'LocalAuthorityRegisterRequests',
-            url ?? '',
-            clientOptions
-          );
+      this.instance = new LocalAuthorityRegisterRequestsRepository(
+        'LocalAuthorityRegisterRequests',
+        url ?? '',
+        isTest ? undefined : clientOptions
+      );
     }
     return this.instance;
   }

@@ -11,9 +11,11 @@ export class LocalAuthorityDataRepository extends BaseRepository<LocalAuthority>
     isTest = false
   ): LocalAuthorityDataRepository {
     if (!this.instance) {
-      this.instance = isTest
-        ? new LocalAuthorityDataRepository('LocalAuthorityData', url ?? '')
-        : new LocalAuthorityDataRepository('LocalAuthorityData', url ?? '', clientOptions);
+      this.instance = new LocalAuthorityDataRepository(
+        'LocalAuthorityData',
+        url ?? '',
+        isTest ? undefined : clientOptions
+      );
     }
     return this.instance;
   }

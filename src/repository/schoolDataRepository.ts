@@ -11,9 +11,11 @@ export class SchoolDataRepository extends BaseRepository<School> {
     isTest = false
   ): SchoolDataRepository {
     if (!this.instance) {
-      this.instance = isTest
-        ? new SchoolDataRepository('SchoolData', url ?? '')
-        : new SchoolDataRepository('SchoolData', url ?? '', clientOptions);
+      this.instance = new SchoolDataRepository(
+        'SchoolData',
+        url ?? '',
+        isTest ? undefined : clientOptions
+      );
     }
     return this.instance;
   }
