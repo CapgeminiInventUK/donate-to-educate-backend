@@ -1,6 +1,11 @@
 import { Handler } from 'aws-lambda';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
-import { ItemQuery, JoinRequest, LocalAuthorityUser } from '../../appsync';
+import {
+  ItemQuery,
+  JoinRequest,
+  LocalAuthorityUser,
+  LocalAuthorityRegisterRequest,
+} from '../../appsync';
 import { generate } from 'randomstring';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
@@ -11,7 +16,7 @@ const sesClient = new SESv2Client({ region: 'eu-west-2' });
 
 interface MongoDBEvent {
   detail: {
-    fullDocument: LocalAuthorityUser | JoinRequest | ItemQuery;
+    fullDocument: LocalAuthorityUser | JoinRequest | ItemQuery | LocalAuthorityRegisterRequest;
     fullDocumentBeforeChange: JoinRequest;
     ns: { db: string; coll: string };
   };
@@ -134,6 +139,22 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
         });
         break;
       }
+      case 'LocalAuthorityRegisterRequests': {
+        const { name, email, localAuthority, message } =
+          fullDocument as LocalAuthorityRegisterRequest;
+
+        await sendEmail('ryan.b.smith@capgemini.com', 'request', {
+          type: 'school', // TODO pull in type when it is available
+          subject: 'Local authority has not joined',
+          email,
+          name,
+          localAuthority,
+          message,
+        });
+
+        break;
+      }
+
       default:
         throw new Error(`Unexpected collection: ${event.detail.ns.coll}`);
     }
