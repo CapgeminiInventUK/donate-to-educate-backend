@@ -29,13 +29,31 @@ type ProfileItems {
   actionText: String
 }
 
+type SchoolProfileHeader {
+  phone: String
+  email: String
+  website: String
+  uniformPolicy: String
+}
+
+type CharityProfileHeader {
+  phone: String
+  email: String
+  website: String
+  address: String
+}
+
 type SchoolProfile {
+  header: SchoolProfileHeader
+  about: String
   request: ProfileItems
   donate: ProfileItems
   excess: ProfileItems
 }
 
 type CharityProfile {
+  about: String
+  header: CharityProfileHeader
   request: ProfileItems
   donate: ProfileItems
   excess: ProfileItems

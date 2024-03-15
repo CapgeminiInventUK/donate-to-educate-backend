@@ -24,9 +24,19 @@ export type CharityDetails = {
 
 export type CharityProfile = {
   __typename?: 'CharityProfile';
+  about?: Maybe<Scalars['String']['output']>;
   donate?: Maybe<ProfileItems>;
   excess?: Maybe<ProfileItems>;
+  header?: Maybe<CharityProfileHeader>;
   request?: Maybe<ProfileItems>;
+};
+
+export type CharityProfileHeader = {
+  __typename?: 'CharityProfileHeader';
+  address?: Maybe<Scalars['String']['output']>;
+  email?: Maybe<Scalars['String']['output']>;
+  phone?: Maybe<Scalars['String']['output']>;
+  website?: Maybe<Scalars['String']['output']>;
 };
 
 export type CharitySignUpDetails = {
@@ -268,9 +278,19 @@ export type School = {
 
 export type SchoolProfile = {
   __typename?: 'SchoolProfile';
+  about?: Maybe<Scalars['String']['output']>;
   donate?: Maybe<ProfileItems>;
   excess?: Maybe<ProfileItems>;
+  header?: Maybe<SchoolProfileHeader>;
   request?: Maybe<ProfileItems>;
+};
+
+export type SchoolProfileHeader = {
+  __typename?: 'SchoolProfileHeader';
+  email?: Maybe<Scalars['String']['output']>;
+  phone?: Maybe<Scalars['String']['output']>;
+  uniformPolicy?: Maybe<Scalars['String']['output']>;
+  website?: Maybe<Scalars['String']['output']>;
 };
 
 export type SchoolUser = {
