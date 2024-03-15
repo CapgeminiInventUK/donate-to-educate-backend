@@ -28,7 +28,8 @@ describe('SchoolProfileRepository', () => {
       'Camelsdale Primary School',
       'excess',
       JSON.stringify({}),
-      'West Sussex'
+      'West Sussex',
+      'WO10%XW'
     );
     expect(result).toEqual(true);
 

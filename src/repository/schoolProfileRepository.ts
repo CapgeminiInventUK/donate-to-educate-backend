@@ -29,7 +29,8 @@ export class SchoolProfileRepository extends BaseRepository<SchoolProfile> {
     name: string,
     key: string,
     value: string,
-    localAuthority: string
+    localAuthority: string,
+    postcode: string | null
   ): Promise<boolean> {
     const parsedValue = key === 'about' ? value : (JSON.parse(value) as string);
     return (
@@ -37,7 +38,7 @@ export class SchoolProfileRepository extends BaseRepository<SchoolProfile> {
         { name, id },
         {
           $set: { [key]: parsedValue },
-          $setOnInsert: { name, id, localAuthority },
+          $setOnInsert: { name, id, localAuthority, postcode },
         },
         { upsert: true }
       )

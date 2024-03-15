@@ -77,13 +77,15 @@ export const handler: AppSyncResolverHandler<
         institution: string;
         institutionId: string;
       };
-      const { localAuthority = '' } = (await schoolDataRepository.getByName(institution)) ?? {};
+      const { localAuthority = '', postcode = '' } =
+        (await schoolDataRepository.getByName(institution)) ?? {};
       const res = await schoolProfileRepository.updateKey(
         institutionId,
         institution,
         key,
         value,
-        localAuthority
+        localAuthority,
+        postcode
       );
       callback(null, res);
       break;
