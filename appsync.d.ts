@@ -290,6 +290,10 @@ export type SchoolProfile = {
   donate?: Maybe<ProfileItems>;
   excess?: Maybe<ProfileItems>;
   header?: Maybe<SchoolProfileHeader>;
+  id: Scalars['String']['output'];
+  localAuthority: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  postcode: Scalars['String']['output'];
   request?: Maybe<ProfileItems>;
 };
 

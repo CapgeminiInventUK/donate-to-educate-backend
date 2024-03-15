@@ -38,7 +38,7 @@ export class SchoolProfileRepository extends BaseRepository<SchoolProfile> {
         { name, id },
         {
           $set: { [key]: parsedValue },
-          $setOnInsert: { name, id, localAuthority, postcode },
+          $setOnInsert: { name, id, localAuthority, postcode: postcode ?? '' },
         },
         { upsert: true }
       )

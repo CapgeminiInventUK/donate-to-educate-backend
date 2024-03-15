@@ -2,6 +2,7 @@ export const schoolProfile = [
   {
     id: '125821',
     name: 'Camelsdale Primary School',
+    postcode: 'WF125XU',
     excess: {
       items: '{"Blazers":"Clothing and uniform"}',
       actionText:

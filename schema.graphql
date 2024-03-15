@@ -44,6 +44,10 @@ type CharityProfileHeader {
 }
 
 type SchoolProfile {
+  name: String!
+  id: String!
+  localAuthority: String!
+  postcode: String!
   header: SchoolProfileHeader
   about: String
   request: ProfileItems
