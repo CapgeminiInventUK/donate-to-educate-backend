@@ -216,7 +216,7 @@ export type Query = {
   getRegisteredSchools: Array<School>;
   getRegisteredSchoolsByLa: Array<School>;
   getSchoolByName: School;
-  getSchoolJoinRequestsByLa: Array<School>;
+  getSchoolJoinRequestsByLa: Array<JoinRequest>;
   getSchoolProfile?: Maybe<SchoolProfile>;
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;

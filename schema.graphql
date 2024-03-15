@@ -120,7 +120,7 @@ type Query {
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
   getSignUpData(id: String!): SignUpData
   getSchoolsNearby(postcode: String!, distance: Float!): [School!]!
-  getSchoolJoinRequestsByLa(localAuthority: String!): [School!]!
+  getSchoolJoinRequestsByLa(localAuthority: String!): [JoinRequest!]!
 }
 
 type Mutation {
