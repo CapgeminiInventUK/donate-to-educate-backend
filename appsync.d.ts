@@ -97,6 +97,7 @@ export type LocalAuthorityProfile = {
 export type LocalAuthorityRegisterRequest = {
   __typename?: 'LocalAuthorityRegisterRequest';
   email: Scalars['String']['output'];
+  localAuthority: Scalars['String']['output'];
   message: Scalars['String']['output'];
   name: Scalars['String']['output'];
 };
@@ -160,6 +161,7 @@ export type MutationInsertJoinRequestArgs = {
 
 export type MutationInsertLocalAuthorityRegisterRequestArgs = {
   email: Scalars['String']['input'];
+  localAuthority: Scalars['String']['input'];
   message: Scalars['String']['input'];
   name: Scalars['String']['input'];
 };

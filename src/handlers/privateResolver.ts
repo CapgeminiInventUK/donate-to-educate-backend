@@ -122,8 +122,14 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'insertLocalAuthorityRegisterRequest': {
-      const { name, email, message } = params as MutationInsertLocalAuthorityRegisterRequestArgs;
-      const res = await localAuthorityRegisterRequestsRepository.insert({ name, email, message });
+      const { name, localAuthority, email, message } =
+        params as MutationInsertLocalAuthorityRegisterRequestArgs;
+      const res = await localAuthorityRegisterRequestsRepository.insert({
+        name,
+        localAuthority,
+        email,
+        message,
+      });
       callback(null, res);
       break;
     }
