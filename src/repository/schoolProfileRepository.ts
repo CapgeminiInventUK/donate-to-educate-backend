@@ -31,11 +31,12 @@ export class SchoolProfileRepository extends BaseRepository<SchoolProfile> {
     value: string,
     localAuthority: string
   ): Promise<boolean> {
+    const parsedValue = key === 'about' ? value : (JSON.parse(value) as string);
     return (
       await this.collection.updateOne(
         { name, id },
         {
-          $set: { [key]: JSON.parse(value) as string },
+          $set: { [key]: parsedValue },
           $setOnInsert: { name, id, localAuthority },
         },
         { upsert: true }
