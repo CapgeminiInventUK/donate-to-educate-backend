@@ -24,6 +24,7 @@ describe('LocalAuthorityRegisterRequestsRepository', () => {
       email: 'test@example.com',
       message: '123',
       name: 'Minnie',
+      localAuthority: 'Hackney',
     });
     expect(result).toEqual(true);
   });
