@@ -13,6 +13,7 @@ import {
   LocalAuthorityUser,
   QueryGetSchoolsNearbyArgs,
   QueryGetRegisteredSchoolsByLaArgs,
+  QueryGetSchoolJoinRequestsByLaArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -46,6 +47,7 @@ export const handler: AppSyncResolverHandler<
   | SchoolProfile
   | SignUpData
   | LocalAuthorityUser
+  | QueryGetSchoolJoinRequestsByLaArgs
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
@@ -144,6 +146,12 @@ export const handler: AppSyncResolverHandler<
     case 'getRegisteredSchoolsByLa': {
       const { localAuthority } = params as QueryGetRegisteredSchoolsByLaArgs;
       const res = await schoolDataRepository.getRegisteredByLa(localAuthority);
+      callback(null, res);
+      break;
+    }
+    case 'getSchoolJoinRequestsByLa': {
+      const { localAuthority } = params as QueryGetSchoolJoinRequestsByLaArgs;
+      const res = await joinRequestsRepository.getNewSchoolJoinRequestsByLa(localAuthority);
       callback(null, res);
       break;
     }
