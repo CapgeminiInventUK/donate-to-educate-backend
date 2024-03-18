@@ -1,6 +1,7 @@
 export const charityProfile = [
   {
     id: '125821',
+    postcode: 'IP45 D45',
     name: 'Oxfam',
     excess: {
       items: '{"Blazers":"Clothing and uniform"}',

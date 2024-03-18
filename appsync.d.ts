@@ -28,6 +28,10 @@ export type CharityProfile = {
   donate?: Maybe<ProfileItems>;
   excess?: Maybe<ProfileItems>;
   header?: Maybe<CharityProfileHeader>;
+  id: Scalars['String']['output'];
+  localAuthority: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  postcode: Scalars['String']['output'];
   request?: Maybe<ProfileItems>;
 };
 
@@ -123,6 +127,7 @@ export type Mutation = {
   insertLocalAuthorityRegisterRequest: Scalars['Boolean']['output'];
   insertSignUpData: Scalars['Boolean']['output'];
   registerLocalAuthority: Scalars['Boolean']['output'];
+  updateCharityProfile: Scalars['Boolean']['output'];
   updateJoinRequest: Scalars['Boolean']['output'];
   updateSchoolProfile: Scalars['Boolean']['output'];
 };
@@ -189,6 +194,12 @@ export type MutationRegisterLocalAuthorityArgs = {
 };
 
 
+export type MutationUpdateCharityProfileArgs = {
+  key: Scalars['String']['input'];
+  value: Scalars['String']['input'];
+};
+
+
 export type MutationUpdateJoinRequestArgs = {
   localAuthority: Scalars['String']['input'];
   name: Scalars['String']['input'];
@@ -210,6 +221,7 @@ export type ProfileItems = {
 
 export type Query = {
   __typename?: 'Query';
+  getCharityProfile?: Maybe<CharityProfile>;
   getJoinRequests: Array<JoinRequest>;
   getLocalAuthorities: Array<LocalAuthority>;
   getLocalAuthorityUser: LocalAuthorityUser;
@@ -222,6 +234,12 @@ export type Query = {
   getSchoolsByLa: Array<School>;
   getSchoolsNearby: Array<School>;
   getSignUpData?: Maybe<SignUpData>;
+};
+
+
+export type QueryGetCharityProfileArgs = {
+  id: Scalars['String']['input'];
+  name: Scalars['String']['input'];
 };
 
 

@@ -56,8 +56,12 @@ type SchoolProfile {
 }
 
 type CharityProfile {
-  about: String
+  name: String!
+  id: String!
+  localAuthority: String!
+  postcode: String!
   header: CharityProfileHeader
+  about: String
   request: ProfileItems
   donate: ProfileItems
   excess: ProfileItems
@@ -121,6 +125,7 @@ type Query {
   getLocalAuthorities: [LocalAuthority!]!
   getJoinRequests: [JoinRequest!]!
   getSchoolProfile(name: String!, id: String!): SchoolProfile
+  getCharityProfile(name: String!, id: String!): CharityProfile
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
   getSignUpData(id: String!): SignUpData
   getSchoolsNearby(postcode: String!, distance: Float!): [School!]!
@@ -141,6 +146,7 @@ type Mutation {
   ): Boolean!
 
   updateSchoolProfile(key: String!, value: String!): Boolean! @aws_cognito_user_pools
+  updateCharityProfile(key: String!, value: String!): Boolean! @aws_cognito_user_pools
   updateJoinRequest(localAuthority: String!, name: String!, status: String!): Boolean!
   insertJoinRequest(
     name: String!
