@@ -20,7 +20,28 @@ export class CharityProfileRepository extends BaseRepository<CharityProfile> {
     return this.instance;
   }
 
-  public async getByName(name: string): Promise<WithId<CharityProfile> | undefined> {
-    return await this.getOne({ name });
+  public async getByName(name: string, id: string): Promise<WithId<CharityProfile> | undefined> {
+    return await this.getOne({ name, id });
+  }
+
+  public async updateKey(
+    id: string,
+    name: string,
+    key: string,
+    value: string,
+    localAuthority: string,
+    postcode: string | null
+  ): Promise<boolean> {
+    const parsedValue = key === 'about' ? value : (JSON.parse(value) as string);
+    return (
+      await this.collection.updateOne(
+        { name, id },
+        {
+          $set: { [key]: parsedValue },
+          $setOnInsert: { name, id, localAuthority, postcode: postcode ?? '' },
+        },
+        { upsert: true }
+      )
+    ).acknowledged;
   }
 }

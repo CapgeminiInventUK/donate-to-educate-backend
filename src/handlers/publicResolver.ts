@@ -14,6 +14,8 @@ import {
   QueryGetSchoolsNearbyArgs,
   QueryGetRegisteredSchoolsByLaArgs,
   QueryGetSchoolJoinRequestsByLaArgs,
+  QueryGetCharityProfileArgs,
+  CharityProfile,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -21,6 +23,7 @@ import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRe
 import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
+import { CharityProfileRepository } from '../repository/charityProfileRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { removeFields } from '../shared/graphql';
 import { convertPostcodeToLatLng } from '../shared/postcode';
@@ -30,6 +33,7 @@ const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
 const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 const joinRequestsRepository = JoinRequestsRepository.getInstance();
 const schoolProfileRepository = SchoolProfileRepository.getInstance();
+const charityProfileRepository = CharityProfileRepository.getInstance();
 const signUpDataRepository = SignUpDataRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
@@ -38,6 +42,7 @@ export const handler: AppSyncResolverHandler<
   | QueryGetSignUpDataArgs
   | QueryGetSchoolsNearbyArgs
   | QueryGetRegisteredSchoolsByLaArgs
+  | QueryGetCharityProfileArgs
   | QueryGetLocalAuthorityUserArgs,
   | School
   | School[]
@@ -45,6 +50,7 @@ export const handler: AppSyncResolverHandler<
   | JoinRequest[]
   | boolean
   | SchoolProfile
+  | CharityProfile
   | SignUpData
   | LocalAuthorityUser
   | QueryGetSchoolJoinRequestsByLaArgs
@@ -129,6 +135,12 @@ export const handler: AppSyncResolverHandler<
     case 'getSchoolProfile': {
       const { name, id } = params as QueryGetSchoolProfileArgs;
       const res = await schoolProfileRepository.getByName(name, id);
+      callback(null, res);
+      break;
+    }
+    case 'getCharityProfile': {
+      const { name, id } = params as QueryGetCharityProfileArgs;
+      const res = await charityProfileRepository.getByName(name, id);
       callback(null, res);
       break;
     }

@@ -8,6 +8,7 @@ import {
   MutationInsertItemQueryArgs,
   MutationInsertLocalAuthorityRegisterRequestArgs,
   MutationDeleteDeniedJoinRequestArgs,
+  MutationUpdateCharityProfileArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
@@ -18,11 +19,13 @@ import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { ItemQueriesRepository } from '../repository/itemQueriesRepository';
 import { LocalAuthorityRegisterRequestsRepository } from '../repository/localAuthorityRegisterRequestsRepository';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
+import { CharityProfileRepository } from '../repository/charityProfileRepository';
 
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
 const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 const joinRequestsRepository = JoinRequestsRepository.getInstance();
 const schoolProfileRepository = SchoolProfileRepository.getInstance();
+const charityProfileRepository = CharityProfileRepository.getInstance();
 const signUpDataRepository = SignUpDataRepository.getInstance();
 const itemQueriesRepository = ItemQueriesRepository.getInstance();
 const localAuthorityRegisterRequestsRepository =
@@ -33,6 +36,7 @@ export const handler: AppSyncResolverHandler<
   | MutationRegisterLocalAuthorityArgs
   | MutationInsertSignUpDataArgs
   | MutationUpdateSchoolProfileArgs
+  | MutationUpdateCharityProfileArgs
   | MutationUpdateJoinRequestArgs
   | MutationInsertItemQueryArgs
   | MutationInsertJoinRequestArgs
@@ -86,6 +90,26 @@ export const handler: AppSyncResolverHandler<
         value,
         localAuthority,
         postcode
+      );
+      callback(null, res);
+      break;
+    }
+    case 'updateCharityProfile': {
+      const { key, value } = params as MutationUpdateSchoolProfileArgs;
+      const { institution, institutionId } = info.variables as {
+        institution: string;
+        institutionId: string;
+      };
+      // TODO where to get LA from?
+      // const { localAuthority = '', postcode = '' } =
+      //   (await schoolDataRepository.getByName(institution)) ?? {};
+      const res = await charityProfileRepository.updateKey(
+        institutionId,
+        institution,
+        key,
+        value,
+        '', // TODO add LA
+        '' // TODO add postcode
       );
       callback(null, res);
       break;
