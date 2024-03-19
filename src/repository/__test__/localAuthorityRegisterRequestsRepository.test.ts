@@ -25,6 +25,7 @@ describe('LocalAuthorityRegisterRequestsRepository', () => {
       message: '123',
       name: 'Minnie',
       localAuthority: 'Hackney',
+      type: 'school',
     });
     expect(result).toEqual(true);
   });
