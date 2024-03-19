@@ -166,6 +166,7 @@ type Mutation {
     localAuthority: String!
     email: String!
     message: String!
+    type: String!
   ): Boolean!
 
   insertSignUpData(
@@ -226,4 +227,5 @@ type LocalAuthorityRegisterRequest {
   email: String!
   message: String!
   localAuthority: String!
+  type: String!
 }

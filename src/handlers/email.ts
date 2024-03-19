@@ -140,11 +140,11 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
         break;
       }
       case 'LocalAuthorityRegisterRequests': {
-        const { name, email, localAuthority, message } =
+        const { name, email, localAuthority, message, type } =
           fullDocument as LocalAuthorityRegisterRequest;
 
         await sendEmail('ryan.b.smith@capgemini.com', 'la-not-joined', {
-          type: 'school', // TODO pull in type when it is available
+          type,
           subject: 'Local authority has not joined',
           email,
           name,
