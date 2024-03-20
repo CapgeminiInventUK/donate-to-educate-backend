@@ -29,6 +29,7 @@ describe('JoinRequestsRepository', () => {
 
   it('Can insert', async () => {
     const result = await repo.insert({
+      id: '1',
       name: 'Ryan Smith',
       localAuthority: 'Hackney',
       type: 'school',

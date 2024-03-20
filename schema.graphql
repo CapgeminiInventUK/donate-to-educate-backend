@@ -23,6 +23,14 @@ type School {
   distance: String
 }
 
+type Charity {
+  id: String!
+  localAuthority: String!
+  name: String!
+  address: String!
+  about: String!
+}
+
 type ProfileItems {
   items: String
   whatToExpect: String
@@ -91,6 +99,7 @@ type LocalAuthorityProfile {
 }
 
 type JoinRequest {
+  id: String!
   name: String!
   localAuthority: String!
   type: String!
@@ -114,6 +123,48 @@ type ItemQuery {
   message: String!
   connection: String
   organisationType: String!
+}
+
+type SchoolUser {
+  name: String!
+  school: String!
+  jobTitle: String!
+  email: String!
+  phone: String!
+}
+
+type CharityUser {
+  name: String!
+  jobTitle: String!
+  email: String!
+  phone: String!
+}
+
+type CharityDetails {
+  name: String!
+  address: String!
+  localAuthority: String!
+  about: String
+}
+
+type CharitySignUpDetails {
+  charityUser: CharityUser!
+  charityDetails: CharityDetails!
+}
+
+type LocalAuthorityRegisterRequest {
+  name: String!
+  email: String!
+  message: String!
+  localAuthority: String!
+}
+
+type LocalAuthorityRegisterRequest {
+  name: String!
+  email: String!
+  message: String!
+  localAuthority: String!
+  type: String!
 }
 
 type Query {
@@ -147,7 +198,7 @@ type Mutation {
 
   updateSchoolProfile(key: String!, value: String!): Boolean! @aws_cognito_user_pools
   updateCharityProfile(key: String!, value: String!): Boolean! @aws_cognito_user_pools
-  updateJoinRequest(localAuthority: String!, name: String!, status: String!): Boolean!
+  updateJoinRequest(id: String!, localAuthority: String!, name: String!, status: String!): Boolean!
   insertJoinRequest(
     name: String!
     localAuthority: String!
@@ -193,39 +244,4 @@ type Mutation {
 schema {
   query: Query
   mutation: Mutation
-}
-
-type SchoolUser {
-  name: String!
-  school: String!
-  jobTitle: String!
-  email: String!
-  phone: String!
-}
-
-type CharityUser {
-  name: String!
-  jobTitle: String!
-  email: String!
-  phone: String!
-}
-
-type CharityDetails {
-  name: String!
-  address: String!
-  localAuthority: String!
-  about: String
-}
-
-type CharitySignUpDetails {
-  charityUser: CharityUser!
-  charityDetails: CharityDetails!
-}
-
-type LocalAuthorityRegisterRequest {
-  name: String!
-  email: String!
-  message: String!
-  localAuthority: String!
-  type: String!
 }
