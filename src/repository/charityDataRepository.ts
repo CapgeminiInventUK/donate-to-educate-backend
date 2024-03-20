@@ -2,6 +2,7 @@ import { WithId } from 'mongodb';
 import { Charity } from '../../appsync';
 import { BaseRepository } from './baseRepository';
 import { clientOptions } from './config';
+import { convertPostcodeToLatLng } from '../shared/postcode';
 
 export class CharityDataRepository extends BaseRepository<Charity> {
   private static instance: CharityDataRepository;
@@ -38,6 +39,30 @@ export class CharityDataRepository extends BaseRepository<Charity> {
 
   public async insert(charity: Charity): Promise<boolean> {
     return (await this.collection.insertOne(charity)).acknowledged;
+  }
+
+  public async updatePostcode(
+    id: string,
+    name: string,
+    localAuthority: string,
+    postcode: string
+  ): Promise<boolean> {
+    const [longitude, latitude] = await convertPostcodeToLatLng(postcode);
+    return (
+      await this.collection.updateOne(
+        { name, id, localAuthority },
+        {
+          $set: {
+            postcode,
+            location: {
+              type: 'Point',
+              coordinates: [longitude, latitude],
+            },
+          },
+        },
+        { upsert: true }
+      )
+    ).acknowledged;
   }
 
   public async getSchoolsNearby(

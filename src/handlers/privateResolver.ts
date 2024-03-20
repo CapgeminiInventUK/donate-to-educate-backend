@@ -113,6 +113,15 @@ export const handler: AppSyncResolverHandler<
         value,
         localAuthority
       );
+
+      if (key === 'postcode') {
+        await charityDataRepository.updatePostcode(
+          institutionId,
+          institution,
+          localAuthority,
+          value
+        );
+      }
       callback(null, res);
       break;
     }
