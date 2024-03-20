@@ -1,5 +1,6 @@
 export const joinRequests = [
   {
+    id: '1',
     name: 'Jake Readman',
     localAuthority: 'Jake',
     type: 'charity',
@@ -15,6 +16,7 @@ export const joinRequests = [
     requestTime: 1709907117044,
   },
   {
+    id: '2',
     name: 'Ryan Smith',
     localAuthority: 'Hackney',
     type: 'school',

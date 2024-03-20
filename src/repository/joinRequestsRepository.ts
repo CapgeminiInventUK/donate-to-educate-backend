@@ -35,16 +35,17 @@ export class JoinRequestsRepository extends BaseRepository<JoinRequest> {
   }
 
   public async updateStatus(
+    id: string,
     localAuthority: string,
     name: string,
     status: string
   ): Promise<boolean> {
     return (
       await this.collection.updateOne(
-        { localAuthority, name },
+        { localAuthority, name, id },
         {
           $set: { status },
-          $setOnInsert: { localAuthority, name },
+          $setOnInsert: { localAuthority, name, id },
         },
         { upsert: true }
       )

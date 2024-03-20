@@ -28,8 +28,7 @@ describe('CharityProfileRepository', () => {
       'Oxfam',
       'excess',
       JSON.stringify({}),
-      'West Sussex',
-      'WO10%XW'
+      'West Sussex'
     );
     expect(result).toEqual(true);
 

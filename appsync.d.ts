@@ -14,6 +14,15 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type Charity = {
+  __typename?: 'Charity';
+  about: Scalars['String']['output'];
+  address: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  localAuthority: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+};
+
 export type CharityDetails = {
   __typename?: 'CharityDetails';
   about?: Maybe<Scalars['String']['output']>;
@@ -75,6 +84,7 @@ export type JoinRequest = {
   charityAddress?: Maybe<Scalars['String']['output']>;
   charityName?: Maybe<Scalars['String']['output']>;
   email: Scalars['String']['output'];
+  id: Scalars['String']['output'];
   jobTitle?: Maybe<Scalars['String']['output']>;
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
@@ -201,6 +211,7 @@ export type MutationUpdateCharityProfileArgs = {
 
 
 export type MutationUpdateJoinRequestArgs = {
+  id: Scalars['String']['input'];
   localAuthority: Scalars['String']['input'];
   name: Scalars['String']['input'];
   status: Scalars['String']['input'];
