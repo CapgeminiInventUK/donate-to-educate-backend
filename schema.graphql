@@ -157,13 +157,6 @@ type LocalAuthorityRegisterRequest {
   email: String!
   message: String!
   localAuthority: String!
-}
-
-type LocalAuthorityRegisterRequest {
-  name: String!
-  email: String!
-  message: String!
-  localAuthority: String!
   type: String!
 }
 
