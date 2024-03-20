@@ -18,6 +18,7 @@ export type Charity = {
   __typename?: 'Charity';
   about: Scalars['String']['output'];
   address: Scalars['String']['output'];
+  distance?: Maybe<Scalars['String']['output']>;
   id: Scalars['String']['output'];
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];

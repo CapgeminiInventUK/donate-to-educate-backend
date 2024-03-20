@@ -29,6 +29,7 @@ type Charity {
   name: String!
   address: String!
   about: String!
+  distance: String
 }
 
 type ProfileItems {
