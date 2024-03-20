@@ -173,6 +173,7 @@ type Query {
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
   getSignUpData(id: String!): SignUpData
   getSchoolsNearby(postcode: String!, distance: Float!): [School!]!
+  getCharitiesNearby(postcode: String!, distance: Float!): [Charity!]!
   getSchoolJoinRequestsByLa(localAuthority: String!): [JoinRequest!]!
 }
 

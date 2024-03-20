@@ -234,6 +234,7 @@ export type ProfileItems = {
 
 export type Query = {
   __typename?: 'Query';
+  getCharitiesNearby: Array<Charity>;
   getCharityProfile?: Maybe<CharityProfile>;
   getJoinRequests: Array<JoinRequest>;
   getLocalAuthorities: Array<LocalAuthority>;
@@ -247,6 +248,12 @@ export type Query = {
   getSchoolsByLa: Array<School>;
   getSchoolsNearby: Array<School>;
   getSignUpData?: Maybe<SignUpData>;
+};
+
+
+export type QueryGetCharitiesNearbyArgs = {
+  distance: Scalars['Float']['input'];
+  postcode: Scalars['String']['input'];
 };
 
 

@@ -65,7 +65,7 @@ export class CharityDataRepository extends BaseRepository<Charity> {
     ).acknowledged;
   }
 
-  public async getSchoolsNearby(
+  public async getCharitiesNearby(
     longitude: number,
     latitude: number,
     maxDistance: number

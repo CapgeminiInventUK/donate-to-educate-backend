@@ -16,6 +16,8 @@ import {
   QueryGetSchoolJoinRequestsByLaArgs,
   QueryGetCharityProfileArgs,
   CharityProfile,
+  QueryGetCharitiesNearbyArgs,
+  Charity,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -27,8 +29,10 @@ import { CharityProfileRepository } from '../repository/charityProfileRepository
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { removeFields } from '../shared/graphql';
 import { convertPostcodeToLatLng } from '../shared/postcode';
+import { CharityDataRepository } from '../repository/charityDataRepository';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
+const charityDataRepository = CharityDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
 const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 const joinRequestsRepository = JoinRequestsRepository.getInstance();
@@ -41,11 +45,13 @@ export const handler: AppSyncResolverHandler<
   | QueryGetSchoolsByLaArgs
   | QueryGetSignUpDataArgs
   | QueryGetSchoolsNearbyArgs
+  | QueryGetCharitiesNearbyArgs
   | QueryGetRegisteredSchoolsByLaArgs
   | QueryGetCharityProfileArgs
   | QueryGetLocalAuthorityUserArgs,
   | School
   | School[]
+  | Charity[]
   | LocalAuthority[]
   | JoinRequest[]
   | boolean
@@ -173,6 +179,15 @@ export const handler: AppSyncResolverHandler<
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
       const res = await schoolDataRepository.getSchoolsNearby(longitude, latitude, distance);
+      callback(null, res);
+      break;
+    }
+    case 'getCharitiesNearby': {
+      const { postcode, distance } = params as QueryGetCharitiesNearbyArgs;
+
+      const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
+
+      const res = await charityDataRepository.getCharitiesNearby(longitude, latitude, distance);
       callback(null, res);
       break;
     }
