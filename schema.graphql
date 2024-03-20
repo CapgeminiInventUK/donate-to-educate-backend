@@ -165,6 +165,7 @@ type Query {
   getSchoolByName(name: String!): School!
   getSchoolsByLa(name: String!): [School!]!
   getSchools: [School!]!
+  getCharities: [Charity!]!
   getRegisteredSchools: [School!]!
   getRegisteredSchoolsByLa(localAuthority: String!): [School!]!
   getLocalAuthorities: [LocalAuthority!]!

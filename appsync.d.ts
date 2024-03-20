@@ -235,6 +235,7 @@ export type ProfileItems = {
 
 export type Query = {
   __typename?: 'Query';
+  getCharities: Array<Charity>;
   getCharitiesNearby: Array<Charity>;
   getCharityProfile?: Maybe<CharityProfile>;
   getJoinRequests: Array<JoinRequest>;

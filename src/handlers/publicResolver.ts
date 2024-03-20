@@ -161,6 +161,11 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
+    case 'getCharities': {
+      const res = await charityDataRepository.list(projectedFields);
+      callback(null, res);
+      break;
+    }
     case 'getRegisteredSchoolsByLa': {
       const { localAuthority } = params as QueryGetRegisteredSchoolsByLaArgs;
       const res = await schoolDataRepository.getRegisteredByLa(localAuthority);
