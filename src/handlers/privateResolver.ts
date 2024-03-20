@@ -105,7 +105,7 @@ export const handler: AppSyncResolverHandler<
         institutionId: string;
       };
 
-      const { localAuthority = '' } = (await charityDataRepository.getByName(institution)) ?? {};
+      const { localAuthority = '' } = (await charityDataRepository.getById(institutionId)) ?? {};
       const res = await charityProfileRepository.updateKey(
         institutionId,
         institution,

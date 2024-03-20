@@ -32,6 +32,10 @@ export class CharityDataRepository extends BaseRepository<Charity> {
     return await this.getOne({ name });
   }
 
+  public async getById(id: string): Promise<WithId<Charity> | undefined> {
+    return await this.getOne({ id });
+  }
+
   public async insert(charity: Charity): Promise<boolean> {
     return (await this.collection.insertOne(charity)).acknowledged;
   }
