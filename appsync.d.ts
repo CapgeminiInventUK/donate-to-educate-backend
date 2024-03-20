@@ -114,6 +114,7 @@ export type LocalAuthorityRegisterRequest = {
   localAuthority: Scalars['String']['output'];
   message: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  type: Scalars['String']['output'];
 };
 
 export type LocalAuthorityUser = {
@@ -179,6 +180,7 @@ export type MutationInsertLocalAuthorityRegisterRequestArgs = {
   localAuthority: Scalars['String']['input'];
   message: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  type: Scalars['String']['input'];
 };
 
 

@@ -159,6 +159,14 @@ type LocalAuthorityRegisterRequest {
   localAuthority: String!
 }
 
+type LocalAuthorityRegisterRequest {
+  name: String!
+  email: String!
+  message: String!
+  localAuthority: String!
+  type: String!
+}
+
 type Query {
   getSchoolByName(name: String!): School!
   getSchoolsByLa(name: String!): [School!]!
@@ -209,6 +217,7 @@ type Mutation {
     localAuthority: String!
     email: String!
     message: String!
+    type: String!
   ): Boolean!
 
   insertSignUpData(
