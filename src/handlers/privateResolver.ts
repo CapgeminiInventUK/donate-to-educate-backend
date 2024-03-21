@@ -18,6 +18,7 @@ import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { ItemQueriesRepository } from '../repository/itemQueriesRepository';
 import { LocalAuthorityRegisterRequestsRepository } from '../repository/localAuthorityRegisterRequestsRepository';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
+import { validatePayload } from '../utils/validatePayload';
 
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
 const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
@@ -45,6 +46,8 @@ export const handler: AppSyncResolverHandler<
 
   const { arguments: params, info } = event;
   logger.info(`${JSON.stringify(params)}`);
+
+  validatePayload(params);
 
   switch (info.fieldName) {
     case 'registerLocalAuthority': {
