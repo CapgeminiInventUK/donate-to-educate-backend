@@ -230,6 +230,7 @@ export type ProfileItems = {
   __typename?: 'ProfileItems';
   actionText?: Maybe<Scalars['String']['output']>;
   items?: Maybe<Scalars['String']['output']>;
+  productTypes?: Maybe<Array<Maybe<Scalars['Float']['output']>>>;
   whatToExpect?: Maybe<Scalars['String']['output']>;
 };
 
