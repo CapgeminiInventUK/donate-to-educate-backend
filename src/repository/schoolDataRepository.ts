@@ -1,5 +1,5 @@
 import { WithId } from 'mongodb';
-import { School } from '../../appsync';
+import { InstituteSearchResult, School } from '../../appsync';
 import { BaseRepository } from './baseRepository';
 import { clientOptions } from './config';
 
@@ -63,5 +63,46 @@ export class SchoolDataRepository extends BaseRepository<School> {
     ]);
 
     return await res.toArray();
+  }
+
+  public async getSchoolsNearbyWithProfile(
+    longitude: number,
+    latitude: number,
+    maxDistance: number
+  ): Promise<InstituteSearchResult[]> {
+    const res = this.collection.aggregate<School>([
+      {
+        $geoNear: {
+          near: {
+            type: 'Point',
+            coordinates: [longitude, latitude],
+          },
+          distanceField: 'distance',
+          maxDistance,
+        },
+      },
+      {
+        $lookup: {
+          from: 'SchoolProfile',
+          localField: 'urn',
+          foreignField: 'id',
+          as: 'profile',
+        },
+      },
+    ]);
+
+    const array = await res.toArray();
+    return array.reduce(
+      (acc, { name, distance, profile }) => {
+        const hasProfileItems = profile && profile?.length > 0;
+
+        const productTypes = hasProfileItems
+          ? (profile[0]?.donate?.productTypes as number[]) ?? []
+          : [];
+        acc.push({ name, distance: distance ?? 0, productTypes });
+        return acc;
+      },
+      [] as { name: string; distance: number; productTypes: number[] }[]
+    );
   }
 }

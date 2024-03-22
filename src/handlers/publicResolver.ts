@@ -19,6 +19,7 @@ import {
   QueryGetCharitiesNearbyArgs,
   Charity,
   AdminStats,
+  InstituteSearchResult,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -55,6 +56,7 @@ export const handler: AppSyncResolverHandler<
   | Charity[]
   | LocalAuthority[]
   | JoinRequest[]
+  | InstituteSearchResult[]
   | boolean
   | SchoolProfile
   | CharityProfile
@@ -189,6 +191,19 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
+    case 'getSchoolsNearbyWithProfile': {
+      const { postcode, distance } = params as QueryGetSchoolsNearbyArgs;
+
+      const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
+
+      const res = await schoolDataRepository.getSchoolsNearbyWithProfile(
+        longitude,
+        latitude,
+        distance
+      );
+      callback(null, res);
+      break;
+    }
     case 'getCharitiesNearby': {
       const { postcode, distance } = params as QueryGetCharitiesNearbyArgs;
 
@@ -225,3 +240,5 @@ export const handler: AppSyncResolverHandler<
 
   throw new Error('An unknown error occurred');
 };
+
+// name, distance, product types

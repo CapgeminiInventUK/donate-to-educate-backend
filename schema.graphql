@@ -20,7 +20,8 @@ type School {
   phone: String
   town: String
   website: String
-  distance: String
+  distance: Int
+  profile: [SchoolProfile]
 }
 
 type Charity {
@@ -29,7 +30,8 @@ type Charity {
   name: String!
   address: String!
   about: String!
-  distance: String
+  distance: Int
+  profile: [CharityProfile]
 }
 
 type ProfileItems {
@@ -177,6 +179,12 @@ type AdminStats {
   joinRequests: JoinRequestStats!
   registeredSchools: Int!
   registeredCharities: Int!
+}
+
+type InstituteSearchResult {
+  name: String!
+  distance: Int!
+  productTypes: [Int!]!
 }
 
 type Query {
