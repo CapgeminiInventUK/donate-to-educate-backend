@@ -11,6 +11,7 @@ import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { v4 as uuidv4 } from 'uuid';
 import { CharityDataRepository } from '../repository/charityDataRepository';
+import { logger } from '../shared/logger';
 
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
 
@@ -27,15 +28,13 @@ const schoolDataRepository = SchoolDataRepository.getInstance();
 const charityDataRepository = CharityDataRepository.getInstance();
 
 export const handler: Handler = async (event: MongoDBEvent, context, callback): Promise<void> => {
-  // eslint-disable-next-line no-console
-  console.log(event);
+  logger.info(event);
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
     // TODO add validation here
     if (!event?.detail?.fullDocument?.email && !event?.detail?.fullDocumentBeforeChange?.email) {
-      // eslint-disable-next-line no-console
-      console.log('No email address provided');
+      logger.info('No email address provided');
       callback('No email address provided', null);
       return;
     }
@@ -203,8 +202,7 @@ const sendEmail = async (
     })
   );
 
-  // eslint-disable-next-line no-console
-  console.log(res);
+  logger.info(res);
 };
 
 const getContentFromType = (type: string): { subject: string; intro: string } => {
