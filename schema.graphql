@@ -69,7 +69,7 @@ type CharityProfile {
   name: String!
   id: String!
   localAuthority: String!
-  postcode: String!
+  postcode: String
   header: CharityProfileHeader
   about: String
   request: ProfileItems

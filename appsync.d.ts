@@ -41,7 +41,7 @@ export type CharityProfile = {
   id: Scalars['String']['output'];
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
-  postcode: Scalars['String']['output'];
+  postcode?: Maybe<Scalars['String']['output']>;
   request?: Maybe<ProfileItems>;
 };
 
