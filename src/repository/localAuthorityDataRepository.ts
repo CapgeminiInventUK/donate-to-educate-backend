@@ -27,4 +27,12 @@ export class LocalAuthorityDataRepository extends BaseRepository<LocalAuthority>
   public async setToRegistered(name: string): Promise<boolean> {
     return (await this.collection.updateOne({ name }, { $set: { registered: true } })).acknowledged;
   }
+
+  public async getRegisteredLocalAuthorityCount(): Promise<number> {
+    return await this.getCount({ registered: true });
+  }
+
+  public async getNotRegisteredLocalAuthorityCount(): Promise<number> {
+    return await this.getCount({ registered: false });
+  }
 }

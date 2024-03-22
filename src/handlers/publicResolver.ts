@@ -18,6 +18,7 @@ import {
   CharityProfile,
   QueryGetCharitiesNearbyArgs,
   Charity,
+  AdminStats,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -59,6 +60,7 @@ export const handler: AppSyncResolverHandler<
   | CharityProfile
   | SignUpData
   | LocalAuthorityUser
+  | AdminStats
   | QueryGetSchoolJoinRequestsByLaArgs
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
@@ -193,6 +195,25 @@ export const handler: AppSyncResolverHandler<
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
       const res = await charityDataRepository.getCharitiesNearby(longitude, latitude, distance);
+      callback(null, res);
+      break;
+    }
+    case 'getAdminTileStats': {
+      const [joined, notJoined, school, charity, registeredSchools, registeredCharities] =
+        await Promise.all([
+          localAuthorityDataRepository.getRegisteredLocalAuthorityCount(),
+          localAuthorityDataRepository.getNotRegisteredLocalAuthorityCount(),
+          joinRequestsRepository.getSchoolJoinRequestsCount(),
+          joinRequestsRepository.getCharityJoinRequestsCount(),
+          schoolDataRepository.getRegisteredSchoolsCount(),
+          charityDataRepository.getRegisteredCharityCount(),
+        ]);
+      const res = {
+        la: { joined, notJoined },
+        joinRequests: { school, charity },
+        registeredSchools,
+        registeredCharities,
+      };
       callback(null, res);
       break;
     }

@@ -14,6 +14,14 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type AdminStats = {
+  __typename?: 'AdminStats';
+  joinRequests: JoinRequestStats;
+  la: LocalAuthorityStats;
+  registeredCharities: Scalars['Float']['output'];
+  registeredSchools: Scalars['Float']['output'];
+};
+
 export type Charity = {
   __typename?: 'Charity';
   about: Scalars['String']['output'];
@@ -96,6 +104,12 @@ export type JoinRequest = {
   type: Scalars['String']['output'];
 };
 
+export type JoinRequestStats = {
+  __typename?: 'JoinRequestStats';
+  charity: Scalars['Float']['output'];
+  school: Scalars['Float']['output'];
+};
+
 export type LocalAuthority = {
   __typename?: 'LocalAuthority';
   code: Scalars['String']['output'];
@@ -116,6 +130,12 @@ export type LocalAuthorityRegisterRequest = {
   message: Scalars['String']['output'];
   name: Scalars['String']['output'];
   type: Scalars['String']['output'];
+};
+
+export type LocalAuthorityStats = {
+  __typename?: 'LocalAuthorityStats';
+  joined: Scalars['Float']['output'];
+  notJoined: Scalars['Float']['output'];
 };
 
 export type LocalAuthorityUser = {
@@ -236,6 +256,7 @@ export type ProfileItems = {
 
 export type Query = {
   __typename?: 'Query';
+  getAdminTileStats: AdminStats;
   getCharities: Array<Charity>;
   getCharitiesNearby: Array<Charity>;
   getCharityProfile?: Maybe<CharityProfile>;

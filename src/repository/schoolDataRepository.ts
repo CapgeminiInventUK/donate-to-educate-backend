@@ -36,6 +36,10 @@ export class SchoolDataRepository extends BaseRepository<School> {
     return await this.getByQuery({ registered: true });
   }
 
+  public async getRegisteredSchoolsCount(): Promise<number> {
+    return await this.getCount({ registered: true });
+  }
+
   public async getRegisteredByLa(localAuthority: string): Promise<WithId<School>[]> {
     return await this.getByQuery({ registered: true, localAuthority });
   }

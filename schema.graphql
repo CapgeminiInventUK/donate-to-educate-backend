@@ -162,6 +162,23 @@ type LocalAuthorityRegisterRequest {
   type: String!
 }
 
+type LocalAuthorityStats {
+  joined: Float!
+  notJoined: Float!
+}
+
+type JoinRequestStats {
+  school: Float!
+  charity: Float!
+}
+
+type AdminStats {
+  la: LocalAuthorityStats!
+  joinRequests: JoinRequestStats!
+  registeredSchools: Float!
+  registeredCharities: Float!
+}
+
 type Query {
   getSchoolByName(name: String!): School!
   getSchoolsByLa(name: String!): [School!]!
@@ -178,6 +195,7 @@ type Query {
   getSchoolsNearby(postcode: String!, distance: Float!): [School!]!
   getCharitiesNearby(postcode: String!, distance: Float!): [Charity!]!
   getSchoolJoinRequestsByLa(localAuthority: String!): [JoinRequest!]!
+  getAdminTileStats: AdminStats!
 }
 
 type Mutation {
