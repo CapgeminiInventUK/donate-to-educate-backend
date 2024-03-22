@@ -18,8 +18,8 @@ export type AdminStats = {
   __typename?: 'AdminStats';
   joinRequests: JoinRequestStats;
   la: LocalAuthorityStats;
-  registeredCharities: Scalars['Float']['output'];
-  registeredSchools: Scalars['Float']['output'];
+  registeredCharities: Scalars['Int']['output'];
+  registeredSchools: Scalars['Int']['output'];
 };
 
 export type Charity = {
@@ -106,8 +106,8 @@ export type JoinRequest = {
 
 export type JoinRequestStats = {
   __typename?: 'JoinRequestStats';
-  charity: Scalars['Float']['output'];
-  school: Scalars['Float']['output'];
+  charity: Scalars['Int']['output'];
+  school: Scalars['Int']['output'];
 };
 
 export type LocalAuthority = {
@@ -134,8 +134,8 @@ export type LocalAuthorityRegisterRequest = {
 
 export type LocalAuthorityStats = {
   __typename?: 'LocalAuthorityStats';
-  joined: Scalars['Float']['output'];
-  notJoined: Scalars['Float']['output'];
+  joined: Scalars['Int']['output'];
+  notJoined: Scalars['Int']['output'];
 };
 
 export type LocalAuthorityUser = {

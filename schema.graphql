@@ -163,20 +163,20 @@ type LocalAuthorityRegisterRequest {
 }
 
 type LocalAuthorityStats {
-  joined: Float!
-  notJoined: Float!
+  joined: Int!
+  notJoined: Int!
 }
 
 type JoinRequestStats {
-  school: Float!
-  charity: Float!
+  school: Int!
+  charity: Int!
 }
 
 type AdminStats {
   la: LocalAuthorityStats!
   joinRequests: JoinRequestStats!
-  registeredSchools: Float!
-  registeredCharities: Float!
+  registeredSchools: Int!
+  registeredCharities: Int!
 }
 
 type Query {
