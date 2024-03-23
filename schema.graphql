@@ -187,6 +187,12 @@ type InstituteSearchResult {
   productTypes: [Int!]!
 }
 
+enum Type {
+  donate
+  request
+  excess
+}
+
 type Query {
   getSchoolByName(name: String!): School!
   getSchoolsByLa(name: String!): [School!]!
@@ -204,7 +210,16 @@ type Query {
   getCharitiesNearby(postcode: String!, distance: Float!): [Charity!]!
   getSchoolJoinRequestsByLa(localAuthority: String!): [JoinRequest!]!
   getAdminTileStats: AdminStats!
-  getSchoolsNearbyWithProfile(postcode: String!, distance: Float!): [InstituteSearchResult!]!
+  getSchoolsNearbyWithProfile(
+    postcode: String!
+    distance: Float!
+    type: Type!
+  ): [InstituteSearchResult!]!
+  getCharitiesNearbyWithProfile(
+    postcode: String!
+    distance: Float!
+    type: Type!
+  ): [InstituteSearchResult!]!
 }
 
 type Mutation {

@@ -20,6 +20,8 @@ import {
   Charity,
   AdminStats,
   InstituteSearchResult,
+  QueryGetSchoolsNearbyWithProfileArgs,
+  QueryGetCharitiesNearbyWithProfileArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -192,14 +194,15 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getSchoolsNearbyWithProfile': {
-      const { postcode, distance } = params as QueryGetSchoolsNearbyArgs;
+      const { postcode, distance, type } = params as QueryGetSchoolsNearbyWithProfileArgs;
 
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
       const res = await schoolDataRepository.getSchoolsNearbyWithProfile(
         longitude,
         latitude,
-        distance
+        distance,
+        type
       );
       callback(null, res);
       break;
@@ -210,6 +213,20 @@ export const handler: AppSyncResolverHandler<
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
       const res = await charityDataRepository.getCharitiesNearby(longitude, latitude, distance);
+      callback(null, res);
+      break;
+    }
+    case 'getCharitiesNearbyWithProfile': {
+      const { postcode, distance, type } = params as QueryGetCharitiesNearbyWithProfileArgs;
+
+      const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
+
+      const res = await charityDataRepository.getCharitiesNearbyWithProfile(
+        longitude,
+        latitude,
+        distance,
+        type
+      );
       callback(null, res);
       break;
     }

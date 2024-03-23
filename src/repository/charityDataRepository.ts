@@ -1,5 +1,5 @@
 import { WithId } from 'mongodb';
-import { Charity } from '../../appsync';
+import { Charity, InstituteSearchResult, Type } from '../../appsync';
 import { BaseRepository } from './baseRepository';
 import { clientOptions } from './config';
 import { convertPostcodeToLatLng } from '../shared/postcode';
@@ -88,5 +88,46 @@ export class CharityDataRepository extends BaseRepository<Charity> {
     ]);
 
     return await res.toArray();
+  }
+
+  public async getCharitiesNearbyWithProfile(
+    longitude: number,
+    latitude: number,
+    maxDistance: number,
+    type: Type
+  ): Promise<InstituteSearchResult[]> {
+    const res = this.collection.aggregate<Charity>([
+      {
+        $geoNear: {
+          near: {
+            type: 'Point',
+            coordinates: [longitude, latitude],
+          },
+          distanceField: 'distance',
+          maxDistance,
+        },
+      },
+      {
+        $lookup: {
+          from: 'CharityProfile',
+          localField: 'id',
+          foreignField: 'id',
+          as: 'profile',
+        },
+      },
+    ]);
+
+    return (await res.toArray()).reduce(
+      (acc, { name, distance, profile }) => {
+        const hasProfileItems = profile && profile?.length > 0;
+
+        const productTypes = hasProfileItems
+          ? (profile[0]?.[type]?.productTypes as number[]) ?? []
+          : [];
+        acc.push({ name, distance: distance ?? 0, productTypes });
+        return acc;
+      },
+      [] as { name: string; distance: number; productTypes: number[] }[]
+    );
   }
 }

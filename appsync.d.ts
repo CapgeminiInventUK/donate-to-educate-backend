@@ -267,6 +267,7 @@ export type Query = {
   getAdminTileStats: AdminStats;
   getCharities: Array<Charity>;
   getCharitiesNearby: Array<Charity>;
+  getCharitiesNearbyWithProfile: Array<InstituteSearchResult>;
   getCharityProfile?: Maybe<CharityProfile>;
   getJoinRequests: Array<JoinRequest>;
   getLocalAuthorities: Array<LocalAuthority>;
@@ -287,6 +288,13 @@ export type Query = {
 export type QueryGetCharitiesNearbyArgs = {
   distance: Scalars['Float']['input'];
   postcode: Scalars['String']['input'];
+};
+
+
+export type QueryGetCharitiesNearbyWithProfileArgs = {
+  distance: Scalars['Float']['input'];
+  postcode: Scalars['String']['input'];
+  type: Type;
 };
 
 
@@ -336,6 +344,7 @@ export type QueryGetSchoolsNearbyArgs = {
 export type QueryGetSchoolsNearbyWithProfileArgs = {
   distance: Scalars['Float']['input'];
   postcode: Scalars['String']['input'];
+  type: Type;
 };
 
 
@@ -400,3 +409,9 @@ export type SignUpData = {
   nameId: Scalars['String']['output'];
   type: Scalars['String']['output'];
 };
+
+export enum Type {
+  Donate = 'donate',
+  Excess = 'excess',
+  Request = 'request'
+}

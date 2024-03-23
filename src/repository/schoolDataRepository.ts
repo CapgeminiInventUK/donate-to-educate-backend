@@ -1,5 +1,5 @@
 import { WithId } from 'mongodb';
-import { InstituteSearchResult, School } from '../../appsync';
+import { InstituteSearchResult, School, Type } from '../../appsync';
 import { BaseRepository } from './baseRepository';
 import { clientOptions } from './config';
 
@@ -68,7 +68,8 @@ export class SchoolDataRepository extends BaseRepository<School> {
   public async getSchoolsNearbyWithProfile(
     longitude: number,
     latitude: number,
-    maxDistance: number
+    maxDistance: number,
+    type: Type
   ): Promise<InstituteSearchResult[]> {
     const res = this.collection.aggregate<School>([
       {
@@ -91,13 +92,12 @@ export class SchoolDataRepository extends BaseRepository<School> {
       },
     ]);
 
-    const array = await res.toArray();
-    return array.reduce(
+    return (await res.toArray()).reduce(
       (acc, { name, distance, profile }) => {
         const hasProfileItems = profile && profile?.length > 0;
 
         const productTypes = hasProfileItems
-          ? (profile[0]?.donate?.productTypes as number[]) ?? []
+          ? (profile[0]?.[type]?.productTypes as number[]) ?? []
           : [];
         acc.push({ name, distance: distance ?? 0, productTypes });
         return acc;
