@@ -1,24 +1,20 @@
-import { Collection, Db, MongoClient } from 'mongodb';
 import { ItemQuery } from '../../appsync';
+import { BaseRepository } from './baseRepository';
+import { clientOptions } from './config';
 
-export class ItemQueriesRepository {
+export class ItemQueriesRepository extends BaseRepository<ItemQuery> {
   private static instance: ItemQueriesRepository;
-  private readonly client: MongoClient;
-  private readonly db: Db;
-  private readonly collection: Collection<ItemQuery>;
 
-  private constructor() {
-    this.client = new MongoClient(
-      process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/',
-      { authMechanism: 'MONGODB-AWS', authSource: '$external' }
-    );
-    this.db = this.client.db('D2E');
-    this.collection = this.db.collection<ItemQuery>('ItemQueries');
-  }
-
-  static getInstance(): ItemQueriesRepository {
+  static getInstance(
+    url = process?.env?.MONGODB_CONNECTION_STRING,
+    isTest = false
+  ): ItemQueriesRepository {
     if (!this.instance) {
-      this.instance = new ItemQueriesRepository();
+      this.instance = new ItemQueriesRepository(
+        'ItemQueries',
+        url ?? '',
+        isTest ? undefined : clientOptions
+      );
     }
     return this.instance;
   }

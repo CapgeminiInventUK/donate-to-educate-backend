@@ -1,36 +1,23 @@
-import { Collection, Db, Filter, MongoClient, WithId } from 'mongodb';
+import { WithId } from 'mongodb';
 import { JoinRequest } from '../../appsync';
+import { BaseRepository } from './baseRepository';
+import { clientOptions } from './config';
 
-export class JoinRequestsRepository {
+export class JoinRequestsRepository extends BaseRepository<JoinRequest> {
   private static instance: JoinRequestsRepository;
-  private readonly client: MongoClient;
-  private readonly db: Db;
-  private readonly collection: Collection<JoinRequest>;
 
-  private constructor() {
-    this.client = new MongoClient(
-      process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/',
-      { authMechanism: 'MONGODB-AWS', authSource: '$external' }
-    );
-    this.db = this.client.db('D2E');
-    this.collection = this.db.collection<JoinRequest>('JoinRequests');
-  }
-
-  static getInstance(): JoinRequestsRepository {
+  static getInstance(
+    url = process?.env?.MONGODB_CONNECTION_STRING,
+    isTest = false
+  ): JoinRequestsRepository {
     if (!this.instance) {
-      this.instance = new JoinRequestsRepository();
+      this.instance = new JoinRequestsRepository(
+        'JoinRequests',
+        url ?? '',
+        isTest ? undefined : clientOptions
+      );
     }
     return this.instance;
-  }
-
-  private async getByQuery(query: Filter<JoinRequest>): Promise<WithId<JoinRequest>[]> {
-    const cursor = this.collection.find(query);
-
-    if (!(await cursor.hasNext())) {
-      return [];
-    }
-
-    return await cursor.toArray();
   }
 
   public async list(): Promise<WithId<JoinRequest>[]> {
@@ -41,17 +28,24 @@ export class JoinRequestsRepository {
     return await this.getByQuery({ status: 'NEW' });
   }
 
+  public async getNewSchoolJoinRequestsByLa(
+    localAuthority: string
+  ): Promise<WithId<JoinRequest>[]> {
+    return await this.getByQuery({ status: 'NEW', type: 'school', localAuthority });
+  }
+
   public async updateStatus(
+    id: string,
     localAuthority: string,
     name: string,
     status: string
   ): Promise<boolean> {
     return (
       await this.collection.updateOne(
-        { localAuthority, name },
+        { localAuthority, name, id },
         {
           $set: { status },
-          $setOnInsert: { localAuthority, name },
+          $setOnInsert: { localAuthority, name, id },
         },
         { upsert: true }
       )

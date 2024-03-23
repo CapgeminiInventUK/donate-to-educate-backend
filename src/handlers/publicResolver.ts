@@ -13,6 +13,11 @@ import {
   LocalAuthorityUser,
   QueryGetSchoolsNearbyArgs,
   QueryGetRegisteredSchoolsByLaArgs,
+  QueryGetSchoolJoinRequestsByLaArgs,
+  QueryGetCharityProfileArgs,
+  CharityProfile,
+  QueryGetCharitiesNearbyArgs,
+  Charity,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -20,15 +25,19 @@ import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRe
 import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
+import { CharityProfileRepository } from '../repository/charityProfileRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { removeFields } from '../shared/graphql';
 import { convertPostcodeToLatLng } from '../shared/postcode';
+import { CharityDataRepository } from '../repository/charityDataRepository';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
+const charityDataRepository = CharityDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
 const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 const joinRequestsRepository = JoinRequestsRepository.getInstance();
 const schoolProfileRepository = SchoolProfileRepository.getInstance();
+const charityProfileRepository = CharityProfileRepository.getInstance();
 const signUpDataRepository = SignUpDataRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
@@ -36,16 +45,21 @@ export const handler: AppSyncResolverHandler<
   | QueryGetSchoolsByLaArgs
   | QueryGetSignUpDataArgs
   | QueryGetSchoolsNearbyArgs
+  | QueryGetCharitiesNearbyArgs
   | QueryGetRegisteredSchoolsByLaArgs
+  | QueryGetCharityProfileArgs
   | QueryGetLocalAuthorityUserArgs,
   | School
   | School[]
+  | Charity[]
   | LocalAuthority[]
   | JoinRequest[]
   | boolean
   | SchoolProfile
+  | CharityProfile
   | SignUpData
   | LocalAuthorityUser
+  | QueryGetSchoolJoinRequestsByLaArgs
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
@@ -53,10 +67,17 @@ export const handler: AppSyncResolverHandler<
   const { arguments: params, info } = event;
   logger.info(`${JSON.stringify(params)}`);
 
-  const projectedFields = info.selectionSetList
-    .replace(/\[|\]/gm, '')
-    .split(', ')
-    .reduce((acc, item) => ({ ...acc, [item]: 1 }), {});
+  logger.info(typeof info.selectionSetList);
+
+  const selections =
+    typeof info.selectionSetList === 'string'
+      ? (info.selectionSetList as string).replace(/\[|\]/gm, '').split(', ')
+      : info.selectionSetList;
+
+  const projectedFields: Record<string, number> = selections.reduce(
+    (acc: Record<string, number>, item: string) => ({ ...acc, [item]: 1 }),
+    {}
+  );
   logger.info(`Projected fields ${JSON.stringify(projectedFields)}`);
 
   switch (info.fieldName) {
@@ -123,6 +144,12 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
+    case 'getCharityProfile': {
+      const { name, id } = params as QueryGetCharityProfileArgs;
+      const res = await charityProfileRepository.getByName(name, id);
+      callback(null, res);
+      break;
+    }
     case 'getSignUpData': {
       const { id } = params as QueryGetSignUpDataArgs;
       const res = await signUpDataRepository.getById(id);
@@ -134,9 +161,20 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
+    case 'getCharities': {
+      const res = await charityDataRepository.list(projectedFields);
+      callback(null, res);
+      break;
+    }
     case 'getRegisteredSchoolsByLa': {
       const { localAuthority } = params as QueryGetRegisteredSchoolsByLaArgs;
       const res = await schoolDataRepository.getRegisteredByLa(localAuthority);
+      callback(null, res);
+      break;
+    }
+    case 'getSchoolJoinRequestsByLa': {
+      const { localAuthority } = params as QueryGetSchoolJoinRequestsByLaArgs;
+      const res = await joinRequestsRepository.getNewSchoolJoinRequestsByLa(localAuthority);
       callback(null, res);
       break;
     }
@@ -146,6 +184,15 @@ export const handler: AppSyncResolverHandler<
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
       const res = await schoolDataRepository.getSchoolsNearby(longitude, latitude, distance);
+      callback(null, res);
+      break;
+    }
+    case 'getCharitiesNearby': {
+      const { postcode, distance } = params as QueryGetCharitiesNearbyArgs;
+
+      const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
+
+      const res = await charityDataRepository.getCharitiesNearby(longitude, latitude, distance);
       callback(null, res);
       break;
     }

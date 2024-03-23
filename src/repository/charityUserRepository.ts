@@ -1,46 +1,23 @@
-import { Collection, Db, Filter, MongoClient, WithId } from 'mongodb';
+import { WithId } from 'mongodb';
 import { CharityUser } from '../../appsync';
+import { BaseRepository } from './baseRepository';
+import { clientOptions } from './config';
 
-export class CharityUserRepository {
+export class CharityUserRepository extends BaseRepository<CharityUser> {
   private static instance: CharityUserRepository;
-  private readonly client: MongoClient;
-  private readonly db: Db;
-  private readonly collection: Collection<CharityUser>;
 
-  private constructor() {
-    this.client = new MongoClient(
-      process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/',
-      { authMechanism: 'MONGODB-AWS', authSource: '$external' }
-    );
-    this.db = this.client.db('D2E');
-    this.collection = this.db.collection<CharityUser>('CharityUser');
-  }
-
-  static getInstance(): CharityUserRepository {
+  static getInstance(
+    url = process?.env?.MONGODB_CONNECTION_STRING,
+    isTest = false
+  ): CharityUserRepository {
     if (!this.instance) {
-      this.instance = new CharityUserRepository();
+      this.instance = new CharityUserRepository(
+        'CharityUser',
+        url ?? '',
+        isTest ? undefined : clientOptions
+      );
     }
     return this.instance;
-  }
-
-  private async getByQuery(query: Filter<CharityUser>): Promise<WithId<CharityUser>[]> {
-    const cursor = this.collection.find(query);
-
-    if (!(await cursor.hasNext())) {
-      return [];
-    }
-
-    return await cursor.toArray();
-  }
-
-  private async getOne(query: Filter<CharityUser>): Promise<WithId<CharityUser> | undefined> {
-    const result = await this.collection.findOne(query);
-
-    if (!result) {
-      return undefined;
-    }
-
-    return result;
   }
 
   public async getByEmail(email: string): Promise<WithId<CharityUser> | undefined> {

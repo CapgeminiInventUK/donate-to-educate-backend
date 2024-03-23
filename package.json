@@ -37,7 +37,7 @@
   "homepage": "https://github.com/CapgeminiInventUK/educate-for-good-backend#readme",
   "dependencies": {
     "@aws-sdk/client-sesv2": "^3.473.0",
-    "@sparticuz/chromium-min": "^121.0.0",
+    "@sparticuz/chromium-min": "^122.0.0",
     "@types/proj4": "^2.5.2",
     "adm-zip": "^0.5.10",
     "aws-sdk": "^2.1518.0",
@@ -58,6 +58,7 @@
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.0",
     "@graphql-codegen/typescript": "^4.0.1",
+    "@shelf/jest-mongodb": "^4.2.0",
     "@types/adm-zip": "^0.5.5",
     "@types/aws-lambda": "^8.10.125",
     "@types/jest": "^29.2.0",

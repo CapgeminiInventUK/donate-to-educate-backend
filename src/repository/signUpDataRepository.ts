@@ -1,35 +1,23 @@
-import { Collection, Db, Filter, MongoClient, WithId } from 'mongodb';
+import { WithId } from 'mongodb';
 import { SignUpData } from '../../appsync';
+import { BaseRepository } from './baseRepository';
+import { clientOptions } from './config';
 
-export class SignUpDataRepository {
+export class SignUpDataRepository extends BaseRepository<SignUpData> {
   private static instance: SignUpDataRepository;
-  private readonly client: MongoClient;
-  private readonly db: Db;
-  private readonly collection: Collection<SignUpData>;
 
-  private constructor() {
-    this.client = new MongoClient(
-      process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/',
-      { authMechanism: 'MONGODB-AWS', authSource: '$external' }
-    );
-    this.db = this.client.db('D2E');
-    this.collection = this.db.collection<SignUpData>('SignUps');
-  }
-
-  static getInstance(): SignUpDataRepository {
+  static getInstance(
+    url = process?.env?.MONGODB_CONNECTION_STRING,
+    isTest = false
+  ): SignUpDataRepository {
     if (!this.instance) {
-      this.instance = new SignUpDataRepository();
+      this.instance = new SignUpDataRepository(
+        'SignUps',
+        url ?? '',
+        isTest ? undefined : clientOptions
+      );
     }
     return this.instance;
-  }
-
-  private async getOne(query: Filter<SignUpData>): Promise<WithId<SignUpData> | undefined> {
-    const result = await this.collection.findOne(query);
-    if (!result) {
-      return undefined;
-    }
-
-    return result;
   }
 
   public async getById(id: string): Promise<WithId<SignUpData> | undefined> {

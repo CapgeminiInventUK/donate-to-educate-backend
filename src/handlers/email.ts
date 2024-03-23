@@ -1,25 +1,30 @@
 import { Handler } from 'aws-lambda';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
-import { ItemQuery, JoinRequest, LocalAuthorityUser } from '../../appsync';
+import {
+  ItemQuery,
+  JoinRequest,
+  LocalAuthorityUser,
+  LocalAuthorityRegisterRequest,
+} from '../../appsync';
 import { generate } from 'randomstring';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
-import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { v4 as uuidv4 } from 'uuid';
+import { CharityDataRepository } from '../repository/charityDataRepository';
 
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
 
 interface MongoDBEvent {
   detail: {
-    fullDocument: LocalAuthorityUser | JoinRequest | ItemQuery;
+    fullDocument: LocalAuthorityUser | JoinRequest | ItemQuery | LocalAuthorityRegisterRequest;
     fullDocumentBeforeChange: JoinRequest;
     ns: { db: string; coll: string };
   };
 }
 
 const signUpDataRepository = SignUpDataRepository.getInstance();
-const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 const schoolDataRepository = SchoolDataRepository.getInstance();
+const charityDataRepository = CharityDataRepository.getInstance();
 
 export const handler: Handler = async (event: MongoDBEvent, context, callback): Promise<void> => {
   // eslint-disable-next-line no-console
@@ -63,8 +68,16 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
       case 'JoinRequests': {
         if (fullDocument) {
           const randomString = generate({ charset: 'alphabetic', length: 100 });
-          const { email, name, localAuthority, type, school, charityName } =
-            fullDocument as JoinRequest;
+          const {
+            email,
+            name,
+            type,
+            school,
+            charityName,
+            charityAddress,
+            aboutCharity,
+            localAuthority,
+          } = fullDocument as JoinRequest;
 
           if (type === 'school') {
             const schoolName = school?.split(' - ')[0];
@@ -78,12 +91,21 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
               nameId: urn,
             });
           } else if (type === 'charity') {
+            const charityId = uuidv4();
             await signUpDataRepository.insert({
               id: randomString,
               email,
               type,
               name: charityName ?? '',
-              nameId: uuidv4(),
+              nameId: charityId,
+            });
+
+            await charityDataRepository.insert({
+              id: charityId,
+              name: charityName ?? '',
+              address: charityAddress ?? '',
+              about: aboutCharity ?? '',
+              localAuthority,
             });
           } else {
             throw new Error(`Invalid type ${type}`);
@@ -95,26 +117,28 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
             signUpLink: `https://${domainName}/add-user?id=${randomString}`,
           });
 
-          const la = await localAuthorityUserRepository.getByName(localAuthority);
+          // TODO do something with la email sending
+          // const la = await localAuthorityUserRepository.getByName(localAuthority);
 
-          await sendEmail(la?.email ?? '', 'reviewed-requests-to-join', {
-            subject: "We've reviewed your requests to join",
-            reviewLink: `https://${domainName}/login`,
-          });
+          // await sendEmail(la?.email ?? '', 'reviewed-requests-to-join', {
+          //   subject: "We've reviewed your requests to join",
+          //   reviewLink: `https://${domainName}/login`,
+          // });
         } else {
-          const { email, name, localAuthority } = fullDocumentBeforeChange;
+          const { email, name } = fullDocumentBeforeChange;
 
           await sendEmail(email, 'join-request-declined', {
             subject: 'Your Donate to Educate application results',
             name,
           });
 
-          const la = await localAuthorityUserRepository.getByName(localAuthority);
+          // TODO do something with la email sending
+          // const la = await localAuthorityUserRepository.getByName(localAuthority);
 
-          await sendEmail(la?.email ?? '', 'reviewed-requests-to-join', {
-            subject: "We've reviewed your requests to join",
-            reviewLink: `https://${domainName}/login`,
-          });
+          // await sendEmail(la?.email ?? '', 'reviewed-requests-to-join', {
+          //   subject: "We've reviewed your requests to join",
+          //   reviewLink: `https://${domainName}/login`,
+          // });
         }
         break;
       }
@@ -134,6 +158,22 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
         });
         break;
       }
+      case 'LocalAuthorityRegisterRequests': {
+        const { name, email, localAuthority, message, type } =
+          fullDocument as LocalAuthorityRegisterRequest;
+
+        await sendEmail('ryan.b.smith@capgemini.com', 'la-not-joined', {
+          type,
+          subject: 'Local authority has not joined',
+          email,
+          name,
+          localAuthority,
+          message,
+        });
+
+        break;
+      }
+
       default:
         throw new Error(`Unexpected collection: ${event.detail.ns.coll}`);
     }
