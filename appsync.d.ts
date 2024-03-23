@@ -26,7 +26,7 @@ export type Charity = {
   __typename?: 'Charity';
   about: Scalars['String']['output'];
   address: Scalars['String']['output'];
-  distance?: Maybe<Scalars['Int']['output']>;
+  distance?: Maybe<Scalars['Float']['output']>;
   id: Scalars['String']['output'];
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
@@ -78,7 +78,7 @@ export type CharityUser = {
 
 export type InstituteSearchResult = {
   __typename?: 'InstituteSearchResult';
-  distance: Scalars['Int']['output'];
+  distance: Scalars['Float']['output'];
   name: Scalars['String']['output'];
   productTypes: Array<Scalars['Int']['output']>;
 };
@@ -347,7 +347,7 @@ export type School = {
   __typename?: 'School';
   address3?: Maybe<Scalars['String']['output']>;
   county?: Maybe<Scalars['String']['output']>;
-  distance?: Maybe<Scalars['Int']['output']>;
+  distance?: Maybe<Scalars['Float']['output']>;
   isLocalAuthorityRegistered?: Maybe<Scalars['Boolean']['output']>;
   localAuthority: Scalars['String']['output'];
   locality?: Maybe<Scalars['String']['output']>;

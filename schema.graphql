@@ -20,7 +20,7 @@ type School {
   phone: String
   town: String
   website: String
-  distance: Int
+  distance: Float
   profile: [SchoolProfile]
 }
 
@@ -30,7 +30,7 @@ type Charity {
   name: String!
   address: String!
   about: String!
-  distance: Int
+  distance: Float
   profile: [CharityProfile]
 }
 
@@ -183,7 +183,7 @@ type AdminStats {
 
 type InstituteSearchResult {
   name: String!
-  distance: Int!
+  distance: Float!
   productTypes: [Int!]!
 }
 
