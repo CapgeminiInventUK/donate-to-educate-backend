@@ -92,17 +92,14 @@ export class SchoolDataRepository extends BaseRepository<School> {
       },
     ]);
 
-    return (await res.toArray()).reduce(
-      (acc, { name, distance, profile }) => {
-        const hasProfileItems = profile && profile?.length > 0;
+    return (await res.toArray()).reduce((acc, { name, distance, profile, urn, registered }) => {
+      const hasProfileItems = profile && profile?.length > 0;
 
-        const productTypes = hasProfileItems
-          ? (profile[0]?.[type]?.productTypes as number[]) ?? []
-          : [];
-        acc.push({ name, distance: distance ?? 0, productTypes });
-        return acc;
-      },
-      [] as { name: string; distance: number; productTypes: number[] }[]
-    );
+      const productTypes = hasProfileItems
+        ? (profile[0]?.[type]?.productTypes as number[]) ?? []
+        : [];
+      acc.push({ name, distance: distance ?? 0, productTypes, id: urn, registered });
+      return acc;
+    }, [] as InstituteSearchResult[]);
   }
 }

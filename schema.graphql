@@ -182,9 +182,11 @@ type AdminStats {
 }
 
 type InstituteSearchResult {
+  id: String!
   name: String!
   distance: Float!
   productTypes: [Int!]!
+  registered: Boolean!
 }
 
 enum Type {

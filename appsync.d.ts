@@ -79,8 +79,10 @@ export type CharityUser = {
 export type InstituteSearchResult = {
   __typename?: 'InstituteSearchResult';
   distance: Scalars['Float']['output'];
+  id: Scalars['String']['output'];
   name: Scalars['String']['output'];
   productTypes: Array<Scalars['Int']['output']>;
+  registered: Scalars['Boolean']['output'];
 };
 
 export type ItemQuery = {

@@ -117,17 +117,14 @@ export class CharityDataRepository extends BaseRepository<Charity> {
       },
     ]);
 
-    return (await res.toArray()).reduce(
-      (acc, { name, distance, profile }) => {
-        const hasProfileItems = profile && profile?.length > 0;
+    return (await res.toArray()).reduce((acc, { name, distance, profile, id }) => {
+      const hasProfileItems = profile && profile?.length > 0;
 
-        const productTypes = hasProfileItems
-          ? (profile[0]?.[type]?.productTypes as number[]) ?? []
-          : [];
-        acc.push({ name, distance: distance ?? 0, productTypes });
-        return acc;
-      },
-      [] as { name: string; distance: number; productTypes: number[] }[]
-    );
+      const productTypes = hasProfileItems
+        ? (profile[0]?.[type]?.productTypes as number[]) ?? []
+        : [];
+      acc.push({ name, distance: distance ?? 0, productTypes, id, registered: true });
+      return acc;
+    }, [] as InstituteSearchResult[]);
   }
 }
