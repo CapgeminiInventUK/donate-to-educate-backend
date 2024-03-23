@@ -17,7 +17,7 @@ export function generateSchema<T extends Record<string, any>>(type: T): ZodObjec
     }
 
     if (!zodType) {
-      throw new Error('Unrecognised parameter within payload');
+      throw new Error(`Unrecognised parameter ${zodType} within payload`);
     }
 
     builder.addField(key, zodType);

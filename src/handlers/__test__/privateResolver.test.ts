@@ -2,11 +2,23 @@ import { handler } from '../privateResolver';
 
 const mockContext = {
   callbackWaitsForEmptyEventLoop: false,
+  functionName: '',
+  functionVersion: '',
+  invokedFunctionArn: '',
+  memoryLimitInMB: '',
+  awsRequestId: '',
+  logGroupName: '',
+  logStreamName: '',
+  getRemainingTimeInMillis: (): number => 0,
+  done: (): void => undefined,
+  fail: (): void => undefined,
+  succeed: (): void => undefined,
 };
 
 const mockCallback = jest.fn();
 
 describe('privateResolver lambda function tests', () => {
+  beforeEach(() => {});
   test('Should validate payload and write to db when payload is formatted correctly', async () => {
     // const payload = {
     //   name: 'Testy Mctest',
@@ -22,9 +34,13 @@ describe('privateResolver lambda function tests', () => {
 
     const mockEvent = {
       info: {
+        selectionSetList: ['name'],
         selectionSetGraphQL: 'test',
         parentTypeName: 'test',
         fieldName: 'registerLocalAuthority',
+        variables: {
+          test: 'test',
+        },
       },
       arguments: {
         name: 'Testy Mctest',
@@ -45,9 +61,10 @@ describe('privateResolver lambda function tests', () => {
         domainName: null,
       },
       prev: null,
-      stash: null,
+      stash: {},
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const result = await handler(mockEvent, mockContext, mockCallback);
   });
 });

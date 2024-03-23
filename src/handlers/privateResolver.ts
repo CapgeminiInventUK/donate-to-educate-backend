@@ -8,8 +8,10 @@ import {
   MutationInsertItemQueryArgs,
   MutationInsertLocalAuthorityRegisterRequestArgs,
   MutationDeleteDeniedJoinRequestArgs,
+  MutationUpdateCharityProfileArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
+import { v4 as uuidv4 } from 'uuid';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
 import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
@@ -19,21 +21,32 @@ import { ItemQueriesRepository } from '../repository/itemQueriesRepository';
 import { LocalAuthorityRegisterRequestsRepository } from '../repository/localAuthorityRegisterRequestsRepository';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { validatePayload } from '../utils/validatePayload';
+import { CharityProfileRepository } from '../repository/charityProfileRepository';
+import { CharityDataRepository } from '../repository/charityDataRepository';
 
-const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
-const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
-const joinRequestsRepository = JoinRequestsRepository.getInstance();
-const schoolProfileRepository = SchoolProfileRepository.getInstance();
-const signUpDataRepository = SignUpDataRepository.getInstance();
-const itemQueriesRepository = ItemQueriesRepository.getInstance();
+const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance(
+  process.env.MONGO_URL,
+  true
+);
+const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance(
+  process.env.MONGO_URL,
+  true
+);
+const joinRequestsRepository = JoinRequestsRepository.getInstance(process.env.MONGO_URL, true);
+const schoolProfileRepository = SchoolProfileRepository.getInstance(process.env.MONGO_URL, true);
+const charityProfileRepository = CharityProfileRepository.getInstance(process.env.MONGO_URL, true);
+const signUpDataRepository = SignUpDataRepository.getInstance(process.env.MONGO_URL, true);
+const itemQueriesRepository = ItemQueriesRepository.getInstance(process.env.MONGO_URL, true);
 const localAuthorityRegisterRequestsRepository =
-  LocalAuthorityRegisterRequestsRepository.getInstance();
-const schoolDataRepository = SchoolDataRepository.getInstance();
+  LocalAuthorityRegisterRequestsRepository.getInstance(process.env.MONGO_URL, true);
+const schoolDataRepository = SchoolDataRepository.getInstance(process.env.MONGO_URL, true);
+const charityDataRepository = CharityDataRepository.getInstance(process.env.MONGO_URL, true);
 
 export const handler: AppSyncResolverHandler<
   | MutationRegisterLocalAuthorityArgs
   | MutationInsertSignUpDataArgs
   | MutationUpdateSchoolProfileArgs
+  | MutationUpdateCharityProfileArgs
   | MutationUpdateJoinRequestArgs
   | MutationInsertItemQueryArgs
   | MutationInsertJoinRequestArgs
@@ -69,8 +82,9 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'updateJoinRequest': {
-      const { localAuthority, name, status } = params as MutationUpdateJoinRequestArgs;
-      const res = await joinRequestsRepository.updateStatus(localAuthority, name, status);
+      const { localAuthority, name, status, id } = params as MutationUpdateJoinRequestArgs;
+      const res = await joinRequestsRepository.updateStatus(id, localAuthority, name, status);
+
       callback(null, res);
       break;
     }
@@ -80,14 +94,43 @@ export const handler: AppSyncResolverHandler<
         institution: string;
         institutionId: string;
       };
-      const { localAuthority = '' } = (await schoolDataRepository.getByName(institution)) ?? {};
+      const { localAuthority = '', postcode = '' } =
+        (await schoolDataRepository.getByName(institution)) ?? {};
       const res = await schoolProfileRepository.updateKey(
+        institutionId,
+        institution,
+        key,
+        value,
+        localAuthority,
+        postcode
+      );
+      callback(null, res);
+      break;
+    }
+    case 'updateCharityProfile': {
+      const { key, value } = params as MutationUpdateSchoolProfileArgs;
+      const { institution, institutionId } = info.variables as {
+        institution: string;
+        institutionId: string;
+      };
+
+      const { localAuthority = '' } = (await charityDataRepository.getById(institutionId)) ?? {};
+      const res = await charityProfileRepository.updateKey(
         institutionId,
         institution,
         key,
         value,
         localAuthority
       );
+
+      if (key === 'postcode') {
+        await charityDataRepository.updatePostcode(
+          institutionId,
+          institution,
+          localAuthority,
+          value
+        );
+      }
       callback(null, res);
       break;
     }
@@ -99,11 +142,13 @@ export const handler: AppSyncResolverHandler<
     }
     case 'insertJoinRequest': {
       const status = 'NEW';
+      const id = uuidv4();
       const requestTime = Number(new Date());
       const res = await joinRequestsRepository.insert({
         ...(params as MutationInsertJoinRequestArgs),
         status,
         requestTime,
+        id,
       });
       callback(null, res);
       break;
@@ -125,8 +170,15 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'insertLocalAuthorityRegisterRequest': {
-      const { name, email, message } = params as MutationInsertLocalAuthorityRegisterRequestArgs;
-      const res = await localAuthorityRegisterRequestsRepository.insert({ name, email, message });
+      const { name, localAuthority, email, message, type } =
+        params as MutationInsertLocalAuthorityRegisterRequestArgs;
+      const res = await localAuthorityRegisterRequestsRepository.insert({
+        name,
+        localAuthority,
+        email,
+        message,
+        type,
+      });
       callback(null, res);
       break;
     }
