@@ -279,6 +279,7 @@ export type Query = {
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
   getSchoolsNearby: Array<School>;
+  getSchoolsNearbyWithProfile: Array<InstituteSearchResult>;
   getSignUpData?: Maybe<SignUpData>;
 };
 
@@ -327,6 +328,12 @@ export type QueryGetSchoolsByLaArgs = {
 
 
 export type QueryGetSchoolsNearbyArgs = {
+  distance: Scalars['Float']['input'];
+  postcode: Scalars['String']['input'];
+};
+
+
+export type QueryGetSchoolsNearbyWithProfileArgs = {
   distance: Scalars['Float']['input'];
   postcode: Scalars['String']['input'];
 };

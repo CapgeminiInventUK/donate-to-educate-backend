@@ -204,6 +204,7 @@ type Query {
   getCharitiesNearby(postcode: String!, distance: Float!): [Charity!]!
   getSchoolJoinRequestsByLa(localAuthority: String!): [JoinRequest!]!
   getAdminTileStats: AdminStats!
+  getSchoolsNearbyWithProfile(postcode: String!, distance: Float!): [InstituteSearchResult!]!
 }
 
 type Mutation {
