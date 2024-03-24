@@ -1,13 +1,20 @@
-import { Collection, Db, Filter, MongoClient, MongoClientOptions, WithId, Document } from 'mongodb';
+import { Collection, Db, Filter, MongoClient, WithId, Document } from 'mongodb';
+import { isTest } from '../shared/env';
+import { clientOptions } from './config';
+import { checkIfDefinedElseDefault } from '../shared/check';
 
 export abstract class BaseRepository<T extends Document> {
+  private readonly databaseName = 'D2E';
   protected readonly client: MongoClient;
   protected readonly db: Db;
   protected readonly collection: Collection<T>;
 
-  protected constructor(collectionName: string, url: string, options?: MongoClientOptions) {
-    this.client = new MongoClient(url, options);
-    this.db = this.client.db('D2E');
+  protected constructor(collectionName: string) {
+    this.client = new MongoClient(
+      checkIfDefinedElseDefault(process?.env?.MONGO_URL),
+      isTest() ? undefined : clientOptions
+    );
+    this.db = this.client.db(this.databaseName);
     this.collection = this.db.collection<T>(collectionName);
   }
 

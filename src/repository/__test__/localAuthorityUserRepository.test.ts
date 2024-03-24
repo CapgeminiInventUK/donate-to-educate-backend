@@ -4,7 +4,7 @@ import { laUser } from './mockData/laUser';
 import { LocalAuthorityUser } from '../../../appsync';
 
 describe('LocalAuthorityUserRepository', () => {
-  const repo = LocalAuthorityUserRepository.getInstance(process.env.MONGO_URL, true);
+  const repo = LocalAuthorityUserRepository.getInstance();
 
   beforeAll(async () => {
     const client = new MongoClient(process.env.MONGO_URL ?? '');

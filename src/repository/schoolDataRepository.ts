@@ -1,21 +1,13 @@
 import { WithId } from 'mongodb';
 import { InstituteSearchResult, School, Type } from '../../appsync';
 import { BaseRepository } from './baseRepository';
-import { clientOptions } from './config';
 
 export class SchoolDataRepository extends BaseRepository<School> {
   private static instance: SchoolDataRepository;
 
-  static getInstance(
-    url = process?.env?.MONGODB_CONNECTION_STRING,
-    isTest = false
-  ): SchoolDataRepository {
+  static getInstance(): SchoolDataRepository {
     if (!this.instance) {
-      this.instance = new SchoolDataRepository(
-        'SchoolData',
-        url ?? '',
-        isTest ? undefined : clientOptions
-      );
+      this.instance = new SchoolDataRepository('SchoolData');
     }
     return this.instance;
   }

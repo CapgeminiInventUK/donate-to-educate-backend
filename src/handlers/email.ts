@@ -12,6 +12,7 @@ import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { v4 as uuidv4 } from 'uuid';
 import { CharityDataRepository } from '../repository/charityDataRepository';
 import { logger } from '../shared/logger';
+import { checkIfDefinedElseDefault } from '../shared/check';
 
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
 
@@ -40,7 +41,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
     }
 
     const { fullDocument, ns, fullDocumentBeforeChange } = event.detail;
-    const domainName = process.env.DOMAIN_NAME ?? '';
+    const domainName = checkIfDefinedElseDefault(process?.env?.DOMAIN_NAME);
 
     switch (ns.coll) {
       case 'LocalAuthorityUser': {
@@ -80,13 +81,14 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
 
           if (type === 'school') {
             const schoolName = school?.split(' - ')[0];
-            const { urn = '' } = (await schoolDataRepository.getByName(schoolName ?? '')) ?? {};
+            const { urn = '' } =
+              (await schoolDataRepository.getByName(checkIfDefinedElseDefault(schoolName))) ?? {};
 
             await signUpDataRepository.insert({
               id: randomString,
               email,
               type,
-              name: schoolName ?? '',
+              name: checkIfDefinedElseDefault(schoolName),
               nameId: urn,
             });
           } else if (type === 'charity') {
@@ -95,15 +97,15 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
               id: randomString,
               email,
               type,
-              name: charityName ?? '',
+              name: checkIfDefinedElseDefault(charityName),
               nameId: charityId,
             });
 
             await charityDataRepository.insert({
               id: charityId,
-              name: charityName ?? '',
-              address: charityAddress ?? '',
-              about: aboutCharity ?? '',
+              name: checkIfDefinedElseDefault(charityName),
+              address: checkIfDefinedElseDefault(charityAddress),
+              about: checkIfDefinedElseDefault(aboutCharity),
               localAuthority,
             });
           } else {
@@ -119,7 +121,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
           // TODO do something with la email sending
           // const la = await localAuthorityUserRepository.getByName(localAuthority);
 
-          // await sendEmail(la?.email ?? '', 'reviewed-requests-to-join', {
+          // await sendEmail(checkIfDefinedElseDefault(la?.email), 'reviewed-requests-to-join', {
           //   subject: "We've reviewed your requests to join",
           //   reviewLink: `https://${domainName}/login`,
           // });
@@ -134,7 +136,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
           // TODO do something with la email sending
           // const la = await localAuthorityUserRepository.getByName(localAuthority);
 
-          // await sendEmail(la?.email ?? '', 'reviewed-requests-to-join', {
+          // await sendEmail(checkIfDefinedElseDefault(la?.email), 'reviewed-requests-to-join', {
           //   subject: "We've reviewed your requests to join",
           //   reviewLink: `https://${domainName}/login`,
           // });

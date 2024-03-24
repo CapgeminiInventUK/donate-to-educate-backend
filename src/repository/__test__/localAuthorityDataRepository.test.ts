@@ -4,7 +4,7 @@ import { laData } from './mockData/la';
 import { LocalAuthority } from '../../../appsync';
 
 describe('LocalAuthorityDataRepository', () => {
-  const repo = LocalAuthorityDataRepository.getInstance(process.env.MONGO_URL, true);
+  const repo = LocalAuthorityDataRepository.getInstance();
 
   beforeAll(async () => {
     const client = new MongoClient(process.env.MONGO_URL ?? '');

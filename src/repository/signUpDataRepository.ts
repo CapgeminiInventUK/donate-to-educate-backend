@@ -1,21 +1,13 @@
 import { WithId } from 'mongodb';
 import { SignUpData } from '../../appsync';
 import { BaseRepository } from './baseRepository';
-import { clientOptions } from './config';
 
 export class SignUpDataRepository extends BaseRepository<SignUpData> {
   private static instance: SignUpDataRepository;
 
-  static getInstance(
-    url = process?.env?.MONGODB_CONNECTION_STRING,
-    isTest = false
-  ): SignUpDataRepository {
+  static getInstance(): SignUpDataRepository {
     if (!this.instance) {
-      this.instance = new SignUpDataRepository(
-        'SignUps',
-        url ?? '',
-        isTest ? undefined : clientOptions
-      );
+      this.instance = new SignUpDataRepository('SignUps');
     }
     return this.instance;
   }

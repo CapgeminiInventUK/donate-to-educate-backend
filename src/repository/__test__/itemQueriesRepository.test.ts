@@ -4,7 +4,7 @@ import { itemQueries } from './mockData/itemQueries';
 import { ItemQuery } from '../../../appsync';
 
 describe('ItemQueriesRepository', () => {
-  const repo = ItemQueriesRepository.getInstance(process.env.MONGO_URL, true);
+  const repo = ItemQueriesRepository.getInstance();
 
   beforeAll(async () => {
     const client = new MongoClient(process.env.MONGO_URL ?? '');

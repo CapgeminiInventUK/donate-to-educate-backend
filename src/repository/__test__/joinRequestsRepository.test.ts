@@ -4,7 +4,7 @@ import { joinRequests } from './mockData/joinRequests';
 import { JoinRequest } from '../../../appsync';
 
 describe('JoinRequestsRepository', () => {
-  const repo = JoinRequestsRepository.getInstance(process.env.MONGO_URL, true);
+  const repo = JoinRequestsRepository.getInstance();
 
   beforeAll(async () => {
     const client = new MongoClient(process.env.MONGO_URL ?? '');

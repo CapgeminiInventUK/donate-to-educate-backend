@@ -4,7 +4,7 @@ import { charityUser } from './mockData/charityUser';
 import { CharityUser } from '../../../appsync';
 
 describe('CharityUserRepository', () => {
-  const repo = CharityUserRepository.getInstance(process.env.MONGO_URL, true);
+  const repo = CharityUserRepository.getInstance();
 
   beforeAll(async () => {
     const client = new MongoClient(process.env.MONGO_URL ?? '');

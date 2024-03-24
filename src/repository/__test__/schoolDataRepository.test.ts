@@ -4,7 +4,7 @@ import { schoolsData } from './mockData/schools';
 import { School } from '../../../appsync';
 
 describe('SchoolDataRepository', () => {
-  const repo = SchoolDataRepository.getInstance(process.env.MONGO_URL, true);
+  const repo = SchoolDataRepository.getInstance();
 
   beforeAll(async () => {
     const client = new MongoClient(process.env.MONGO_URL ?? '');

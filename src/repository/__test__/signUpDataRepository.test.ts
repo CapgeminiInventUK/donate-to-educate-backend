@@ -4,7 +4,7 @@ import { signUpData } from './mockData/signUps';
 import { SignUpData } from '../../../appsync';
 
 describe('SignUpDataRepository', () => {
-  const repo = SignUpDataRepository.getInstance(process.env.MONGO_URL, true);
+  const repo = SignUpDataRepository.getInstance();
 
   beforeAll(async () => {
     const client = new MongoClient(process.env.MONGO_URL ?? '');

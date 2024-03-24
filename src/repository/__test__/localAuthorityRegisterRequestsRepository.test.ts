@@ -4,7 +4,7 @@ import { registerRequests } from './mockData/registerRequests';
 import { LocalAuthorityRegisterRequest } from '../../../appsync';
 
 describe('LocalAuthorityRegisterRequestsRepository', () => {
-  const repo = LocalAuthorityRegisterRequestsRepository.getInstance(process.env.MONGO_URL, true);
+  const repo = LocalAuthorityRegisterRequestsRepository.getInstance();
 
   beforeAll(async () => {
     const client = new MongoClient(process.env.MONGO_URL ?? '');
