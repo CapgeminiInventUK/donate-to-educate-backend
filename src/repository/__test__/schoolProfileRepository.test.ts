@@ -1,20 +1,13 @@
-import { MongoClient } from 'mongodb';
 import { SchoolProfileRepository } from '../schoolProfileRepository';
 import { schoolProfile } from './mockData/schoolProfile';
 import { SchoolProfile } from '../../../appsync';
+import { insertData } from '../../shared/testUtils';
 
 describe('SchoolProfileRepository', () => {
   const repo = SchoolProfileRepository.getInstance();
 
   beforeAll(async () => {
-    const client = new MongoClient(process.env.MONGO_URL ?? '');
-    const collection = client.db('D2E').collection<SchoolProfile>('SchoolProfile');
-    await collection.insertMany(schoolProfile);
-    await client.close();
-  });
-
-  afterAll(async () => {
-    await repo.close();
+    await insertData<SchoolProfile>('SchoolProfile', schoolProfile);
   });
 
   it('Can get by name and id', async () => {

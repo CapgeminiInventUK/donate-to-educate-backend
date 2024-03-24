@@ -18,10 +18,6 @@ export abstract class BaseRepository<T extends Document> {
     this.collection = this.db.collection<T>(collectionName);
   }
 
-  public async close(): Promise<void> {
-    await this.client.close();
-  }
-
   protected async getByQuery(
     query: Filter<T>,
     projectedFields?: Record<string, number>

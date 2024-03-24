@@ -1,20 +1,13 @@
-import { MongoClient } from 'mongodb';
 import { CharityUserRepository } from '../charityUserRepository';
 import { charityUser } from './mockData/charityUser';
 import { CharityUser } from '../../../appsync';
+import { insertData } from '../../shared/testUtils';
 
 describe('CharityUserRepository', () => {
   const repo = CharityUserRepository.getInstance();
 
   beforeAll(async () => {
-    const client = new MongoClient(process.env.MONGO_URL ?? '');
-    const collection = client.db('D2E').collection<CharityUser>('CharityUser');
-    await collection.insertMany(charityUser);
-    await client.close();
-  });
-
-  afterAll(async () => {
-    await repo.close();
+    await insertData<CharityUser>('CharityUser', charityUser);
   });
 
   it('Can get by email', async () => {

@@ -1,22 +1,16 @@
-import { MongoClient } from 'mongodb';
 import { LocalAuthorityRegisterRequestsRepository } from '../localAuthorityRegisterRequestsRepository';
 import { registerRequests } from './mockData/registerRequests';
 import { LocalAuthorityRegisterRequest } from '../../../appsync';
+import { insertData } from '../../shared/testUtils';
 
 describe('LocalAuthorityRegisterRequestsRepository', () => {
   const repo = LocalAuthorityRegisterRequestsRepository.getInstance();
 
   beforeAll(async () => {
-    const client = new MongoClient(process.env.MONGO_URL ?? '');
-    const collection = client
-      .db('D2E')
-      .collection<LocalAuthorityRegisterRequest>('LocalAuthorityRegisterRequests');
-    await collection.insertMany(registerRequests);
-    await client.close();
-  });
-
-  afterAll(async () => {
-    await repo.close();
+    await insertData<LocalAuthorityRegisterRequest>(
+      'LocalAuthorityRegisterRequests',
+      registerRequests
+    );
   });
 
   it('Can insert', async () => {

@@ -1,20 +1,13 @@
-import { MongoClient } from 'mongodb';
 import { ItemQueriesRepository } from '../itemQueriesRepository';
 import { itemQueries } from './mockData/itemQueries';
 import { ItemQuery } from '../../../appsync';
+import { insertData } from '../../shared/testUtils';
 
 describe('ItemQueriesRepository', () => {
   const repo = ItemQueriesRepository.getInstance();
 
   beforeAll(async () => {
-    const client = new MongoClient(process.env.MONGO_URL ?? '');
-    const collection = client.db('D2E').collection<ItemQuery>('ItemQueries');
-    await collection.insertMany(itemQueries);
-    await client.close();
-  });
-
-  afterAll(async () => {
-    await repo.close();
+    await insertData<ItemQuery>('ItemQueries', itemQueries);
   });
 
   it('Can insert', async () => {

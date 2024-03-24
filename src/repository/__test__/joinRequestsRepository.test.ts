@@ -1,20 +1,13 @@
-import { MongoClient } from 'mongodb';
 import { JoinRequestsRepository } from '../joinRequestsRepository';
 import { joinRequests } from './mockData/joinRequests';
 import { JoinRequest } from '../../../appsync';
+import { insertData } from '../../shared/testUtils';
 
 describe('JoinRequestsRepository', () => {
   const repo = JoinRequestsRepository.getInstance();
 
   beforeAll(async () => {
-    const client = new MongoClient(process.env.MONGO_URL ?? '');
-    const collection = client.db('D2E').collection<JoinRequest>('JoinRequests');
-    await collection.insertMany(joinRequests);
-    await client.close();
-  });
-
-  afterAll(async () => {
-    await repo.close();
+    await insertData<JoinRequest>('JoinRequests', joinRequests);
   });
 
   it('Can new join requests', async () => {

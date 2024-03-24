@@ -1,20 +1,13 @@
-import { MongoClient } from 'mongodb';
 import { SignUpDataRepository } from '../signUpDataRepository';
 import { signUpData } from './mockData/signUps';
 import { SignUpData } from '../../../appsync';
+import { insertData } from '../../shared/testUtils';
 
 describe('SignUpDataRepository', () => {
   const repo = SignUpDataRepository.getInstance();
 
   beforeAll(async () => {
-    const client = new MongoClient(process.env.MONGO_URL ?? '');
-    const collection = client.db('D2E').collection<SignUpData>('SignUps');
-    await collection.insertMany(signUpData);
-    await client.close();
-  });
-
-  afterAll(async () => {
-    await repo.close();
+    await insertData<SignUpData>('SignUps', signUpData);
   });
 
   it('Can get sign up by id', async () => {
