@@ -29,16 +29,16 @@ export class CharityProfileRepository extends BaseRepository<CharityProfile> {
     name: string,
     key: string,
     value: string,
-    localAuthority: string,
-    postcode: string | null
+    localAuthority: string
   ): Promise<boolean> {
-    const parsedValue = key === 'about' ? value : (JSON.parse(value) as string);
+    const parsedValue =
+      key === 'about' || key === 'postcode' ? value : (JSON.parse(value) as string);
     return (
       await this.collection.updateOne(
         { name, id },
         {
           $set: { [key]: parsedValue },
-          $setOnInsert: { name, id, localAuthority, postcode: postcode ?? '' },
+          $setOnInsert: { name, id, localAuthority },
         },
         { upsert: true }
       )

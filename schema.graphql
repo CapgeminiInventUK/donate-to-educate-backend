@@ -20,13 +20,25 @@ type School {
   phone: String
   town: String
   website: String
-  distance: String
+  distance: Float
+  profile: [SchoolProfile]
+}
+
+type Charity {
+  id: String!
+  localAuthority: String!
+  name: String!
+  address: String!
+  about: String!
+  distance: Float
+  profile: [CharityProfile]
 }
 
 type ProfileItems {
   items: String
   whatToExpect: String
   actionText: String
+  productTypes: [Float]
 }
 
 type SchoolProfileHeader {
@@ -59,7 +71,7 @@ type CharityProfile {
   name: String!
   id: String!
   localAuthority: String!
-  postcode: String!
+  postcode: String
   header: CharityProfileHeader
   about: String
   request: ProfileItems
@@ -91,6 +103,7 @@ type LocalAuthorityProfile {
 }
 
 type JoinRequest {
+  id: String!
   name: String!
   localAuthority: String!
   type: String!
@@ -116,10 +129,77 @@ type ItemQuery {
   organisationType: String!
 }
 
+type SchoolUser {
+  name: String!
+  school: String!
+  jobTitle: String!
+  email: String!
+  phone: String!
+}
+
+type CharityUser {
+  name: String!
+  jobTitle: String!
+  email: String!
+  phone: String!
+}
+
+type CharityDetails {
+  name: String!
+  address: String!
+  localAuthority: String!
+  about: String
+}
+
+type CharitySignUpDetails {
+  charityUser: CharityUser!
+  charityDetails: CharityDetails!
+}
+
+type LocalAuthorityRegisterRequest {
+  name: String!
+  email: String!
+  message: String!
+  localAuthority: String!
+  type: String!
+}
+
+type LocalAuthorityStats {
+  joined: Int!
+  notJoined: Int!
+}
+
+type JoinRequestStats {
+  school: Int!
+  charity: Int!
+}
+
+type AdminStats {
+  la: LocalAuthorityStats!
+  joinRequests: JoinRequestStats!
+  registeredSchools: Int!
+  registeredCharities: Int!
+}
+
+type InstituteSearchResult {
+  id: String!
+  name: String!
+  distance: Float!
+  productTypes: [Int!]!
+  registered: Boolean!
+}
+
+enum Type {
+  donate
+  request
+  excess
+}
+
 type Query {
   getSchoolByName(name: String!): School!
   getSchoolsByLa(name: String!): [School!]!
   getSchools: [School!]!
+  getCharities: [Charity!]!
   getRegisteredSchools: [School!]!
   getRegisteredSchoolsByLa(localAuthority: String!): [School!]!
   getLocalAuthorities: [LocalAuthority!]!
@@ -129,7 +209,19 @@ type Query {
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
   getSignUpData(id: String!): SignUpData
   getSchoolsNearby(postcode: String!, distance: Float!): [School!]!
+  getCharitiesNearby(postcode: String!, distance: Float!): [Charity!]!
   getSchoolJoinRequestsByLa(localAuthority: String!): [JoinRequest!]!
+  getAdminTileStats: AdminStats!
+  getSchoolsNearbyWithProfile(
+    postcode: String!
+    distance: Float!
+    type: Type!
+  ): [InstituteSearchResult!]!
+  getCharitiesNearbyWithProfile(
+    postcode: String!
+    distance: Float!
+    type: Type!
+  ): [InstituteSearchResult!]!
 }
 
 type Mutation {
@@ -147,7 +239,7 @@ type Mutation {
 
   updateSchoolProfile(key: String!, value: String!): Boolean! @aws_cognito_user_pools
   updateCharityProfile(key: String!, value: String!): Boolean! @aws_cognito_user_pools
-  updateJoinRequest(localAuthority: String!, name: String!, status: String!): Boolean!
+  updateJoinRequest(id: String!, localAuthority: String!, name: String!, status: String!): Boolean!
   insertJoinRequest(
     name: String!
     localAuthority: String!
@@ -195,39 +287,4 @@ type Mutation {
 schema {
   query: Query
   mutation: Mutation
-}
-
-type SchoolUser {
-  name: String!
-  school: String!
-  jobTitle: String!
-  email: String!
-  phone: String!
-}
-
-type CharityUser {
-  name: String!
-  jobTitle: String!
-  email: String!
-  phone: String!
-}
-
-type CharityDetails {
-  name: String!
-  address: String!
-  localAuthority: String!
-  about: String
-}
-
-type CharitySignUpDetails {
-  charityUser: CharityUser!
-  charityDetails: CharityDetails!
-}
-
-type LocalAuthorityRegisterRequest {
-  name: String!
-  email: String!
-  message: String!
-  localAuthority: String!
-  type: String!
 }

@@ -16,6 +16,12 @@ import {
   QueryGetSchoolJoinRequestsByLaArgs,
   QueryGetCharityProfileArgs,
   CharityProfile,
+  QueryGetCharitiesNearbyArgs,
+  Charity,
+  AdminStats,
+  InstituteSearchResult,
+  QueryGetSchoolsNearbyWithProfileArgs,
+  QueryGetCharitiesNearbyWithProfileArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -27,8 +33,10 @@ import { CharityProfileRepository } from '../repository/charityProfileRepository
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { removeFields } from '../shared/graphql';
 import { convertPostcodeToLatLng } from '../shared/postcode';
+import { CharityDataRepository } from '../repository/charityDataRepository';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
+const charityDataRepository = CharityDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
 const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 const joinRequestsRepository = JoinRequestsRepository.getInstance();
@@ -41,18 +49,22 @@ export const handler: AppSyncResolverHandler<
   | QueryGetSchoolsByLaArgs
   | QueryGetSignUpDataArgs
   | QueryGetSchoolsNearbyArgs
+  | QueryGetCharitiesNearbyArgs
   | QueryGetRegisteredSchoolsByLaArgs
   | QueryGetCharityProfileArgs
   | QueryGetLocalAuthorityUserArgs,
   | School
   | School[]
+  | Charity[]
   | LocalAuthority[]
   | JoinRequest[]
+  | InstituteSearchResult[]
   | boolean
   | SchoolProfile
   | CharityProfile
   | SignUpData
   | LocalAuthorityUser
+  | AdminStats
   | QueryGetSchoolJoinRequestsByLaArgs
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
@@ -155,6 +167,11 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
+    case 'getCharities': {
+      const res = await charityDataRepository.list(projectedFields);
+      callback(null, res);
+      break;
+    }
     case 'getRegisteredSchoolsByLa': {
       const { localAuthority } = params as QueryGetRegisteredSchoolsByLaArgs;
       const res = await schoolDataRepository.getRegisteredByLa(localAuthority);
@@ -176,6 +193,62 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
+    case 'getSchoolsNearbyWithProfile': {
+      const { postcode, distance, type } = params as QueryGetSchoolsNearbyWithProfileArgs;
+
+      const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
+
+      const res = await schoolDataRepository.getSchoolsNearbyWithProfile(
+        longitude,
+        latitude,
+        distance,
+        type
+      );
+      callback(null, res);
+      break;
+    }
+    case 'getCharitiesNearby': {
+      const { postcode, distance } = params as QueryGetCharitiesNearbyArgs;
+
+      const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
+
+      const res = await charityDataRepository.getCharitiesNearby(longitude, latitude, distance);
+      callback(null, res);
+      break;
+    }
+    case 'getCharitiesNearbyWithProfile': {
+      const { postcode, distance, type } = params as QueryGetCharitiesNearbyWithProfileArgs;
+
+      const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
+
+      const res = await charityDataRepository.getCharitiesNearbyWithProfile(
+        longitude,
+        latitude,
+        distance,
+        type
+      );
+      callback(null, res);
+      break;
+    }
+    case 'getAdminTileStats': {
+      const [joined, notJoined, school, charity, registeredSchools, registeredCharities] =
+        await Promise.all([
+          localAuthorityDataRepository.getRegisteredLocalAuthorityCount(),
+          localAuthorityDataRepository.getNotRegisteredLocalAuthorityCount(),
+          joinRequestsRepository.getSchoolJoinRequestsCount(),
+          joinRequestsRepository.getCharityJoinRequestsCount(),
+          schoolDataRepository.getRegisteredSchoolsCount(),
+          charityDataRepository.getRegisteredCharityCount(),
+        ]);
+      const res = {
+        la: { joined, notJoined },
+        joinRequests: { school, charity },
+        registeredSchools,
+        registeredCharities,
+      };
+      callback(null, res);
+      break;
+    }
     default: {
       callback(`Unexpected type ${info.fieldName}`);
       throw new Error(`Unexpected type ${info.fieldName}`);
@@ -184,3 +257,5 @@ export const handler: AppSyncResolverHandler<
 
   throw new Error('An unknown error occurred');
 };
+
+// name, distance, product types

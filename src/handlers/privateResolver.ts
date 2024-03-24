@@ -12,6 +12,7 @@ import {
   MutationDeleteSchoolProfileArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
+import { v4 as uuidv4 } from 'uuid';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
 import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
@@ -21,6 +22,7 @@ import { ItemQueriesRepository } from '../repository/itemQueriesRepository';
 import { LocalAuthorityRegisterRequestsRepository } from '../repository/localAuthorityRegisterRequestsRepository';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { CharityProfileRepository } from '../repository/charityProfileRepository';
+import { CharityDataRepository } from '../repository/charityDataRepository';
 
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
 const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
@@ -32,6 +34,7 @@ const itemQueriesRepository = ItemQueriesRepository.getInstance();
 const localAuthorityRegisterRequestsRepository =
   LocalAuthorityRegisterRequestsRepository.getInstance();
 const schoolDataRepository = SchoolDataRepository.getInstance();
+const charityDataRepository = CharityDataRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
   | MutationRegisterLocalAuthorityArgs
@@ -72,8 +75,9 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'updateJoinRequest': {
-      const { localAuthority, name, status } = params as MutationUpdateJoinRequestArgs;
-      const res = await joinRequestsRepository.updateStatus(localAuthority, name, status);
+      const { localAuthority, name, status, id } = params as MutationUpdateJoinRequestArgs;
+      const res = await joinRequestsRepository.updateStatus(id, localAuthority, name, status);
+
       callback(null, res);
       break;
     }
@@ -102,17 +106,24 @@ export const handler: AppSyncResolverHandler<
         institution: string;
         institutionId: string;
       };
-      // TODO where to get LA from?
-      // const { localAuthority = '', postcode = '' } =
-      //   (await schoolDataRepository.getByName(institution)) ?? {};
+
+      const { localAuthority = '' } = (await charityDataRepository.getById(institutionId)) ?? {};
       const res = await charityProfileRepository.updateKey(
         institutionId,
         institution,
         key,
         value,
-        '', // TODO add LA
-        '' // TODO add postcode
+        localAuthority
       );
+
+      if (key === 'postcode') {
+        await charityDataRepository.updatePostcode(
+          institutionId,
+          institution,
+          localAuthority,
+          value
+        );
+      }
       callback(null, res);
       break;
     }
@@ -124,11 +135,13 @@ export const handler: AppSyncResolverHandler<
     }
     case 'insertJoinRequest': {
       const status = 'NEW';
+      const id = uuidv4();
       const requestTime = Number(new Date());
       const res = await joinRequestsRepository.insert({
         ...(params as MutationInsertJoinRequestArgs),
         status,
         requestTime,
+        id,
       });
       callback(null, res);
       break;

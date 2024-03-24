@@ -38,4 +38,8 @@ export abstract class BaseRepository<T extends Document> {
 
     return result;
   }
+
+  protected async getCount(query: Filter<T>): Promise<number> {
+    return await this.collection.countDocuments(query);
+  }
 }
