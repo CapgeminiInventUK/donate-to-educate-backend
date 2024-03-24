@@ -9,6 +9,7 @@ import {
   MutationInsertLocalAuthorityRegisterRequestArgs,
   MutationDeleteDeniedJoinRequestArgs,
   MutationUpdateCharityProfileArgs,
+  MutationDeleteSchoolProfileArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
@@ -41,6 +42,7 @@ export const handler: AppSyncResolverHandler<
   | MutationInsertItemQueryArgs
   | MutationInsertJoinRequestArgs
   | MutationDeleteDeniedJoinRequestArgs
+  | MutationDeleteSchoolProfileArgs
   | MutationInsertLocalAuthorityRegisterRequestArgs,
   boolean
 > = async (event, context, callback) => {
@@ -163,6 +165,12 @@ export const handler: AppSyncResolverHandler<
     case 'deleteDeniedJoinRequest': {
       const { name } = params as MutationDeleteDeniedJoinRequestArgs;
       const res = await joinRequestsRepository.deleteDenied(name);
+      callback(null, res);
+      break;
+    }
+    case 'deleteSchoolProfile': {
+      const { name, id } = params as MutationDeleteSchoolProfileArgs;
+      const res = await schoolProfileRepository.deleteSchoolProfile(name, id);
       callback(null, res);
       break;
     }
