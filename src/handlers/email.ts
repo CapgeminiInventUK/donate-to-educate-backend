@@ -179,8 +179,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
         throw new Error(`Unexpected collection: ${event.detail.ns.coll}`);
     }
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
+    logger.error(error);
   }
 
   callback(null, 'Finished');
