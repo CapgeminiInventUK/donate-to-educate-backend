@@ -112,6 +112,7 @@ export type JoinRequest = {
   school?: Maybe<Scalars['String']['output']>;
   status: Scalars['String']['output'];
   type: Scalars['String']['output'];
+  urn?: Maybe<Scalars['String']['output']>;
 };
 
 export type JoinRequestStats = {
@@ -210,6 +211,7 @@ export type MutationInsertJoinRequestArgs = {
   phone?: InputMaybe<Scalars['String']['input']>;
   school?: InputMaybe<Scalars['String']['input']>;
   type: Scalars['String']['input'];
+  urn?: InputMaybe<Scalars['String']['input']>;
 };
 
 

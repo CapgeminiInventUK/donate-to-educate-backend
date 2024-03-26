@@ -36,6 +36,16 @@ export class SchoolDataRepository extends BaseRepository<School> {
     return await this.getByQuery({ registered: true, localAuthority });
   }
 
+  public async setToRegistered(name: string, urn: string): Promise<boolean> {
+    return (await this.collection.updateOne({ name, urn }, { $set: { registered: true } }))
+      .acknowledged;
+  }
+
+  public async unregister(name: string, urn: string): Promise<boolean> {
+    return (await this.collection.updateOne({ name, urn }, { $set: { registered: false } }))
+      .acknowledged;
+  }
+
   public async getSchoolsNearby(
     longitude: number,
     latitude: number,

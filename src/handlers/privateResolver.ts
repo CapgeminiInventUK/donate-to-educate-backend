@@ -184,6 +184,7 @@ export const handler: AppSyncResolverHandler<
     case 'deleteSchoolProfile': {
       const { name, id } = params as MutationDeleteSchoolProfileArgs;
       const res = await schoolProfileRepository.deleteSchoolProfile(name, id);
+      await schoolDataRepository.unregister(name, id);
       callback(null, res);
       break;
     }

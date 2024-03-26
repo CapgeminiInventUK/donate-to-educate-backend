@@ -77,20 +77,24 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
             charityAddress,
             aboutCharity,
             localAuthority,
+            urn,
           } = fullDocument as JoinRequest;
 
           if (type === 'school') {
             const schoolName = school?.split(' - ')[0];
-            const { urn = '' } =
-              (await schoolDataRepository.getByName(checkIfDefinedElseDefault(schoolName))) ?? {};
 
             await signUpDataRepository.insert({
               id: randomString,
               email,
               type,
               name: checkIfDefinedElseDefault(schoolName),
-              nameId: urn,
+              nameId: checkIfDefinedElseDefault(urn),
             });
+
+            await schoolDataRepository.setToRegistered(
+              checkIfDefinedElseDefault(schoolName),
+              checkIfDefinedElseDefault(urn)
+            );
           } else if (type === 'charity') {
             const charityId = uuidv4();
             await signUpDataRepository.insert({
