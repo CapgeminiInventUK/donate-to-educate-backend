@@ -1,22 +1,14 @@
 import { WithId } from 'mongodb';
 import { Charity, InstituteSearchResult, Type } from '../../appsync';
 import { BaseRepository } from './baseRepository';
-import { clientOptions } from './config';
 import { convertPostcodeToLatLng } from '../shared/postcode';
 
 export class CharityDataRepository extends BaseRepository<Charity> {
   private static instance: CharityDataRepository;
 
-  static getInstance(
-    url = process?.env?.MONGODB_CONNECTION_STRING,
-    isTest = false
-  ): CharityDataRepository {
+  static getInstance(): CharityDataRepository {
     if (!this.instance) {
-      this.instance = new CharityDataRepository(
-        'CharityData',
-        url ?? '',
-        isTest ? undefined : clientOptions
-      );
+      this.instance = new CharityDataRepository('CharityData');
     }
     return this.instance;
   }

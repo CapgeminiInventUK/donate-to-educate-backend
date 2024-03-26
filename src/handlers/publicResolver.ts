@@ -257,5 +257,3 @@ export const handler: AppSyncResolverHandler<
 
   throw new Error('An unknown error occurred');
 };
-
-// name, distance, product types

@@ -4,6 +4,8 @@
  */
 
 export default {
+  maxWorkers: 1,
+  forceExit: true,
   transform: {
     '^.+\\.ts?$': 'ts-jest',
   },
@@ -12,17 +14,18 @@ export default {
   coverageDirectory: 'coverage',
   coverageProvider: 'v8',
   collectCoverageFrom: ['./src/**'],
-  coveragePathIgnorePatterns: ['__test__'],
+  coveragePathIgnorePatterns: ['__test__', 'testUtils.ts'],
   testMatch: ['**.test.ts'],
   preset: '@shelf/jest-mongodb',
   testTimeout: 30000,
   watchPathIgnorePatterns: ['globalConfig'],
   coverageThreshold: {
     global: {
-      branches: 50,
-      functions: 50,
-      lines: 20,
-      statements: 20,
+      branches: 70,
+      functions: 70,
+      lines: 40,
+      statements: 40,
     },
   },
+  globalTeardown: './tearDown.cjs',
 };

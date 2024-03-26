@@ -10,5 +10,5 @@ module.exports = {
       storageEngine: 'wiredTiger',
     },
   },
-  //   useSharedDBForAllJestWorkers: false,
+  useSharedDBForAllJestWorkers: false,
 };

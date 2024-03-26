@@ -1,21 +1,13 @@
 import { WithId } from 'mongodb';
 import { LocalAuthorityUser } from '../../appsync';
 import { BaseRepository } from './baseRepository';
-import { clientOptions } from './config';
 
 export class LocalAuthorityUserRepository extends BaseRepository<LocalAuthorityUser> {
   private static instance: LocalAuthorityUserRepository;
 
-  static getInstance(
-    url = process?.env?.MONGODB_CONNECTION_STRING,
-    isTest = false
-  ): LocalAuthorityUserRepository {
+  static getInstance(): LocalAuthorityUserRepository {
     if (!this.instance) {
-      this.instance = new LocalAuthorityUserRepository(
-        'LocalAuthorityUser',
-        url ?? '',
-        isTest ? undefined : clientOptions
-      );
+      this.instance = new LocalAuthorityUserRepository('LocalAuthorityUser');
     }
     return this.instance;
   }

@@ -1,21 +1,14 @@
 import { WithId } from 'mongodb';
 import { SchoolProfile } from '../../appsync';
 import { BaseRepository } from './baseRepository';
-import { clientOptions } from './config';
+import { checkIfDefinedElseDefault } from '../shared/check';
 
 export class SchoolProfileRepository extends BaseRepository<SchoolProfile> {
   private static instance: SchoolProfileRepository;
 
-  static getInstance(
-    url = process?.env?.MONGODB_CONNECTION_STRING,
-    isTest = false
-  ): SchoolProfileRepository {
+  static getInstance(): SchoolProfileRepository {
     if (!this.instance) {
-      this.instance = new SchoolProfileRepository(
-        'SchoolProfile',
-        url ?? '',
-        isTest ? undefined : clientOptions
-      );
+      this.instance = new SchoolProfileRepository('SchoolProfile');
     }
     return this.instance;
   }
@@ -38,7 +31,7 @@ export class SchoolProfileRepository extends BaseRepository<SchoolProfile> {
         { name, id },
         {
           $set: { [key]: parsedValue },
-          $setOnInsert: { name, id, localAuthority, postcode: postcode ?? '' },
+          $setOnInsert: { name, id, localAuthority, postcode: checkIfDefinedElseDefault(postcode) },
         },
         { upsert: true }
       )

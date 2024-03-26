@@ -1,21 +1,13 @@
 import { WithId } from 'mongodb';
 import { JoinRequest } from '../../appsync';
 import { BaseRepository } from './baseRepository';
-import { clientOptions } from './config';
 
 export class JoinRequestsRepository extends BaseRepository<JoinRequest> {
   private static instance: JoinRequestsRepository;
 
-  static getInstance(
-    url = process?.env?.MONGODB_CONNECTION_STRING,
-    isTest = false
-  ): JoinRequestsRepository {
+  static getInstance(): JoinRequestsRepository {
     if (!this.instance) {
-      this.instance = new JoinRequestsRepository(
-        'JoinRequests',
-        url ?? '',
-        isTest ? undefined : clientOptions
-      );
+      this.instance = new JoinRequestsRepository('JoinRequests');
     }
     return this.instance;
   }
