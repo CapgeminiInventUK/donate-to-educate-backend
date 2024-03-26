@@ -8,7 +8,7 @@ export const signUpData = [
   },
   {
     id: 'DaFmdjaASAsXeoijMMxHegGwpMXNWEIlldSZzmyApijLtYMIhOXLbgPvpoNLxSOfzoOiLWZaaPJynSnZzyELaiGQckLYAYVEIhrR',
-    email: 'ryan.b.smith@capgemini.com',
+    email: 'team@donatetoeducate.org.uk',
     type: 'school',
     name: 'St John the Baptist Voluntary Aided Church of England Primary School',
     nameId: '100266',
