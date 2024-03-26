@@ -37,4 +37,8 @@ export class SchoolProfileRepository extends BaseRepository<SchoolProfile> {
       )
     ).acknowledged;
   }
+
+  public async deleteSchoolProfile(name: string, id: string): Promise<boolean> {
+    return (await this.collection.deleteOne({ name, id })).acknowledged;
+  }
 }
