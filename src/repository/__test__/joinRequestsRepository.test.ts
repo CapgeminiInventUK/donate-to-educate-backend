@@ -40,7 +40,7 @@ describe('JoinRequestsRepository', () => {
   });
 
   it('Can delete denied', async () => {
-    const result = await repo.deleteDenied('Jake Readman');
+    const result = await repo.deleteDenied('1');
     expect(result).toEqual(true);
 
     const requests = await repo.list();

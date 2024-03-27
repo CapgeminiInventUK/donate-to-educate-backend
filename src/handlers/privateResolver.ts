@@ -176,8 +176,8 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'deleteDeniedJoinRequest': {
-      const { name } = params as MutationDeleteDeniedJoinRequestArgs;
-      const res = await joinRequestsRepository.deleteDenied(name);
+      const { id } = params as MutationDeleteDeniedJoinRequestArgs;
+      const res = await joinRequestsRepository.deleteDenied(id);
       callback(null, res);
       break;
     }
