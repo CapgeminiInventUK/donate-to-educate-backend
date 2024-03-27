@@ -281,7 +281,7 @@ type Mutation {
     organisationType: String!
   ): Boolean!
 
-  deleteDeniedJoinRequest(name: String!): Boolean!
+  deleteDeniedJoinRequest(id: String!): Boolean!
 
   deleteSchoolProfile(name: String!, id: String!): Boolean
 }

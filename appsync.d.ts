@@ -178,7 +178,7 @@ export type Mutation = {
 
 
 export type MutationDeleteDeniedJoinRequestArgs = {
-  name: Scalars['String']['input'];
+  id: Scalars['String']['input'];
 };
 
 
