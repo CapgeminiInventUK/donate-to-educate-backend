@@ -57,6 +57,6 @@ export class JoinRequestsRepository extends BaseRepository<JoinRequest> {
   }
 
   public async deleteDenied(id: string): Promise<boolean> {
-    return (await this.collection.deleteOne({ id, status: 'DENIED' })).acknowledged;
+    return (await this.collection.deleteOne({ id })).acknowledged;
   }
 }
