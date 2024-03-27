@@ -51,10 +51,10 @@ jobs:
           mv .serverless/*.zip archives
 
       - name: Copy Zip files to S3
-        run: aws s3 cp archives s3://d2e-lambda-s3-bucket --recursive
+        run: aws s3 cp archives s3://d2e-lambda-s3-bucket/${GITHUB_REF##*/} --recursive
 
       - name: Copy GraphQL schema to S3
-        run: aws s3 cp --content-type text/plain schema.graphql s3://d2e-lambda-s3-bucket
+        run: aws s3 cp --content-type text/plain schema.graphql s3://d2e-lambda-s3-bucket/${GITHUB_REF##*/}
 
       - name: Trigger Terraform
         run: |
