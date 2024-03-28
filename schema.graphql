@@ -201,6 +201,7 @@ type Query {
   getSchoolsByLa(name: String!): [School!]!
   getSchools: [School!]!
   getCharities: [Charity!]!
+  getCharitiesByLa(name: String!): [Charity]!
   getRegisteredSchools: [School!]!
   getRegisteredSchoolsByLa(localAuthority: String!): [School!]!
   getLocalAuthorities: [LocalAuthority!]!
@@ -212,6 +213,7 @@ type Query {
   getSchoolsNearby(postcode: String!, distance: Float!): [School!]!
   getCharitiesNearby(postcode: String!, distance: Float!): [Charity!]!
   getSchoolJoinRequestsByLa(localAuthority: String!): [JoinRequest!]!
+  getCharityJoinRequestsByLa(localAuthority: String!): [JoinRequest!]!
   getAdminTileStats: AdminStats!
   getSchoolsNearbyWithProfile(
     postcode: String!
@@ -284,6 +286,7 @@ type Mutation {
   deleteDeniedJoinRequest(id: String!): Boolean!
 
   deleteSchoolProfile(name: String!, id: String!): Boolean
+  deleteCharityProfile(name: String!, id: String!): Boolean
 }
 
 schema {

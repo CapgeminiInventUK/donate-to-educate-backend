@@ -164,6 +164,7 @@ export type LocalAuthorityUser = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  deleteCharityProfile?: Maybe<Scalars['Boolean']['output']>;
   deleteDeniedJoinRequest: Scalars['Boolean']['output'];
   deleteSchoolProfile?: Maybe<Scalars['Boolean']['output']>;
   insertItemQuery: Scalars['Boolean']['output'];
@@ -174,6 +175,12 @@ export type Mutation = {
   updateCharityProfile: Scalars['Boolean']['output'];
   updateJoinRequest: Scalars['Boolean']['output'];
   updateSchoolProfile: Scalars['Boolean']['output'];
+};
+
+
+export type MutationDeleteCharityProfileArgs = {
+  id: Scalars['String']['input'];
+  name: Scalars['String']['input'];
 };
 
 
@@ -277,8 +284,10 @@ export type Query = {
   __typename?: 'Query';
   getAdminTileStats: AdminStats;
   getCharities: Array<Charity>;
+  getCharitiesByLa: Array<Maybe<Charity>>;
   getCharitiesNearby: Array<Charity>;
   getCharitiesNearbyWithProfile: Array<InstituteSearchResult>;
+  getCharityJoinRequestsByLa: Array<JoinRequest>;
   getCharityProfile?: Maybe<CharityProfile>;
   getJoinRequests: Array<JoinRequest>;
   getLocalAuthorities: Array<LocalAuthority>;
@@ -296,6 +305,11 @@ export type Query = {
 };
 
 
+export type QueryGetCharitiesByLaArgs = {
+  name: Scalars['String']['input'];
+};
+
+
 export type QueryGetCharitiesNearbyArgs = {
   distance: Scalars['Float']['input'];
   postcode: Scalars['String']['input'];
@@ -306,6 +320,11 @@ export type QueryGetCharitiesNearbyWithProfileArgs = {
   distance: Scalars['Float']['input'];
   postcode: Scalars['String']['input'];
   type: Type;
+};
+
+
+export type QueryGetCharityJoinRequestsByLaArgs = {
+  localAuthority: Scalars['String']['input'];
 };
 
 
