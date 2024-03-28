@@ -15,6 +15,7 @@ import { logger } from '../shared/logger';
 import { checkIfDefinedElseDefault } from '../shared/check';
 
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
+const fromEmailAddress = 'team@donatetoeducate.org.uk';
 
 interface MongoDBEvent {
   detail: {
@@ -152,6 +153,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
         const { subject, intro } = getContentFromType(type);
 
         await sendEmail('ryan.b.smith@capgemini.com', 'request', {
+          // TODO who is this email meant to be sent to?
           subject,
           intro,
           type: who,
@@ -167,7 +169,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
         const { name, email, localAuthority, message, type } =
           fullDocument as LocalAuthorityRegisterRequest;
 
-        await sendEmail('ryan.b.smith@capgemini.com', 'la-not-joined', {
+        await sendEmail(fromEmailAddress, 'la-not-joined', {
           type,
           subject: 'Local authority has not joined',
           email,
@@ -196,7 +198,7 @@ const sendEmail = async (
 ): Promise<void> => {
   const res = await sesClient.send(
     new SendEmailCommand({
-      FromEmailAddress: 'ryan.b.smith@capgemini.com', // TODO get from env vars
+      FromEmailAddress: fromEmailAddress,
       Destination: { ToAddresses: [email] },
       Content: {
         Template: {

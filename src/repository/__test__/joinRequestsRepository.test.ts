@@ -26,7 +26,7 @@ describe('JoinRequestsRepository', () => {
       name: 'Ryan Smith',
       localAuthority: 'Hackney',
       type: 'school',
-      email: 'ryan.b.smith@capgemini.com',
+      email: 'team@donatetoeducate.org.uk',
       school: 'St John the Baptist Voluntary Aided Church of England Primary School - N1 6JG',
       jobTitle: 'sdv',
       phone: '07546547334',

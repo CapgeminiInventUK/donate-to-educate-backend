@@ -121,6 +121,13 @@ export type JoinRequestStats = {
   school: Scalars['Int']['output'];
 };
 
+export type LaStats = {
+  __typename?: 'LaStats';
+  charityRequests: Scalars['Int']['output'];
+  privacyPolicyAccepted: Scalars['Boolean']['output'];
+  schoolRequests: Scalars['Int']['output'];
+};
+
 export type LocalAuthority = {
   __typename?: 'LocalAuthority';
   code: Scalars['String']['output'];
@@ -160,10 +167,12 @@ export type LocalAuthorityUser = {
   nameId: Scalars['String']['output'];
   notes?: Maybe<Scalars['String']['output']>;
   phone: Scalars['String']['output'];
+  privacyPolicyAccepted?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptPrivacyPolicy: Scalars['Boolean']['output'];
   deleteCharityProfile?: Maybe<Scalars['Boolean']['output']>;
   deleteDeniedJoinRequest: Scalars['Boolean']['output'];
   deleteSchoolProfile?: Maybe<Scalars['Boolean']['output']>;
@@ -175,6 +184,13 @@ export type Mutation = {
   updateCharityProfile: Scalars['Boolean']['output'];
   updateJoinRequest: Scalars['Boolean']['output'];
   updateSchoolProfile: Scalars['Boolean']['output'];
+};
+
+
+export type MutationAcceptPrivacyPolicyArgs = {
+  email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  nameId: Scalars['String']['input'];
 };
 
 
@@ -290,6 +306,7 @@ export type Query = {
   getCharityJoinRequestsByLa: Array<JoinRequest>;
   getCharityProfile?: Maybe<CharityProfile>;
   getJoinRequests: Array<JoinRequest>;
+  getLaStats: LaStats;
   getLocalAuthorities: Array<LocalAuthority>;
   getLocalAuthorityUser: LocalAuthorityUser;
   getRegisteredSchools: Array<School>;
@@ -331,6 +348,13 @@ export type QueryGetCharityJoinRequestsByLaArgs = {
 export type QueryGetCharityProfileArgs = {
   id: Scalars['String']['input'];
   name: Scalars['String']['input'];
+};
+
+
+export type QueryGetLaStatsArgs = {
+  email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  nameId: Scalars['String']['input'];
 };
 
 

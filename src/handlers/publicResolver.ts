@@ -24,6 +24,8 @@ import {
   QueryGetCharitiesNearbyWithProfileArgs,
   QueryGetCharitiesByLaArgs,
   QueryGetCharityJoinRequestsByLaArgs,
+  QueryGetLaStatsArgs,
+  LaStats,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -67,6 +69,7 @@ export const handler: AppSyncResolverHandler<
   | SignUpData
   | LocalAuthorityUser
   | AdminStats
+  | LaStats
   | QueryGetSchoolJoinRequestsByLaArgs
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
@@ -247,6 +250,22 @@ export const handler: AppSyncResolverHandler<
         joinRequests: { school, charity },
         registeredSchools,
         registeredCharities,
+      };
+      callback(null, res);
+      break;
+    }
+    case 'getLaStats': {
+      const { name, nameId, email } = params as QueryGetLaStatsArgs;
+      const [la, schoolRequests, charityRequests] = await Promise.all([
+        localAuthorityUserRepository.getByAll(name, nameId, email),
+        joinRequestsRepository.getSchoolJoinRequestsCountByLa(name),
+        joinRequestsRepository.getCharityJoinRequestsCountByLa(name),
+      ]);
+
+      const res = {
+        privacyPolicyAccepted: la?.privacyPolicyAccepted ?? false,
+        schoolRequests,
+        charityRequests,
       };
       callback(null, res);
       break;

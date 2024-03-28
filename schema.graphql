@@ -89,6 +89,7 @@ type LocalAuthorityUser {
   phone: String!
   notes: String
   nameId: String!
+  privacyPolicyAccepted: Boolean
 }
 
 type LocalAuthority {
@@ -182,6 +183,12 @@ type AdminStats {
   registeredCharities: Int!
 }
 
+type LaStats {
+  schoolRequests: Int!
+  charityRequests: Int!
+  privacyPolicyAccepted: Boolean!
+}
+
 type InstituteSearchResult {
   id: String!
   name: String!
@@ -215,6 +222,7 @@ type Query {
   getSchoolJoinRequestsByLa(localAuthority: String!): [JoinRequest!]!
   getCharityJoinRequestsByLa(localAuthority: String!): [JoinRequest!]!
   getAdminTileStats: AdminStats!
+  getLaStats(name: String!, nameId: String!, email: String!): LaStats!
   getSchoolsNearbyWithProfile(
     postcode: String!
     distance: Float!
@@ -287,6 +295,7 @@ type Mutation {
 
   deleteSchoolProfile(name: String!, id: String!): Boolean
   deleteCharityProfile(name: String!, id: String!): Boolean
+  acceptPrivacyPolicy(name: String!, nameId: String!, email: String!): Boolean!
 }
 
 schema {
