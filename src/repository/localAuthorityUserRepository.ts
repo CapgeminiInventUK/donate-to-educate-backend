@@ -27,4 +27,28 @@ export class LocalAuthorityUserRepository extends BaseRepository<LocalAuthorityU
   public async insert(la: LocalAuthorityUser): Promise<boolean> {
     return (await this.collection.insertOne(la)).acknowledged;
   }
+
+  public async getByAll(
+    name: string,
+    nameId: string,
+    email: string
+  ): Promise<WithId<LocalAuthorityUser> | undefined> {
+    return await this.getOne({ name, nameId, email });
+  }
+
+  public async setPrivacyPolicyAccepted(
+    name: string,
+    nameId: string,
+    email: string
+  ): Promise<boolean> {
+    return (
+      await this.collection.updateOne(
+        { name, nameId, email },
+        {
+          $set: { privacyPolicyAccepted: true },
+        },
+        { upsert: false }
+      )
+    ).acknowledged;
+  }
 }

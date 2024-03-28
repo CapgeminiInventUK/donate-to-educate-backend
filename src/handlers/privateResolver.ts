@@ -10,6 +10,7 @@ import {
   MutationDeleteDeniedJoinRequestArgs,
   MutationUpdateCharityProfileArgs,
   MutationDeleteSchoolProfileArgs,
+  MutationAcceptPrivacyPolicyArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { v4 as uuidv4 } from 'uuid';
@@ -46,6 +47,7 @@ export const handler: AppSyncResolverHandler<
   | MutationInsertJoinRequestArgs
   | MutationDeleteDeniedJoinRequestArgs
   | MutationDeleteSchoolProfileArgs
+  | MutationAcceptPrivacyPolicyArgs
   | MutationInsertLocalAuthorityRegisterRequestArgs,
   boolean
 > = async (event, context, callback) => {
@@ -185,6 +187,12 @@ export const handler: AppSyncResolverHandler<
       const { name, id } = params as MutationDeleteSchoolProfileArgs;
       const res = await schoolProfileRepository.deleteSchoolProfile(name, id);
       await schoolDataRepository.unregister(name, id);
+      callback(null, res);
+      break;
+    }
+    case 'acceptPrivacyPolicy': {
+      const { name, nameId, email } = params as MutationAcceptPrivacyPolicyArgs;
+      const res = await localAuthorityUserRepository.setPrivacyPolicyAccepted(name, nameId, email);
       callback(null, res);
       break;
     }

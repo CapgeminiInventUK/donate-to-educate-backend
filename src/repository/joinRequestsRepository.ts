@@ -28,6 +28,14 @@ export class JoinRequestsRepository extends BaseRepository<JoinRequest> {
     return await this.getCount({ status: 'NEW', type: 'charity' });
   }
 
+  public async getSchoolJoinRequestsCountByLa(localAuthority: string): Promise<number> {
+    return await this.getCount({ status: 'NEW', type: 'school', localAuthority });
+  }
+
+  public async getCharityJoinRequestsCountByLa(localAuthority: string): Promise<number> {
+    return await this.getCount({ status: 'NEW', type: 'charity', localAuthority });
+  }
+
   public async getNewSchoolJoinRequestsByLa(
     localAuthority: string
   ): Promise<WithId<JoinRequest>[]> {
