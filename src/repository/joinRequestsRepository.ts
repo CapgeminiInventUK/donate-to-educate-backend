@@ -42,6 +42,12 @@ export class JoinRequestsRepository extends BaseRepository<JoinRequest> {
     return await this.getByQuery({ status: 'NEW', type: 'school', localAuthority });
   }
 
+  public async getNewCharityJoinRequestsByLa(
+    localAuthority: string
+  ): Promise<WithId<JoinRequest>[]> {
+    return await this.getByQuery({ status: 'NEW', type: 'charity', localAuthority });
+  }
+
   public async updateStatus(
     id: string,
     localAuthority: string,

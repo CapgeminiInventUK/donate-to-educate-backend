@@ -22,6 +22,8 @@ import {
   InstituteSearchResult,
   QueryGetSchoolsNearbyWithProfileArgs,
   QueryGetCharitiesNearbyWithProfileArgs,
+  QueryGetCharitiesByLaArgs,
+  QueryGetCharityJoinRequestsByLaArgs,
   QueryGetLaStatsArgs,
   LaStats,
 } from '../../appsync';
@@ -265,6 +267,18 @@ export const handler: AppSyncResolverHandler<
         schoolRequests,
         charityRequests,
       };
+      callback(null, res);
+      break;
+    }
+    case 'getCharitiesByLa': {
+      const { name } = params as QueryGetCharitiesByLaArgs;
+      const charities = await charityDataRepository.getByLa(name);
+      callback(null, charities);
+      break;
+    }
+    case 'getCharityJoinRequestsByLa': {
+      const { localAuthority } = params as QueryGetCharityJoinRequestsByLaArgs;
+      const res = await joinRequestsRepository.getNewCharityJoinRequestsByLa(localAuthority);
       callback(null, res);
       break;
     }
