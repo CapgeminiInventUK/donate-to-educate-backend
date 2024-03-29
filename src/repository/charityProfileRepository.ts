@@ -36,4 +36,8 @@ export class CharityProfileRepository extends BaseRepository<CharityProfile> {
       )
     ).acknowledged;
   }
+
+  public async deleteCharityProfile(name: string, id: string): Promise<boolean> {
+    return (await this.collection.deleteOne({ name, id })).acknowledged;
+  }
 }

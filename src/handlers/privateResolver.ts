@@ -11,6 +11,7 @@ import {
   MutationUpdateCharityProfileArgs,
   MutationDeleteSchoolProfileArgs,
   MutationAcceptPrivacyPolicyArgs,
+  MutationDeleteCharityProfileArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { v4 as uuidv4 } from 'uuid';
@@ -193,6 +194,12 @@ export const handler: AppSyncResolverHandler<
     case 'acceptPrivacyPolicy': {
       const { name, nameId, email } = params as MutationAcceptPrivacyPolicyArgs;
       const res = await localAuthorityUserRepository.setPrivacyPolicyAccepted(name, nameId, email);
+      callback(null, res);
+      break;
+    }
+    case 'deleteCharityProfile': {
+      const { name, id } = params as MutationDeleteCharityProfileArgs;
+      const res = await charityProfileRepository.deleteCharityProfile(name, id);
       callback(null, res);
       break;
     }
