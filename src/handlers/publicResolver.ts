@@ -18,6 +18,14 @@ import {
   CharityProfile,
   QueryGetCharitiesNearbyArgs,
   Charity,
+  AdminStats,
+  InstituteSearchResult,
+  QueryGetSchoolsNearbyWithProfileArgs,
+  QueryGetCharitiesNearbyWithProfileArgs,
+  QueryGetCharitiesByLaArgs,
+  QueryGetCharityJoinRequestsByLaArgs,
+  QueryGetLaStatsArgs,
+  LaStats,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -54,11 +62,14 @@ export const handler: AppSyncResolverHandler<
   | Charity[]
   | LocalAuthority[]
   | JoinRequest[]
+  | InstituteSearchResult[]
   | boolean
   | SchoolProfile
   | CharityProfile
   | SignUpData
   | LocalAuthorityUser
+  | AdminStats
+  | LaStats
   | QueryGetSchoolJoinRequestsByLaArgs
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
@@ -187,12 +198,87 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
+    case 'getSchoolsNearbyWithProfile': {
+      const { postcode, distance, type } = params as QueryGetSchoolsNearbyWithProfileArgs;
+
+      const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
+
+      const res = await schoolDataRepository.getSchoolsNearbyWithProfile(
+        longitude,
+        latitude,
+        distance,
+        type
+      );
+      callback(null, res);
+      break;
+    }
     case 'getCharitiesNearby': {
       const { postcode, distance } = params as QueryGetCharitiesNearbyArgs;
 
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
       const res = await charityDataRepository.getCharitiesNearby(longitude, latitude, distance);
+      callback(null, res);
+      break;
+    }
+    case 'getCharitiesNearbyWithProfile': {
+      const { postcode, distance, type } = params as QueryGetCharitiesNearbyWithProfileArgs;
+
+      const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
+
+      const res = await charityDataRepository.getCharitiesNearbyWithProfile(
+        longitude,
+        latitude,
+        distance,
+        type
+      );
+      callback(null, res);
+      break;
+    }
+    case 'getAdminTileStats': {
+      const [joined, notJoined, school, charity, registeredSchools, registeredCharities] =
+        await Promise.all([
+          localAuthorityDataRepository.getRegisteredLocalAuthorityCount(),
+          localAuthorityDataRepository.getNotRegisteredLocalAuthorityCount(),
+          joinRequestsRepository.getSchoolJoinRequestsCount(),
+          joinRequestsRepository.getCharityJoinRequestsCount(),
+          schoolDataRepository.getRegisteredSchoolsCount(),
+          charityDataRepository.getRegisteredCharityCount(),
+        ]);
+      const res = {
+        la: { joined, notJoined },
+        joinRequests: { school, charity },
+        registeredSchools,
+        registeredCharities,
+      };
+      callback(null, res);
+      break;
+    }
+    case 'getLaStats': {
+      const { name, nameId, email } = params as QueryGetLaStatsArgs;
+      const [la, schoolRequests, charityRequests] = await Promise.all([
+        localAuthorityUserRepository.getByAll(name, nameId, email),
+        joinRequestsRepository.getSchoolJoinRequestsCountByLa(name),
+        joinRequestsRepository.getCharityJoinRequestsCountByLa(name),
+      ]);
+
+      const res = {
+        privacyPolicyAccepted: la?.privacyPolicyAccepted ?? false,
+        schoolRequests,
+        charityRequests,
+      };
+      callback(null, res);
+      break;
+    }
+    case 'getCharitiesByLa': {
+      const { name } = params as QueryGetCharitiesByLaArgs;
+      const charities = await charityDataRepository.getByLa(name);
+      callback(null, charities);
+      break;
+    }
+    case 'getCharityJoinRequestsByLa': {
+      const { localAuthority } = params as QueryGetCharityJoinRequestsByLaArgs;
+      const res = await joinRequestsRepository.getNewCharityJoinRequestsByLa(localAuthority);
       callback(null, res);
       break;
     }

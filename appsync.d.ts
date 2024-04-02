@@ -14,14 +14,23 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type AdminStats = {
+  __typename?: 'AdminStats';
+  joinRequests: JoinRequestStats;
+  la: LocalAuthorityStats;
+  registeredCharities: Scalars['Int']['output'];
+  registeredSchools: Scalars['Int']['output'];
+};
+
 export type Charity = {
   __typename?: 'Charity';
   about: Scalars['String']['output'];
   address: Scalars['String']['output'];
-  distance?: Maybe<Scalars['String']['output']>;
+  distance?: Maybe<Scalars['Float']['output']>;
   id: Scalars['String']['output'];
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  profile?: Maybe<Array<Maybe<CharityProfile>>>;
 };
 
 export type CharityDetails = {
@@ -41,7 +50,7 @@ export type CharityProfile = {
   id: Scalars['String']['output'];
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
-  postcode: Scalars['String']['output'];
+  postcode?: Maybe<Scalars['String']['output']>;
   request?: Maybe<ProfileItems>;
 };
 
@@ -65,6 +74,15 @@ export type CharityUser = {
   jobTitle: Scalars['String']['output'];
   name: Scalars['String']['output'];
   phone: Scalars['String']['output'];
+};
+
+export type InstituteSearchResult = {
+  __typename?: 'InstituteSearchResult';
+  distance: Scalars['Float']['output'];
+  id: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  productTypes: Array<Scalars['Int']['output']>;
+  registered: Scalars['Boolean']['output'];
 };
 
 export type ItemQuery = {
@@ -94,6 +112,20 @@ export type JoinRequest = {
   school?: Maybe<Scalars['String']['output']>;
   status: Scalars['String']['output'];
   type: Scalars['String']['output'];
+  urn?: Maybe<Scalars['String']['output']>;
+};
+
+export type JoinRequestStats = {
+  __typename?: 'JoinRequestStats';
+  charity: Scalars['Int']['output'];
+  school: Scalars['Int']['output'];
+};
+
+export type LaStats = {
+  __typename?: 'LaStats';
+  charityRequests: Scalars['Int']['output'];
+  privacyPolicyAccepted: Scalars['Boolean']['output'];
+  schoolRequests: Scalars['Int']['output'];
 };
 
 export type LocalAuthority = {
@@ -118,6 +150,12 @@ export type LocalAuthorityRegisterRequest = {
   type: Scalars['String']['output'];
 };
 
+export type LocalAuthorityStats = {
+  __typename?: 'LocalAuthorityStats';
+  joined: Scalars['Int']['output'];
+  notJoined: Scalars['Int']['output'];
+};
+
 export type LocalAuthorityUser = {
   __typename?: 'LocalAuthorityUser';
   department: Scalars['String']['output'];
@@ -129,11 +167,15 @@ export type LocalAuthorityUser = {
   nameId: Scalars['String']['output'];
   notes?: Maybe<Scalars['String']['output']>;
   phone: Scalars['String']['output'];
+  privacyPolicyAccepted?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptPrivacyPolicy: Scalars['Boolean']['output'];
+  deleteCharityProfile?: Maybe<Scalars['Boolean']['output']>;
   deleteDeniedJoinRequest: Scalars['Boolean']['output'];
+  deleteSchoolProfile?: Maybe<Scalars['Boolean']['output']>;
   insertItemQuery: Scalars['Boolean']['output'];
   insertJoinRequest: Scalars['Boolean']['output'];
   insertLocalAuthorityRegisterRequest: Scalars['Boolean']['output'];
@@ -145,7 +187,26 @@ export type Mutation = {
 };
 
 
+export type MutationAcceptPrivacyPolicyArgs = {
+  email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  nameId: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteCharityProfileArgs = {
+  id: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
+
 export type MutationDeleteDeniedJoinRequestArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteSchoolProfileArgs = {
+  id: Scalars['String']['input'];
   name: Scalars['String']['input'];
 };
 
@@ -173,6 +234,7 @@ export type MutationInsertJoinRequestArgs = {
   phone?: InputMaybe<Scalars['String']['input']>;
   school?: InputMaybe<Scalars['String']['input']>;
   type: Scalars['String']['input'];
+  urn?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -230,15 +292,21 @@ export type ProfileItems = {
   __typename?: 'ProfileItems';
   actionText?: Maybe<Scalars['String']['output']>;
   items?: Maybe<Scalars['String']['output']>;
+  productTypes?: Maybe<Array<Maybe<Scalars['Float']['output']>>>;
   whatToExpect?: Maybe<Scalars['String']['output']>;
 };
 
 export type Query = {
   __typename?: 'Query';
+  getAdminTileStats: AdminStats;
   getCharities: Array<Charity>;
+  getCharitiesByLa: Array<Maybe<Charity>>;
   getCharitiesNearby: Array<Charity>;
+  getCharitiesNearbyWithProfile: Array<InstituteSearchResult>;
+  getCharityJoinRequestsByLa: Array<JoinRequest>;
   getCharityProfile?: Maybe<CharityProfile>;
   getJoinRequests: Array<JoinRequest>;
+  getLaStats: LaStats;
   getLocalAuthorities: Array<LocalAuthority>;
   getLocalAuthorityUser: LocalAuthorityUser;
   getRegisteredSchools: Array<School>;
@@ -249,7 +317,13 @@ export type Query = {
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
   getSchoolsNearby: Array<School>;
+  getSchoolsNearbyWithProfile: Array<InstituteSearchResult>;
   getSignUpData?: Maybe<SignUpData>;
+};
+
+
+export type QueryGetCharitiesByLaArgs = {
+  name: Scalars['String']['input'];
 };
 
 
@@ -259,9 +333,28 @@ export type QueryGetCharitiesNearbyArgs = {
 };
 
 
+export type QueryGetCharitiesNearbyWithProfileArgs = {
+  distance: Scalars['Float']['input'];
+  postcode: Scalars['String']['input'];
+  type: Type;
+};
+
+
+export type QueryGetCharityJoinRequestsByLaArgs = {
+  localAuthority: Scalars['String']['input'];
+};
+
+
 export type QueryGetCharityProfileArgs = {
   id: Scalars['String']['input'];
   name: Scalars['String']['input'];
+};
+
+
+export type QueryGetLaStatsArgs = {
+  email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  nameId: Scalars['String']['input'];
 };
 
 
@@ -302,6 +395,13 @@ export type QueryGetSchoolsNearbyArgs = {
 };
 
 
+export type QueryGetSchoolsNearbyWithProfileArgs = {
+  distance: Scalars['Float']['input'];
+  postcode: Scalars['String']['input'];
+  type: Type;
+};
+
+
 export type QueryGetSignUpDataArgs = {
   id: Scalars['String']['input'];
 };
@@ -310,13 +410,14 @@ export type School = {
   __typename?: 'School';
   address3?: Maybe<Scalars['String']['output']>;
   county?: Maybe<Scalars['String']['output']>;
-  distance?: Maybe<Scalars['String']['output']>;
+  distance?: Maybe<Scalars['Float']['output']>;
   isLocalAuthorityRegistered?: Maybe<Scalars['Boolean']['output']>;
   localAuthority: Scalars['String']['output'];
   locality?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   phone?: Maybe<Scalars['String']['output']>;
   postcode?: Maybe<Scalars['String']['output']>;
+  profile?: Maybe<Array<Maybe<SchoolProfile>>>;
   registered: Scalars['Boolean']['output'];
   street?: Maybe<Scalars['String']['output']>;
   town?: Maybe<Scalars['String']['output']>;
@@ -362,3 +463,9 @@ export type SignUpData = {
   nameId: Scalars['String']['output'];
   type: Scalars['String']['output'];
 };
+
+export enum Type {
+  Donate = 'donate',
+  Excess = 'excess',
+  Request = 'request'
+}

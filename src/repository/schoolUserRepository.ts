@@ -1,21 +1,13 @@
 import { WithId } from 'mongodb';
 import { SchoolUser } from '../../appsync';
 import { BaseRepository } from './baseRepository';
-import { clientOptions } from './config';
 
 export class SchoolUserRepository extends BaseRepository<SchoolUser> {
   private static instance: SchoolUserRepository;
 
-  static getInstance(
-    url = process?.env?.MONGODB_CONNECTION_STRING,
-    isTest = false
-  ): SchoolUserRepository {
+  static getInstance(): SchoolUserRepository {
     if (!this.instance) {
-      this.instance = new SchoolUserRepository(
-        'SchoolUser',
-        url ?? '',
-        isTest ? undefined : clientOptions
-      );
+      this.instance = new SchoolUserRepository('SchoolUser');
     }
     return this.instance;
   }

@@ -1,21 +1,13 @@
 import { WithId } from 'mongodb';
 import { CharityUser } from '../../appsync';
 import { BaseRepository } from './baseRepository';
-import { clientOptions } from './config';
 
 export class CharityUserRepository extends BaseRepository<CharityUser> {
   private static instance: CharityUserRepository;
 
-  static getInstance(
-    url = process?.env?.MONGODB_CONNECTION_STRING,
-    isTest = false
-  ): CharityUserRepository {
+  static getInstance(): CharityUserRepository {
     if (!this.instance) {
-      this.instance = new CharityUserRepository(
-        'CharityUser',
-        url ?? '',
-        isTest ? undefined : clientOptions
-      );
+      this.instance = new CharityUserRepository('CharityUser');
     }
     return this.instance;
   }

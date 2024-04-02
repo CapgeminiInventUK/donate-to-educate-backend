@@ -1,21 +1,13 @@
 import { WithId } from 'mongodb';
 import { JoinRequest } from '../../appsync';
 import { BaseRepository } from './baseRepository';
-import { clientOptions } from './config';
 
 export class JoinRequestsRepository extends BaseRepository<JoinRequest> {
   private static instance: JoinRequestsRepository;
 
-  static getInstance(
-    url = process?.env?.MONGODB_CONNECTION_STRING,
-    isTest = false
-  ): JoinRequestsRepository {
+  static getInstance(): JoinRequestsRepository {
     if (!this.instance) {
-      this.instance = new JoinRequestsRepository(
-        'JoinRequests',
-        url ?? '',
-        isTest ? undefined : clientOptions
-      );
+      this.instance = new JoinRequestsRepository('JoinRequests');
     }
     return this.instance;
   }
@@ -28,10 +20,32 @@ export class JoinRequestsRepository extends BaseRepository<JoinRequest> {
     return await this.getByQuery({ status: 'NEW' });
   }
 
+  public async getSchoolJoinRequestsCount(): Promise<number> {
+    return await this.getCount({ status: 'NEW', type: 'school' });
+  }
+
+  public async getCharityJoinRequestsCount(): Promise<number> {
+    return await this.getCount({ status: 'NEW', type: 'charity' });
+  }
+
+  public async getSchoolJoinRequestsCountByLa(localAuthority: string): Promise<number> {
+    return await this.getCount({ status: 'NEW', type: 'school', localAuthority });
+  }
+
+  public async getCharityJoinRequestsCountByLa(localAuthority: string): Promise<number> {
+    return await this.getCount({ status: 'NEW', type: 'charity', localAuthority });
+  }
+
   public async getNewSchoolJoinRequestsByLa(
     localAuthority: string
   ): Promise<WithId<JoinRequest>[]> {
     return await this.getByQuery({ status: 'NEW', type: 'school', localAuthority });
+  }
+
+  public async getNewCharityJoinRequestsByLa(
+    localAuthority: string
+  ): Promise<WithId<JoinRequest>[]> {
+    return await this.getByQuery({ status: 'NEW', type: 'charity', localAuthority });
   }
 
   public async updateStatus(
@@ -56,7 +70,7 @@ export class JoinRequestsRepository extends BaseRepository<JoinRequest> {
     return (await this.collection.insertOne(user)).acknowledged;
   }
 
-  public async deleteDenied(name: string): Promise<boolean> {
-    return (await this.collection.deleteOne({ name, status: 'DENIED' })).acknowledged;
+  public async deleteDenied(id: string): Promise<boolean> {
+    return (await this.collection.deleteOne({ id })).acknowledged;
   }
 }

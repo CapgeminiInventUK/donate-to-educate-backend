@@ -11,8 +11,11 @@ import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { v4 as uuidv4 } from 'uuid';
 import { CharityDataRepository } from '../repository/charityDataRepository';
+import { logger } from '../shared/logger';
+import { checkIfDefinedElseDefault } from '../shared/check';
 
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
+const fromEmailAddress = 'team@donatetoeducate.org.uk';
 
 interface MongoDBEvent {
   detail: {
@@ -27,21 +30,19 @@ const schoolDataRepository = SchoolDataRepository.getInstance();
 const charityDataRepository = CharityDataRepository.getInstance();
 
 export const handler: Handler = async (event: MongoDBEvent, context, callback): Promise<void> => {
-  // eslint-disable-next-line no-console
-  console.log(event);
+  logger.info(event);
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
     // TODO add validation here
     if (!event?.detail?.fullDocument?.email && !event?.detail?.fullDocumentBeforeChange?.email) {
-      // eslint-disable-next-line no-console
-      console.log('No email address provided');
+      logger.info('No email address provided');
       callback('No email address provided', null);
       return;
     }
 
     const { fullDocument, ns, fullDocumentBeforeChange } = event.detail;
-    const domainName = process.env.DOMAIN_NAME ?? '';
+    const domainName = checkIfDefinedElseDefault(process?.env?.DOMAIN_NAME);
 
     switch (ns.coll) {
       case 'LocalAuthorityUser': {
@@ -77,34 +78,39 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
             charityAddress,
             aboutCharity,
             localAuthority,
+            urn,
           } = fullDocument as JoinRequest;
 
           if (type === 'school') {
             const schoolName = school?.split(' - ')[0];
-            const { urn = '' } = (await schoolDataRepository.getByName(schoolName ?? '')) ?? {};
 
             await signUpDataRepository.insert({
               id: randomString,
               email,
               type,
-              name: schoolName ?? '',
-              nameId: urn,
+              name: checkIfDefinedElseDefault(schoolName),
+              nameId: checkIfDefinedElseDefault(urn),
             });
+
+            await schoolDataRepository.setToRegistered(
+              checkIfDefinedElseDefault(schoolName),
+              checkIfDefinedElseDefault(urn)
+            );
           } else if (type === 'charity') {
             const charityId = uuidv4();
             await signUpDataRepository.insert({
               id: randomString,
               email,
               type,
-              name: charityName ?? '',
+              name: checkIfDefinedElseDefault(charityName),
               nameId: charityId,
             });
 
             await charityDataRepository.insert({
               id: charityId,
-              name: charityName ?? '',
-              address: charityAddress ?? '',
-              about: aboutCharity ?? '',
+              name: checkIfDefinedElseDefault(charityName),
+              address: checkIfDefinedElseDefault(charityAddress),
+              about: checkIfDefinedElseDefault(aboutCharity),
               localAuthority,
             });
           } else {
@@ -120,7 +126,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
           // TODO do something with la email sending
           // const la = await localAuthorityUserRepository.getByName(localAuthority);
 
-          // await sendEmail(la?.email ?? '', 'reviewed-requests-to-join', {
+          // await sendEmail(checkIfDefinedElseDefault(la?.email), 'reviewed-requests-to-join', {
           //   subject: "We've reviewed your requests to join",
           //   reviewLink: `https://${domainName}/login`,
           // });
@@ -135,7 +141,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
           // TODO do something with la email sending
           // const la = await localAuthorityUserRepository.getByName(localAuthority);
 
-          // await sendEmail(la?.email ?? '', 'reviewed-requests-to-join', {
+          // await sendEmail(checkIfDefinedElseDefault(la?.email), 'reviewed-requests-to-join', {
           //   subject: "We've reviewed your requests to join",
           //   reviewLink: `https://${domainName}/login`,
           // });
@@ -147,6 +153,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
         const { subject, intro } = getContentFromType(type);
 
         await sendEmail('ryan.b.smith@capgemini.com', 'request', {
+          // TODO who is this email meant to be sent to?
           subject,
           intro,
           type: who,
@@ -162,7 +169,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
         const { name, email, localAuthority, message, type } =
           fullDocument as LocalAuthorityRegisterRequest;
 
-        await sendEmail('ryan.b.smith@capgemini.com', 'la-not-joined', {
+        await sendEmail(fromEmailAddress, 'la-not-joined', {
           type,
           subject: 'Local authority has not joined',
           email,
@@ -178,8 +185,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
         throw new Error(`Unexpected collection: ${event.detail.ns.coll}`);
     }
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
+    logger.error(error);
   }
 
   callback(null, 'Finished');
@@ -192,7 +198,7 @@ const sendEmail = async (
 ): Promise<void> => {
   const res = await sesClient.send(
     new SendEmailCommand({
-      FromEmailAddress: 'ryan.b.smith@capgemini.com', // TODO get from env vars
+      FromEmailAddress: fromEmailAddress,
       Destination: { ToAddresses: [email] },
       Content: {
         Template: {
@@ -203,8 +209,7 @@ const sendEmail = async (
     })
   );
 
-  // eslint-disable-next-line no-console
-  console.log(res);
+  logger.info(res);
 };
 
 const getContentFromType = (type: string): { subject: string; intro: string } => {

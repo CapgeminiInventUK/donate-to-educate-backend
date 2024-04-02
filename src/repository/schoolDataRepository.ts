@@ -1,21 +1,13 @@
 import { WithId } from 'mongodb';
-import { School } from '../../appsync';
+import { InstituteSearchResult, School, Type } from '../../appsync';
 import { BaseRepository } from './baseRepository';
-import { clientOptions } from './config';
 
 export class SchoolDataRepository extends BaseRepository<School> {
   private static instance: SchoolDataRepository;
 
-  static getInstance(
-    url = process?.env?.MONGODB_CONNECTION_STRING,
-    isTest = false
-  ): SchoolDataRepository {
+  static getInstance(): SchoolDataRepository {
     if (!this.instance) {
-      this.instance = new SchoolDataRepository(
-        'SchoolData',
-        url ?? '',
-        isTest ? undefined : clientOptions
-      );
+      this.instance = new SchoolDataRepository('SchoolData');
     }
     return this.instance;
   }
@@ -36,8 +28,22 @@ export class SchoolDataRepository extends BaseRepository<School> {
     return await this.getByQuery({ registered: true });
   }
 
+  public async getRegisteredSchoolsCount(): Promise<number> {
+    return await this.getCount({ registered: true });
+  }
+
   public async getRegisteredByLa(localAuthority: string): Promise<WithId<School>[]> {
     return await this.getByQuery({ registered: true, localAuthority });
+  }
+
+  public async setToRegistered(name: string, urn: string): Promise<boolean> {
+    return (await this.collection.updateOne({ name, urn }, { $set: { registered: true } }))
+      .acknowledged;
+  }
+
+  public async unregister(name: string, urn: string): Promise<boolean> {
+    return (await this.collection.updateOne({ name, urn }, { $set: { registered: false } }))
+      .acknowledged;
   }
 
   public async getSchoolsNearby(
@@ -59,5 +65,43 @@ export class SchoolDataRepository extends BaseRepository<School> {
     ]);
 
     return await res.toArray();
+  }
+
+  public async getSchoolsNearbyWithProfile(
+    longitude: number,
+    latitude: number,
+    maxDistance: number,
+    type: Type
+  ): Promise<InstituteSearchResult[]> {
+    const res = this.collection.aggregate<School>([
+      {
+        $geoNear: {
+          near: {
+            type: 'Point',
+            coordinates: [longitude, latitude],
+          },
+          distanceField: 'distance',
+          maxDistance,
+        },
+      },
+      {
+        $lookup: {
+          from: 'SchoolProfile',
+          localField: 'urn',
+          foreignField: 'id',
+          as: 'profile',
+        },
+      },
+    ]);
+
+    return (await res.toArray()).reduce((acc, { name, distance, profile, urn, registered }) => {
+      const hasProfileItems = profile && profile?.length > 0;
+
+      const productTypes = hasProfileItems
+        ? (profile[0]?.[type]?.productTypes as number[]) ?? []
+        : [];
+      acc.push({ name, distance: distance ?? 0, productTypes, id: urn, registered });
+      return acc;
+    }, [] as InstituteSearchResult[]);
   }
 }

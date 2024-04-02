@@ -1,21 +1,14 @@
-import { MongoClient } from 'mongodb';
 import { SchoolDataRepository } from '../schoolDataRepository';
 import { schoolsData } from './mockData/schools';
 import { School } from '../../../appsync';
+import { createIndex, insertData } from '../../shared/testUtils';
 
 describe('SchoolDataRepository', () => {
-  const repo = SchoolDataRepository.getInstance(process.env.MONGO_URL, true);
+  const repo = SchoolDataRepository.getInstance();
 
   beforeAll(async () => {
-    const client = new MongoClient(process.env.MONGO_URL ?? '');
-    const collection = client.db('D2E').collection<School>('SchoolData');
-    await collection.insertMany(schoolsData);
-    await collection.createIndex({ location: '2dsphere' });
-    await client.close();
-  });
-
-  afterAll(async () => {
-    await repo.close();
+    await insertData<School>('SchoolData', schoolsData);
+    await createIndex('SchoolData');
   });
 
   it('Can list all schools', async () => {

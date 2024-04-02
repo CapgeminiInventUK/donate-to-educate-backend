@@ -9,6 +9,9 @@ import {
   MutationInsertLocalAuthorityRegisterRequestArgs,
   MutationDeleteDeniedJoinRequestArgs,
   MutationUpdateCharityProfileArgs,
+  MutationDeleteSchoolProfileArgs,
+  MutationAcceptPrivacyPolicyArgs,
+  MutationDeleteCharityProfileArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,12 +23,13 @@ import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { ItemQueriesRepository } from '../repository/itemQueriesRepository';
 import { LocalAuthorityRegisterRequestsRepository } from '../repository/localAuthorityRegisterRequestsRepository';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
-// import { validatePayload } from '../utils/validatePayload';
 import { CharityProfileRepository } from '../repository/charityProfileRepository';
 import { CharityDataRepository } from '../repository/charityDataRepository';
-// import { generateSchema } from '../utils/generateSchema';
 import {
+  acceptPrivacyPolicySchema,
+  deleteCharityProfileSchema,
   deleteDeniedJoinRequestSchema,
+  deleteSchoolProfileSchema,
   insertItemQuerySchema,
   insertJoinRequestSchema,
   insertLocalAuthorityRegisterRequestSchema,
@@ -36,23 +40,17 @@ import {
   updateSchoolProfileSchema,
 } from './zodSchemas';
 
-const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance(
-  process.env.MONGO_URL,
-  true
-);
-const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance(
-  process.env.MONGO_URL,
-  true
-);
-const joinRequestsRepository = JoinRequestsRepository.getInstance(process.env.MONGO_URL, true);
-const schoolProfileRepository = SchoolProfileRepository.getInstance(process.env.MONGO_URL, true);
-const charityProfileRepository = CharityProfileRepository.getInstance(process.env.MONGO_URL, true);
-const signUpDataRepository = SignUpDataRepository.getInstance(process.env.MONGO_URL, true);
-const itemQueriesRepository = ItemQueriesRepository.getInstance(process.env.MONGO_URL, true);
+const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
+const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
+const joinRequestsRepository = JoinRequestsRepository.getInstance();
+const schoolProfileRepository = SchoolProfileRepository.getInstance();
+const charityProfileRepository = CharityProfileRepository.getInstance();
+const signUpDataRepository = SignUpDataRepository.getInstance();
+const itemQueriesRepository = ItemQueriesRepository.getInstance();
 const localAuthorityRegisterRequestsRepository =
-  LocalAuthorityRegisterRequestsRepository.getInstance(process.env.MONGO_URL, true);
-const schoolDataRepository = SchoolDataRepository.getInstance(process.env.MONGO_URL, true);
-const charityDataRepository = CharityDataRepository.getInstance(process.env.MONGO_URL, true);
+  LocalAuthorityRegisterRequestsRepository.getInstance();
+const schoolDataRepository = SchoolDataRepository.getInstance();
+const charityDataRepository = CharityDataRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
   | MutationRegisterLocalAuthorityArgs
@@ -63,6 +61,8 @@ export const handler: AppSyncResolverHandler<
   | MutationInsertItemQueryArgs
   | MutationInsertJoinRequestArgs
   | MutationDeleteDeniedJoinRequestArgs
+  | MutationDeleteSchoolProfileArgs
+  | MutationAcceptPrivacyPolicyArgs
   | MutationInsertLocalAuthorityRegisterRequestArgs,
   boolean
 > = async (event, context, callback) => {
@@ -79,14 +79,6 @@ export const handler: AppSyncResolverHandler<
       const { name, firstName, lastName, email, phone, department, jobTitle, notes, nameId } =
         params as MutationRegisterLocalAuthorityArgs;
 
-      // TODOs
-      // generate schema based off MutationRegisterLocalAuthorityArgs
-      // validate payload/params off that schema
-      // throw error if payload doesn't match schema
-
-      // validatePayload<MutationRegisterLocalAuthorityArgs>;
-
-      // console.log(params);
       const register = await localAuthorityDataRepository.setToRegistered(name);
       const insert = await localAuthorityUserRepository.insert({
         name,
@@ -220,9 +212,35 @@ export const handler: AppSyncResolverHandler<
     case 'deleteDeniedJoinRequest': {
       deleteDeniedJoinRequestSchema.parse(params);
 
-      const { name } = params as MutationDeleteDeniedJoinRequestArgs;
-      const res = await joinRequestsRepository.deleteDenied(name);
+      const { id } = params as MutationDeleteDeniedJoinRequestArgs;
+      const res = await joinRequestsRepository.deleteDenied(id);
       callback(null, res);
+      break;
+    }
+    case 'deleteSchoolProfile': {
+      deleteSchoolProfileSchema.parse(params);
+
+      const { name, id } = params as MutationDeleteSchoolProfileArgs;
+      const res = await schoolProfileRepository.deleteSchoolProfile(name, id);
+      await schoolDataRepository.unregister(name, id);
+      callback(null, res);
+      break;
+    }
+    case 'acceptPrivacyPolicy': {
+      acceptPrivacyPolicySchema.parse(params);
+
+      const { name, nameId, email } = params as MutationAcceptPrivacyPolicyArgs;
+      const res = await localAuthorityUserRepository.setPrivacyPolicyAccepted(name, nameId, email);
+      callback(null, res);
+      break;
+    }
+    case 'deleteCharityProfile': {
+      deleteCharityProfileSchema.parse(params);
+
+      const { name, id } = params as MutationDeleteCharityProfileArgs;
+      const res = await charityProfileRepository.deleteCharityProfile(name, id);
+      const dataRes = await charityDataRepository.deleteCharity(name, id);
+      callback(null, res && dataRes);
       break;
     }
 

@@ -1,21 +1,14 @@
-import { MongoClient } from 'mongodb';
 import { LocalAuthorityDataRepository } from '../localAuthorityDataRepository';
 import { laData } from './mockData/la';
 import { LocalAuthority } from '../../../appsync';
+import { createIndex, insertData } from '../../shared/testUtils';
 
 describe('LocalAuthorityDataRepository', () => {
-  const repo = LocalAuthorityDataRepository.getInstance(process.env.MONGO_URL, true);
+  const repo = LocalAuthorityDataRepository.getInstance();
 
   beforeAll(async () => {
-    const client = new MongoClient(process.env.MONGO_URL ?? '');
-    const collection = client.db('D2E').collection<LocalAuthority>('LocalAuthorityData');
-    await collection.insertMany(laData);
-    await collection.createIndex({ location: '2dsphere' });
-    await client.close();
-  });
-
-  afterAll(async () => {
-    await repo.close();
+    await insertData<LocalAuthority>('LocalAuthorityData', laData);
+    await createIndex('LocalAuthorityData');
   });
 
   it('Can list all las', async () => {

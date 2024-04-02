@@ -1,20 +1,13 @@
-import { MongoClient } from 'mongodb';
 import { LocalAuthorityUserRepository } from '../localAuthorityUserRepository';
 import { laUser } from './mockData/laUser';
 import { LocalAuthorityUser } from '../../../appsync';
+import { insertData } from '../../shared/testUtils';
 
 describe('LocalAuthorityUserRepository', () => {
-  const repo = LocalAuthorityUserRepository.getInstance(process.env.MONGO_URL, true);
+  const repo = LocalAuthorityUserRepository.getInstance();
 
   beforeAll(async () => {
-    const client = new MongoClient(process.env.MONGO_URL ?? '');
-    const collection = client.db('D2E').collection<LocalAuthorityUser>('LocalAuthorityUser');
-    await collection.insertMany(laUser);
-    await client.close();
-  });
-
-  afterAll(async () => {
-    await repo.close();
+    await insertData<LocalAuthorityUser>('LocalAuthorityUser', laUser);
   });
 
   it('Can get by email', async () => {

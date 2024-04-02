@@ -5,14 +5,18 @@ import { logger } from '../shared/logger';
 import { convertEastingNorthingtoLatLng } from '../shared/location';
 import os from 'os';
 import { AnyBulkWriteOperation, MongoClient } from 'mongodb';
+import { checkIfDefinedElseDefault } from '../shared/check';
 // import { SchoolDataRepository } from '../repository/schoolDataRepository';
 
 // TODO fully replace with repo
 // const schoolDataRepository = SchoolDataRepository.getInstance();
 
 const mongoClient = new MongoClient(
-  process?.env?.MONGODB_CONNECTION_STRING ?? 'mongodb://localhost:27017/',
-  { authMechanism: 'MONGODB-AWS', authSource: '$external' }
+  checkIfDefinedElseDefault(process?.env?.MONGO_URL, 'mongodb://localhost:27017/'),
+  {
+    authMechanism: 'MONGODB-AWS',
+    authSource: '$external',
+  }
 );
 
 export const lambdaHandler = async (): Promise<{ statusCode: number }> => {

@@ -1,21 +1,13 @@
 import { WithId } from 'mongodb';
 import { CharityProfile } from '../../appsync';
 import { BaseRepository } from './baseRepository';
-import { clientOptions } from './config';
 
 export class CharityProfileRepository extends BaseRepository<CharityProfile> {
   private static instance: CharityProfileRepository;
 
-  static getInstance(
-    url = process?.env?.MONGODB_CONNECTION_STRING,
-    isTest = false
-  ): CharityProfileRepository {
+  static getInstance(): CharityProfileRepository {
     if (!this.instance) {
-      this.instance = new CharityProfileRepository(
-        'CharityProfile',
-        url ?? '',
-        isTest ? undefined : clientOptions
-      );
+      this.instance = new CharityProfileRepository('CharityProfile');
     }
     return this.instance;
   }
@@ -43,5 +35,9 @@ export class CharityProfileRepository extends BaseRepository<CharityProfile> {
         { upsert: true }
       )
     ).acknowledged;
+  }
+
+  public async deleteCharityProfile(name: string, id: string): Promise<boolean> {
+    return (await this.collection.deleteOne({ name, id })).acknowledged;
   }
 }

@@ -72,3 +72,19 @@ export const insertLocalAuthorityRegisterRequestSchema = z.object({
 export const deleteDeniedJoinRequestSchema = z.object({
   name: z.string().min(1),
 });
+
+export const deleteSchoolProfileSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+});
+
+export const acceptPrivacyPolicySchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(1),
+  nameId: z.string().min(1),
+});
+
+export const deleteCharityProfileSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+});

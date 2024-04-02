@@ -1,20 +1,13 @@
-import { MongoClient } from 'mongodb';
 import { JoinRequestsRepository } from '../joinRequestsRepository';
 import { joinRequests } from './mockData/joinRequests';
 import { JoinRequest } from '../../../appsync';
+import { insertData } from '../../shared/testUtils';
 
 describe('JoinRequestsRepository', () => {
-  const repo = JoinRequestsRepository.getInstance(process.env.MONGO_URL, true);
+  const repo = JoinRequestsRepository.getInstance();
 
   beforeAll(async () => {
-    const client = new MongoClient(process.env.MONGO_URL ?? '');
-    const collection = client.db('D2E').collection<JoinRequest>('JoinRequests');
-    await collection.insertMany(joinRequests);
-    await client.close();
-  });
-
-  afterAll(async () => {
-    await repo.close();
+    await insertData<JoinRequest>('JoinRequests', joinRequests);
   });
 
   it('Can new join requests', async () => {
@@ -33,7 +26,7 @@ describe('JoinRequestsRepository', () => {
       name: 'Ryan Smith',
       localAuthority: 'Hackney',
       type: 'school',
-      email: 'ryan.b.smith@capgemini.com',
+      email: 'team@donatetoeducate.org.uk',
       school: 'St John the Baptist Voluntary Aided Church of England Primary School - N1 6JG',
       jobTitle: 'sdv',
       phone: '07546547334',
@@ -47,7 +40,7 @@ describe('JoinRequestsRepository', () => {
   });
 
   it('Can delete denied', async () => {
-    const result = await repo.deleteDenied('Jake Readman');
+    const result = await repo.deleteDenied('1');
     expect(result).toEqual(true);
 
     const requests = await repo.list();

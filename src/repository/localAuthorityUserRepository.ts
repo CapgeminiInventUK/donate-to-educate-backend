@@ -1,21 +1,13 @@
 import { WithId } from 'mongodb';
 import { LocalAuthorityUser } from '../../appsync';
 import { BaseRepository } from './baseRepository';
-import { clientOptions } from './config';
 
 export class LocalAuthorityUserRepository extends BaseRepository<LocalAuthorityUser> {
   private static instance: LocalAuthorityUserRepository;
 
-  static getInstance(
-    url = process?.env?.MONGODB_CONNECTION_STRING,
-    isTest = false
-  ): LocalAuthorityUserRepository {
+  static getInstance(): LocalAuthorityUserRepository {
     if (!this.instance) {
-      this.instance = new LocalAuthorityUserRepository(
-        'LocalAuthorityUser',
-        url ?? '',
-        isTest ? undefined : clientOptions
-      );
+      this.instance = new LocalAuthorityUserRepository('LocalAuthorityUser');
     }
     return this.instance;
   }
@@ -34,5 +26,29 @@ export class LocalAuthorityUserRepository extends BaseRepository<LocalAuthorityU
 
   public async insert(la: LocalAuthorityUser): Promise<boolean> {
     return (await this.collection.insertOne(la)).acknowledged;
+  }
+
+  public async getByAll(
+    name: string,
+    nameId: string,
+    email: string
+  ): Promise<WithId<LocalAuthorityUser> | undefined> {
+    return await this.getOne({ name, nameId, email });
+  }
+
+  public async setPrivacyPolicyAccepted(
+    name: string,
+    nameId: string,
+    email: string
+  ): Promise<boolean> {
+    return (
+      await this.collection.updateOne(
+        { name, nameId, email },
+        {
+          $set: { privacyPolicyAccepted: true },
+        },
+        { upsert: false }
+      )
+    ).acknowledged;
   }
 }
