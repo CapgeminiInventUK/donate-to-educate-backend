@@ -2,7 +2,6 @@ import { WithId } from 'mongodb';
 import { Charity, InstituteSearchResult, Type } from '../../appsync';
 import { BaseRepository } from './baseRepository';
 import { convertPostcodeToLatLng } from '../shared/postcode';
-import { logger } from '../shared/logger';
 
 export class CharityDataRepository extends BaseRepository<Charity> {
   private static instance: CharityDataRepository;
@@ -39,11 +38,7 @@ export class CharityDataRepository extends BaseRepository<Charity> {
   }
 
   public async deleteCharity(name: string, id: string): Promise<boolean> {
-    const deleted = await this.collection.deleteOne({ name, id });
-    logger.info(name);
-    logger.info(id);
-    logger.info(deleted);
-    return deleted.acknowledged;
+    return (await this.collection.deleteOne({ name, id })).acknowledged;
   }
 
   public async updatePostcode(
