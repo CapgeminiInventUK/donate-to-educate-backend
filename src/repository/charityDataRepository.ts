@@ -37,6 +37,10 @@ export class CharityDataRepository extends BaseRepository<Charity> {
     return (await this.collection.insertOne(charity)).acknowledged;
   }
 
+  public async deleteCharity(name: string, id: string): Promise<boolean> {
+    return (await this.collection.deleteOne({ name, id })).acknowledged;
+  }
+
   public async updatePostcode(
     id: string,
     name: string,

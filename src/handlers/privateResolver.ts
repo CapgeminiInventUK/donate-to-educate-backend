@@ -200,7 +200,8 @@ export const handler: AppSyncResolverHandler<
     case 'deleteCharityProfile': {
       const { name, id } = params as MutationDeleteCharityProfileArgs;
       const res = await charityProfileRepository.deleteCharityProfile(name, id);
-      callback(null, res);
+      const dataRes = await charityDataRepository.deleteCharity(name, id);
+      callback(null, res && dataRes);
       break;
     }
 
