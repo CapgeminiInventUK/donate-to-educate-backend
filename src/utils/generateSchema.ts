@@ -7,11 +7,14 @@ export function generateSchema<T extends Record<string, any>>(type: T): ZodObjec
   for (const key in type) {
     let zodType;
 
-    switch (type[key]) {
-      case 'string': {
+    switch (key) {
+      case 'firstName' || 'lastName' || 'department' || 'jobTitle' || 'nameId' || 'phone': {
         zodType = z.string().min(1);
       }
-      case 'InputMaybe': {
+      case 'email': {
+        zodType = z.string().email();
+      }
+      case 'notes': {
         zodType = z.string().optional();
       }
     }
@@ -61,3 +64,13 @@ export function generateSchema<T extends Record<string, any>>(type: T): ZodObjec
 //   jobTitle: z.string().min(1),
 //   notes: z.string().min(1).optional(),
 //   nameId: z.string().min(1),
+
+// department: Scalars['String']['input'];
+//   email: Scalars['String']['input'];
+//   firstName: Scalars['String']['input'];
+//   jobTitle: Scalars['String']['input'];
+//   lastName: Scalars['String']['input'];
+//   name: Scalars['String']['input'];
+//   nameId: Scalars['String']['input'];
+//   notes?: InputMaybe<Scalars['String']['input']>;
+//   phone: Scalars['String']['input'];

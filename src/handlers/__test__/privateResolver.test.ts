@@ -1,37 +1,8 @@
 import { handler } from '../privateResolver';
 
-const mockContext = {
-  callbackWaitsForEmptyEventLoop: false,
-  functionName: '',
-  functionVersion: '',
-  invokedFunctionArn: '',
-  memoryLimitInMB: '',
-  awsRequestId: '',
-  logGroupName: '',
-  logStreamName: '',
-  getRemainingTimeInMillis: (): number => 0,
-  done: (): void => undefined,
-  fail: (): void => undefined,
-  succeed: (): void => undefined,
-};
-
-const mockCallback = jest.fn();
-
 describe('privateResolver lambda function tests', () => {
-  beforeEach(() => {});
-  test('Should validate payload and write to db when payload is formatted correctly', async () => {
-    // const payload = {
-    //   name: 'Testy Mctest',
-    //   firstName: 'Testy',
-    //   lastName: 'McTest',
-    //   email: 'testschool123@test.com',
-    //   phone: '07123456789',
-    //   department: 'Administration',
-    //   jobTitle: 'Teacher',
-    //   notes: undefined,
-    //   nameId: '123FAKEID',
-    // };
-
+  // beforeEach(() => {});
+  it('Should validate payload and write to db when payload is formatted correctly', async () => {
     const mockEvent = {
       info: {
         selectionSetList: ['name'],
@@ -64,8 +35,27 @@ describe('privateResolver lambda function tests', () => {
       stash: {},
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const mockContext = {
+      callbackWaitsForEmptyEventLoop: false,
+      functionName: '',
+      functionVersion: '',
+      invokedFunctionArn: '',
+      memoryLimitInMB: '',
+      awsRequestId: '',
+      logGroupName: '',
+      logStreamName: '',
+      getRemainingTimeInMillis: (): number => 0,
+      done: (): void => undefined,
+      fail: (): void => undefined,
+      succeed: (): void => undefined,
+    };
+
+    const mockCallback = jest.fn();
+
     const result = await handler(mockEvent, mockContext, mockCallback);
+    // console.log('RESULT: ' + result);
+
+    expect(mockCallback).toHaveBeenCalled();
   });
 });
 

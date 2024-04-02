@@ -20,9 +20,21 @@ import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { ItemQueriesRepository } from '../repository/itemQueriesRepository';
 import { LocalAuthorityRegisterRequestsRepository } from '../repository/localAuthorityRegisterRequestsRepository';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
-import { validatePayload } from '../utils/validatePayload';
+// import { validatePayload } from '../utils/validatePayload';
 import { CharityProfileRepository } from '../repository/charityProfileRepository';
 import { CharityDataRepository } from '../repository/charityDataRepository';
+// import { generateSchema } from '../utils/generateSchema';
+import {
+  deleteDeniedJoinRequestSchema,
+  insertItemQuerySchema,
+  insertJoinRequestSchema,
+  insertLocalAuthorityRegisterRequestSchema,
+  insertSignUpDataSchema,
+  registerLocalAuthoritySchema,
+  updateCharityProfileSchema,
+  updateJoinRequestSchema,
+  updateSchoolProfileSchema,
+} from './zodSchemas';
 
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance(
   process.env.MONGO_URL,
@@ -60,12 +72,21 @@ export const handler: AppSyncResolverHandler<
   const { arguments: params, info } = event;
   logger.info(`${JSON.stringify(params)}`);
 
-  validatePayload(params);
-
   switch (info.fieldName) {
     case 'registerLocalAuthority': {
+      registerLocalAuthoritySchema.parse(params);
+
       const { name, firstName, lastName, email, phone, department, jobTitle, notes, nameId } =
         params as MutationRegisterLocalAuthorityArgs;
+
+      // TODOs
+      // generate schema based off MutationRegisterLocalAuthorityArgs
+      // validate payload/params off that schema
+      // throw error if payload doesn't match schema
+
+      // validatePayload<MutationRegisterLocalAuthorityArgs>;
+
+      // console.log(params);
       const register = await localAuthorityDataRepository.setToRegistered(name);
       const insert = await localAuthorityUserRepository.insert({
         name,
@@ -82,6 +103,8 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'updateJoinRequest': {
+      updateJoinRequestSchema.parse(params);
+
       const { localAuthority, name, status, id } = params as MutationUpdateJoinRequestArgs;
       const res = await joinRequestsRepository.updateStatus(id, localAuthority, name, status);
 
@@ -89,6 +112,8 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'updateSchoolProfile': {
+      updateSchoolProfileSchema.parse(params);
+
       const { key, value } = params as MutationUpdateSchoolProfileArgs;
       const { institution, institutionId } = info.variables as {
         institution: string;
@@ -108,7 +133,9 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'updateCharityProfile': {
-      const { key, value } = params as MutationUpdateSchoolProfileArgs;
+      updateCharityProfileSchema.parse(params);
+
+      const { key, value } = params as MutationUpdateCharityProfileArgs;
       const { institution, institutionId } = info.variables as {
         institution: string;
         institutionId: string;
@@ -135,12 +162,16 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'insertSignUpData': {
+      insertSignUpDataSchema.parse(params);
+
       const { id, email, type, name, nameId } = params as MutationInsertSignUpDataArgs;
       const res = await signUpDataRepository.insert({ id, email, type, name, nameId });
       callback(null, res);
       break;
     }
     case 'insertJoinRequest': {
+      insertJoinRequestSchema.parse(params);
+
       const status = 'NEW';
       const id = uuidv4();
       const requestTime = Number(new Date());
@@ -154,6 +185,8 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'insertItemQuery': {
+      insertItemQuerySchema.parse(params);
+
       const { name, email, type, message, who, phone, connection, organisationType } =
         params as MutationInsertItemQueryArgs;
       const res = await itemQueriesRepository.insert({
@@ -170,6 +203,8 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'insertLocalAuthorityRegisterRequest': {
+      insertLocalAuthorityRegisterRequestSchema.parse(params);
+
       const { name, localAuthority, email, message, type } =
         params as MutationInsertLocalAuthorityRegisterRequestArgs;
       const res = await localAuthorityRegisterRequestsRepository.insert({
@@ -183,6 +218,8 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'deleteDeniedJoinRequest': {
+      deleteDeniedJoinRequestSchema.parse(params);
+
       const { name } = params as MutationDeleteDeniedJoinRequestArgs;
       const res = await joinRequestsRepository.deleteDenied(name);
       callback(null, res);
