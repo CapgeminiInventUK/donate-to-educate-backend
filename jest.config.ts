@@ -28,4 +28,5 @@ export default {
     },
   },
   globalTeardown: './tearDown.cjs',
+  moduleFileExtensions: ['js', 'mjs', 'cjs', 'jsx', 'ts', 'tsx', 'json', 'node', 'd.ts'],
 };

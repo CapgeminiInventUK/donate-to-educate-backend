@@ -1,9 +1,13 @@
 import { z } from 'zod';
+import { Type as _Type } from '../../appsync';
+const Type = { ..._Type };
+
+// Private resolver schemas
 
 export const registerLocalAuthoritySchema = z.object({
   department: z.string().min(1),
   email: z.string().email(),
-  firstName: z.string().min(1).optional(),
+  firstName: z.string().min(1),
   jobTitle: z.string().min(1),
   lastName: z.string().min(1),
   name: z.string().min(1),
@@ -70,7 +74,7 @@ export const insertLocalAuthorityRegisterRequestSchema = z.object({
 });
 
 export const deleteDeniedJoinRequestSchema = z.object({
-  name: z.string().min(1),
+  id: z.string().min(1),
 });
 
 export const deleteSchoolProfileSchema = z.object({
@@ -87,4 +91,76 @@ export const acceptPrivacyPolicySchema = z.object({
 export const deleteCharityProfileSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
+});
+
+// Public resolver schemas
+
+export const getSchoolByNameSchema = z.object({
+  name: z.string().min(1),
+});
+
+export const getLocalAuthorityUserSchema = z.object({
+  email: z.string().email(),
+});
+
+export const getSchoolsByLaSchema = z.object({
+  name: z.string().min(1),
+});
+
+export const getSchoolProfileSchema = z.object({
+  name: z.string().min(1),
+  id: z.string().min(1),
+});
+
+export const getCharityProfileSchema = z.object({
+  name: z.string().min(1),
+  id: z.string().min(1),
+});
+
+export const getSignUpDataSchema = z.object({
+  id: z.string().min(1),
+});
+
+export const getRegisteredSchoolsByLaSchema = z.object({
+  localAuthority: z.string().min(1),
+});
+
+export const getSchoolJoinRequestsByLaSchema = z.object({
+  localAuthority: z.string().min(1),
+});
+
+export const getSchoolsNearbySchema = z.object({
+  distance: z.number(),
+  postcode: z.string().min(1),
+});
+
+export const getSchoolsNearbyWithProfileSchema = z.object({
+  distance: z.number(),
+  postcode: z.string().min(1),
+  type: z.enum([Type.Donate, Type.Excess, Type.Request]),
+});
+
+export const getCharitiesNearbySchema = z.object({
+  distance: z.number(),
+  postcode: z.string().min(1),
+});
+
+export const getCharitiesNearbyWithProfileSchema = z.object({
+  distance: z.number(),
+  postcode: z.string().min(1),
+  type: z.enum([Type.Donate, Type.Excess, Type.Request]),
+});
+
+export const getLaStatsSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(1),
+  nameId: z.string().min(1),
+});
+
+export const getCharitiesByLaSchema = z.object({
+  name: z.string().min(1),
+});
+
+export const getCharityJoinRequestsByLaSchema = z.object({
+  localAuthority: z.string().min(1),
 });

@@ -63,6 +63,7 @@ export const handler: AppSyncResolverHandler<
   | MutationDeleteDeniedJoinRequestArgs
   | MutationDeleteSchoolProfileArgs
   | MutationAcceptPrivacyPolicyArgs
+  | MutationDeleteCharityProfileArgs
   | MutationInsertLocalAuthorityRegisterRequestArgs,
   boolean
 > = async (event, context, callback) => {
@@ -74,10 +75,8 @@ export const handler: AppSyncResolverHandler<
 
   switch (info.fieldName) {
     case 'registerLocalAuthority': {
-      registerLocalAuthoritySchema.parse(params);
-
       const { name, firstName, lastName, email, phone, department, jobTitle, notes, nameId } =
-        params as MutationRegisterLocalAuthorityArgs;
+        registerLocalAuthoritySchema.parse(params);
 
       const register = await localAuthorityDataRepository.setToRegistered(name);
       const insert = await localAuthorityUserRepository.insert({
@@ -95,18 +94,16 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'updateJoinRequest': {
-      updateJoinRequestSchema.parse(params);
+      const { localAuthority, name, status, id } = updateJoinRequestSchema.parse(params);
 
-      const { localAuthority, name, status, id } = params as MutationUpdateJoinRequestArgs;
       const res = await joinRequestsRepository.updateStatus(id, localAuthority, name, status);
 
       callback(null, res);
       break;
     }
     case 'updateSchoolProfile': {
-      updateSchoolProfileSchema.parse(params);
+      const { key, value } = updateSchoolProfileSchema.parse(params);
 
-      const { key, value } = params as MutationUpdateSchoolProfileArgs;
       const { institution, institutionId } = info.variables as {
         institution: string;
         institutionId: string;
@@ -125,9 +122,8 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'updateCharityProfile': {
-      updateCharityProfileSchema.parse(params);
+      const { key, value } = updateCharityProfileSchema.parse(params);
 
-      const { key, value } = params as MutationUpdateCharityProfileArgs;
       const { institution, institutionId } = info.variables as {
         institution: string;
         institutionId: string;
@@ -154,21 +150,18 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'insertSignUpData': {
-      insertSignUpDataSchema.parse(params);
+      const { id, email, type, name, nameId } = insertSignUpDataSchema.parse(params);
 
-      const { id, email, type, name, nameId } = params as MutationInsertSignUpDataArgs;
       const res = await signUpDataRepository.insert({ id, email, type, name, nameId });
       callback(null, res);
       break;
     }
     case 'insertJoinRequest': {
-      insertJoinRequestSchema.parse(params);
-
       const status = 'NEW';
       const id = uuidv4();
       const requestTime = Number(new Date());
       const res = await joinRequestsRepository.insert({
-        ...(params as MutationInsertJoinRequestArgs),
+        ...insertJoinRequestSchema.parse(params),
         status,
         requestTime,
         id,
@@ -177,10 +170,9 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'insertItemQuery': {
-      insertItemQuerySchema.parse(params);
-
       const { name, email, type, message, who, phone, connection, organisationType } =
-        params as MutationInsertItemQueryArgs;
+        insertItemQuerySchema.parse(params);
+
       const res = await itemQueriesRepository.insert({
         name,
         email,
@@ -195,10 +187,9 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'insertLocalAuthorityRegisterRequest': {
-      insertLocalAuthorityRegisterRequestSchema.parse(params);
-
       const { name, localAuthority, email, message, type } =
-        params as MutationInsertLocalAuthorityRegisterRequestArgs;
+        insertLocalAuthorityRegisterRequestSchema.parse(params);
+
       const res = await localAuthorityRegisterRequestsRepository.insert({
         name,
         localAuthority,
@@ -210,34 +201,30 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'deleteDeniedJoinRequest': {
-      deleteDeniedJoinRequestSchema.parse(params);
+      const { id } = deleteDeniedJoinRequestSchema.parse(params);
 
-      const { id } = params as MutationDeleteDeniedJoinRequestArgs;
       const res = await joinRequestsRepository.deleteDenied(id);
       callback(null, res);
       break;
     }
     case 'deleteSchoolProfile': {
-      deleteSchoolProfileSchema.parse(params);
+      const { name, id } = deleteSchoolProfileSchema.parse(params);
 
-      const { name, id } = params as MutationDeleteSchoolProfileArgs;
       const res = await schoolProfileRepository.deleteSchoolProfile(name, id);
       await schoolDataRepository.unregister(name, id);
       callback(null, res);
       break;
     }
     case 'acceptPrivacyPolicy': {
-      acceptPrivacyPolicySchema.parse(params);
+      const { name, nameId, email } = acceptPrivacyPolicySchema.parse(params);
 
-      const { name, nameId, email } = params as MutationAcceptPrivacyPolicyArgs;
       const res = await localAuthorityUserRepository.setPrivacyPolicyAccepted(name, nameId, email);
       callback(null, res);
       break;
     }
     case 'deleteCharityProfile': {
-      deleteCharityProfileSchema.parse(params);
+      const { name, id } = deleteCharityProfileSchema.parse(params);
 
-      const { name, id } = params as MutationDeleteCharityProfileArgs;
       const res = await charityProfileRepository.deleteCharityProfile(name, id);
       const dataRes = await charityDataRepository.deleteCharity(name, id);
       callback(null, res && dataRes);
