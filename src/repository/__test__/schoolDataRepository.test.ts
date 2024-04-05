@@ -24,7 +24,7 @@ describe('SchoolDataRepository', () => {
   });
 
   it('Can get school by name', async () => {
-    const school = await repo.getByName('The Aldgate School');
+    const school = await repo.get('The Aldgate School', '100000');
     expect(school?.name).toEqual('The Aldgate School');
   });
 

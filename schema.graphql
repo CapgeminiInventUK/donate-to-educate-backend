@@ -204,7 +204,7 @@ enum Type {
 }
 
 type Query {
-  getSchoolByName(name: String!): School!
+  getSchool(name: String!, urn: String!): School!
   getSchoolsByLa(name: String!): [School!]!
   getSchools: [School!]!
   getCharities: [Charity!]!

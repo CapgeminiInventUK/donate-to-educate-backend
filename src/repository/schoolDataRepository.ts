@@ -20,8 +20,8 @@ export class SchoolDataRepository extends BaseRepository<School> {
     return await this.getByQuery({ localAuthority });
   }
 
-  public async getByName(name: string): Promise<WithId<School> | undefined> {
-    return await this.getOne({ name });
+  public async get(name: string, urn: string): Promise<WithId<School> | undefined> {
+    return await this.getOne({ name, urn });
   }
 
   public async getRegistered(): Promise<WithId<School>[]> {

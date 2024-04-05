@@ -1,7 +1,6 @@
 import { AppSyncResolverHandler } from 'aws-lambda';
 import {
   School,
-  QueryGetSchoolByNameArgs,
   QueryGetSchoolsByLaArgs,
   LocalAuthority,
   JoinRequest,
@@ -24,6 +23,7 @@ import {
   QueryGetCharitiesNearbyWithProfileArgs,
   QueryGetLaStatsArgs,
   LaStats,
+  QueryGetSchoolArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -47,13 +47,13 @@ const charityProfileRepository = CharityProfileRepository.getInstance();
 const signUpDataRepository = SignUpDataRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
-  | QueryGetSchoolByNameArgs
   | QueryGetSchoolsByLaArgs
   | QueryGetSignUpDataArgs
   | QueryGetSchoolsNearbyArgs
   | QueryGetCharitiesNearbyArgs
   | QueryGetRegisteredSchoolsByLaArgs
   | QueryGetCharityProfileArgs
+  | QueryGetSchoolArgs
   | QueryGetLocalAuthorityUserArgs,
   | School
   | School[]
@@ -90,9 +90,9 @@ export const handler: AppSyncResolverHandler<
   logger.info(`Projected fields ${JSON.stringify(projectedFields)}`);
 
   switch (info.fieldName) {
-    case 'getSchoolByName': {
-      const { name } = params as QueryGetSchoolByNameArgs;
-      const school = await schoolDataRepository.getByName(name);
+    case 'getSchool': {
+      const { name, urn } = params as QueryGetSchoolArgs;
+      const school = await schoolDataRepository.get(name, urn);
       if (!school) {
         callback(null);
         break;
