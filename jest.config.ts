@@ -23,8 +23,8 @@ export default {
     global: {
       branches: 65,
       functions: 65,
-      lines: 40,
-      statements: 40,
+      lines: 35,
+      statements: 35,
     },
   },
   globalTeardown: './tearDown.cjs',

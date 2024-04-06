@@ -1,7 +1,6 @@
 import { AppSyncResolverHandler } from 'aws-lambda';
 import {
   School,
-  QueryGetSchoolByNameArgs,
   QueryGetSchoolsByLaArgs,
   LocalAuthority,
   JoinRequest,
@@ -26,6 +25,7 @@ import {
   QueryGetCharityJoinRequestsByLaArgs,
   QueryGetLaStatsArgs,
   LaStats,
+  QueryGetSchoolArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -66,13 +66,13 @@ const charityProfileRepository = CharityProfileRepository.getInstance();
 const signUpDataRepository = SignUpDataRepository.getInstance();
 
 export const handler: AppSyncResolverHandler<
-  | QueryGetSchoolByNameArgs
   | QueryGetSchoolsByLaArgs
   | QueryGetSignUpDataArgs
   | QueryGetSchoolsNearbyArgs
   | QueryGetCharitiesNearbyArgs
   | QueryGetRegisteredSchoolsByLaArgs
   | QueryGetCharityProfileArgs
+  | QueryGetSchoolArgs
   | QueryGetLocalAuthorityUserArgs,
   | School
   | School[]
@@ -119,6 +119,10 @@ export const handler: AppSyncResolverHandler<
       const { name } = getSchoolByNameSchema.parse(params);
 
       const school = await schoolDataRepository.getByName(name);
+    case 'getSchool': {
+      const { name, urn } = params as QueryGetSchoolArgs;
+      const school = await schoolDataRepository.get(name, urn);
+
       if (!school) {
         callback(null);
         break;

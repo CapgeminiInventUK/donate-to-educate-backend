@@ -311,7 +311,7 @@ export type Query = {
   getLocalAuthorityUser: LocalAuthorityUser;
   getRegisteredSchools: Array<School>;
   getRegisteredSchoolsByLa: Array<School>;
-  getSchoolByName: School;
+  getSchool: School;
   getSchoolJoinRequestsByLa: Array<JoinRequest>;
   getSchoolProfile?: Maybe<SchoolProfile>;
   getSchools: Array<School>;
@@ -368,8 +368,9 @@ export type QueryGetRegisteredSchoolsByLaArgs = {
 };
 
 
-export type QueryGetSchoolByNameArgs = {
+export type QueryGetSchoolArgs = {
   name: Scalars['String']['input'];
+  urn: Scalars['String']['input'];
 };
 
 

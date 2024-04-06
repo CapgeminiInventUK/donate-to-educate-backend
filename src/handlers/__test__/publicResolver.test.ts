@@ -1,7 +1,7 @@
 import {
   LocalAuthorityUser,
   QueryGetLocalAuthorityUserArgs,
-  QueryGetSchoolByNameArgs,
+  QueryGetSchoolArgs,
   School,
 } from '../../../appsync';
 import { handler } from '../publicResolver';
@@ -24,8 +24,9 @@ describe('Public Resolver', () => {
 
     await expect(async () => {
       await handler(
-        generateEvent<QueryGetSchoolByNameArgs>('getSchoolByName', ['name'], {
+        generateEvent<QueryGetSchoolArgs>('getSchool', ['name'], {
           name: 'Farlingaye',
+          urn: '10000',
         }),
         generateContext(),
         callback
@@ -38,20 +39,21 @@ describe('Public Resolver', () => {
   it('Get School By Name - Results', async () => {
     const callback = jest.fn();
     await insertData<School>('SchoolData', [
-      { name: 'Farlingaye', localAuthority: 'Hackney', registered: true, urn: '0' },
+      { name: 'Farlingaye', localAuthority: 'Hackney', registered: true, urn: '10000' },
     ]);
 
     await expect(async () => {
       await handler(
-        generateEvent<QueryGetSchoolByNameArgs>('getSchoolByName', ['name', 'urn'], {
+        generateEvent<QueryGetSchoolArgs>('getSchool', ['name', 'urn'], {
           name: 'Farlingaye',
+          urn: '10000',
         }),
         generateContext(),
         callback
       );
     }).rejects.toThrow('An unknown error occurred');
 
-    expect(callback).toHaveBeenCalledWith(null, { name: 'Farlingaye', urn: '0' });
+    expect(callback).toHaveBeenCalledWith(null, { name: 'Farlingaye', urn: '10000' });
   });
 
   it('Get La User By Email - No results', async () => {
