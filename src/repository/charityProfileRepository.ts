@@ -40,4 +40,8 @@ export class CharityProfileRepository extends BaseRepository<CharityProfile> {
   public async deleteCharityProfile(name: string, id: string): Promise<boolean> {
     return (await this.collection.deleteOne({ name, id })).acknowledged;
   }
+
+  public async hasProfile(name: string, id: string): Promise<boolean> {
+    return (await this.getCount({ name, id })) > 0;
+  }
 }

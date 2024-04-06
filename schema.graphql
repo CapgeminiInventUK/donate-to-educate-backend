@@ -233,6 +233,9 @@ type Query {
     distance: Float!
     type: Type!
   ): [InstituteSearchResult!]!
+
+  hasSchoolProfile(name: String!, id: String!): Boolean!
+  hasCharityProfile(name: String!, id: String!): Boolean!
 }
 
 type Mutation {

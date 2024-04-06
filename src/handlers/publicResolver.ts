@@ -26,6 +26,8 @@ import {
   QueryGetLaStatsArgs,
   LaStats,
   QueryGetSchoolArgs,
+  QueryHasSchoolProfileArgs,
+  QueryHasCharityProfileArgs,
 } from '../../appsync';
 import { logger } from '../shared/logger';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
@@ -282,6 +284,19 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
+    case 'hasSchoolProfile': {
+      const { name, id } = params as QueryHasSchoolProfileArgs;
+      const res = await schoolProfileRepository.hasProfile(name, id);
+      callback(null, res);
+      break;
+    }
+    case 'hasCharityProfile': {
+      const { name, id } = params as QueryHasCharityProfileArgs;
+      const res = await charityProfileRepository.hasProfile(name, id);
+      callback(null, res);
+      break;
+    }
+
     default: {
       callback(`Unexpected type ${info.fieldName}`);
       throw new Error(`Unexpected type ${info.fieldName}`);

@@ -319,6 +319,8 @@ export type Query = {
   getSchoolsNearby: Array<School>;
   getSchoolsNearbyWithProfile: Array<InstituteSearchResult>;
   getSignUpData?: Maybe<SignUpData>;
+  hasCharityProfile: Scalars['Boolean']['output'];
+  hasSchoolProfile: Scalars['Boolean']['output'];
 };
 
 
@@ -405,6 +407,18 @@ export type QueryGetSchoolsNearbyWithProfileArgs = {
 
 export type QueryGetSignUpDataArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type QueryHasCharityProfileArgs = {
+  id: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+};
+
+
+export type QueryHasSchoolProfileArgs = {
+  id: Scalars['String']['input'];
+  name: Scalars['String']['input'];
 };
 
 export type School = {
