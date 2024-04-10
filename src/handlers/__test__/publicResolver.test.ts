@@ -6,6 +6,7 @@ import {
 } from '../../../appsync';
 import { handler } from '../publicResolver';
 import { dropDatabase, generateContext, generateEvent, insertData } from '../../shared/testUtils';
+import { ZodError } from 'zod';
 
 describe('Public Resolver', () => {
   afterEach(async () => {
@@ -97,5 +98,22 @@ describe('Public Resolver', () => {
     }).rejects.toThrow('An unknown error occurred');
 
     expect(callback).toHaveBeenCalledWith(null, { name: 'Hackney', email: 'mock@example.com' });
+  });
+
+  it('Throws validation error when payload is not formatted correctly', async () => {
+    const mockEvent = generateEvent('getLaStats', [], {
+      name: 'Test',
+      nameId: 'Test123',
+      email: 'testemail', // This is not a valid email and should thus fail validation
+    });
+    const mockContext = generateContext();
+
+    const mockCallback = jest.fn();
+
+    await expect(async () => {
+      await handler(mockEvent, mockContext, mockCallback);
+    }).rejects.toThrow(ZodError);
+
+    expect(mockCallback).not.toHaveBeenCalled();
   });
 });

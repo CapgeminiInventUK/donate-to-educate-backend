@@ -40,6 +40,23 @@ import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { removeFields } from '../shared/graphql';
 import { convertPostcodeToLatLng } from '../shared/postcode';
 import { CharityDataRepository } from '../repository/charityDataRepository';
+import {
+  getCharitiesByLaSchema,
+  getCharitiesNearbySchema,
+  getCharitiesNearbyWithProfileSchema,
+  getCharityJoinRequestsByLaSchema,
+  getCharityProfileSchema,
+  getLaStatsSchema,
+  getLocalAuthorityUserSchema,
+  getRegisteredSchoolsByLaSchema,
+  getSchoolByNameSchema,
+  getSchoolJoinRequestsByLaSchema,
+  getSchoolProfileSchema,
+  getSchoolsByLaSchema,
+  getSchoolsNearbySchema,
+  getSchoolsNearbyWithProfileSchema,
+  getSignUpDataSchema,
+} from './zodSchemas';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const charityDataRepository = CharityDataRepository.getInstance();
@@ -73,6 +90,12 @@ export const handler: AppSyncResolverHandler<
   | AdminStats
   | LaStats
   | QueryGetSchoolJoinRequestsByLaArgs
+  | QueryGetSchoolProfileArgs
+  | QueryGetSchoolsNearbyWithProfileArgs
+  | QueryGetCharitiesNearbyWithProfileArgs
+  | QueryGetCharitiesByLaArgs
+  | QueryGetCharityJoinRequestsByLaArgs
+  | QueryGetLaStatsArgs
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
@@ -94,9 +117,14 @@ export const handler: AppSyncResolverHandler<
   logger.info(`Projected fields ${JSON.stringify(projectedFields)}`);
 
   switch (info.fieldName) {
+    case 'getSchoolByName': {
+      const { name } = getSchoolByNameSchema.parse(params);
+
+      const school = await schoolDataRepository.getByName(name);
     case 'getSchool': {
       const { name, urn } = params as QueryGetSchoolArgs;
       const school = await schoolDataRepository.get(name, urn);
+
       if (!school) {
         callback(null);
         break;
@@ -105,7 +133,8 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getLocalAuthorityUser': {
-      const { email } = params as QueryGetLocalAuthorityUserArgs;
+      const { email } = getLocalAuthorityUserSchema.parse(params);
+
       const laUser = await localAuthorityUserRepository.getByEmail(email);
 
       if (!laUser) {
@@ -116,7 +145,8 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getSchoolsByLa': {
-      const { name } = params as QueryGetSchoolsByLaArgs;
+      const { name } = getSchoolsByLaSchema.parse(params);
+
       const schools = await schoolDataRepository.getByLa(name);
       const filteredSchools = schools.map((school) =>
         removeFields<School>(info.selectionSetList, school)
@@ -152,19 +182,22 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getSchoolProfile': {
-      const { name, id } = params as QueryGetSchoolProfileArgs;
+      const { name, id } = getSchoolProfileSchema.parse(params);
+
       const res = await schoolProfileRepository.getByName(name, id);
       callback(null, res);
       break;
     }
     case 'getCharityProfile': {
-      const { name, id } = params as QueryGetCharityProfileArgs;
+      const { name, id } = getCharityProfileSchema.parse(params);
+
       const res = await charityProfileRepository.getByName(name, id);
       callback(null, res);
       break;
     }
     case 'getSignUpData': {
-      const { id } = params as QueryGetSignUpDataArgs;
+      const { id } = getSignUpDataSchema.parse(params);
+
       const res = await signUpDataRepository.getById(id);
       callback(null, res);
       break;
@@ -180,19 +213,21 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getRegisteredSchoolsByLa': {
-      const { localAuthority } = params as QueryGetRegisteredSchoolsByLaArgs;
+      const { localAuthority } = getRegisteredSchoolsByLaSchema.parse(params);
+
       const res = await schoolDataRepository.getRegisteredByLa(localAuthority);
       callback(null, res);
       break;
     }
     case 'getSchoolJoinRequestsByLa': {
-      const { localAuthority } = params as QueryGetSchoolJoinRequestsByLaArgs;
+      const { localAuthority } = getSchoolJoinRequestsByLaSchema.parse(params);
+
       const res = await joinRequestsRepository.getNewSchoolJoinRequestsByLa(localAuthority);
       callback(null, res);
       break;
     }
     case 'getSchoolsNearby': {
-      const { postcode, distance } = params as QueryGetSchoolsNearbyArgs;
+      const { postcode, distance } = getSchoolsNearbySchema.parse(params);
 
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
@@ -201,7 +236,7 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getSchoolsNearbyWithProfile': {
-      const { postcode, distance, type } = params as QueryGetSchoolsNearbyWithProfileArgs;
+      const { postcode, distance, type } = getSchoolsNearbyWithProfileSchema.parse(params);
 
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
@@ -215,7 +250,7 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getCharitiesNearby': {
-      const { postcode, distance } = params as QueryGetCharitiesNearbyArgs;
+      const { postcode, distance } = getCharitiesNearbySchema.parse(params);
 
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
@@ -224,7 +259,7 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getCharitiesNearbyWithProfile': {
-      const { postcode, distance, type } = params as QueryGetCharitiesNearbyWithProfileArgs;
+      const { postcode, distance, type } = getCharitiesNearbyWithProfileSchema.parse(params);
 
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
@@ -257,7 +292,8 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getLaStats': {
-      const { name, nameId, email } = params as QueryGetLaStatsArgs;
+      const { name, nameId, email } = getLaStatsSchema.parse(params);
+
       const [la, schoolRequests, charityRequests] = await Promise.all([
         localAuthorityUserRepository.getByAll(name, nameId, email),
         joinRequestsRepository.getSchoolJoinRequestsCountByLa(name),
@@ -273,13 +309,15 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getCharitiesByLa': {
-      const { name } = params as QueryGetCharitiesByLaArgs;
+      const { name } = getCharitiesByLaSchema.parse(params);
+
       const charities = await charityDataRepository.getByLa(name);
       callback(null, charities);
       break;
     }
     case 'getCharityJoinRequestsByLa': {
-      const { localAuthority } = params as QueryGetCharityJoinRequestsByLaArgs;
+      const { localAuthority } = getCharityJoinRequestsByLaSchema.parse(params);
+
       const res = await joinRequestsRepository.getNewCharityJoinRequestsByLa(localAuthority);
       callback(null, res);
       break;

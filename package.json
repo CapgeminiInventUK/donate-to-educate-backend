@@ -12,6 +12,7 @@
     "lint": "eslint src/**/*.ts --quiet --fix",
     "compile": "tsc",
     "test": "npm run compile && npm run unit",
+    "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
     "prepare": "is-ci || husky",
     "format:check": "prettier --check src",
     "format:fix": "prettier --write src",
@@ -81,6 +82,7 @@
     "serverless-offline": "^13.0.0",
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
+    "ts-to-zod": "^3.7.3",
     "typescript": "^5.1.6"
   }
 }
