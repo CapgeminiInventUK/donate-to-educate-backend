@@ -1,6 +1,10 @@
 import { z } from 'zod';
-import { Type as _Type } from '../../appsync';
-const Type = { ..._Type };
+
+export enum Type {
+  Donate = 'donate',
+  Excess = 'excess',
+  Request = 'request',
+}
 
 // Private resolver schemas
 
@@ -95,8 +99,9 @@ export const deleteCharityProfileSchema = z.object({
 
 // Public resolver schemas
 
-export const getSchoolByNameSchema = z.object({
+export const getSchoolSchema = z.object({
   name: z.string().min(1),
+  urn: z.string().min(1),
 });
 
 export const getLocalAuthorityUserSchema = z.object({

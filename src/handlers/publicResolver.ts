@@ -6,24 +6,17 @@ import {
   JoinRequest,
   SchoolProfile,
   QueryGetSignUpDataArgs,
-  QueryGetSchoolProfileArgs,
   QueryGetLocalAuthorityUserArgs,
   SignUpData,
   LocalAuthorityUser,
   QueryGetSchoolsNearbyArgs,
   QueryGetRegisteredSchoolsByLaArgs,
-  QueryGetSchoolJoinRequestsByLaArgs,
   QueryGetCharityProfileArgs,
   CharityProfile,
   QueryGetCharitiesNearbyArgs,
   Charity,
   AdminStats,
   InstituteSearchResult,
-  QueryGetSchoolsNearbyWithProfileArgs,
-  QueryGetCharitiesNearbyWithProfileArgs,
-  QueryGetCharitiesByLaArgs,
-  QueryGetCharityJoinRequestsByLaArgs,
-  QueryGetLaStatsArgs,
   LaStats,
   QueryGetSchoolArgs,
   QueryHasSchoolProfileArgs,
@@ -49,9 +42,9 @@ import {
   getLaStatsSchema,
   getLocalAuthorityUserSchema,
   getRegisteredSchoolsByLaSchema,
-  getSchoolByNameSchema,
   getSchoolJoinRequestsByLaSchema,
   getSchoolProfileSchema,
+  getSchoolSchema,
   getSchoolsByLaSchema,
   getSchoolsNearbySchema,
   getSchoolsNearbyWithProfileSchema,
@@ -89,13 +82,6 @@ export const handler: AppSyncResolverHandler<
   | LocalAuthorityUser
   | AdminStats
   | LaStats
-  | QueryGetSchoolJoinRequestsByLaArgs
-  | QueryGetSchoolProfileArgs
-  | QueryGetSchoolsNearbyWithProfileArgs
-  | QueryGetCharitiesNearbyWithProfileArgs
-  | QueryGetCharitiesByLaArgs
-  | QueryGetCharityJoinRequestsByLaArgs
-  | QueryGetLaStatsArgs
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
@@ -117,12 +103,8 @@ export const handler: AppSyncResolverHandler<
   logger.info(`Projected fields ${JSON.stringify(projectedFields)}`);
 
   switch (info.fieldName) {
-    case 'getSchoolByName': {
-      const { name } = getSchoolByNameSchema.parse(params);
-
-      const school = await schoolDataRepository.getByName(name);
     case 'getSchool': {
-      const { name, urn } = params as QueryGetSchoolArgs;
+      const { name, urn } = getSchoolSchema.parse(params);
       const school = await schoolDataRepository.get(name, urn);
 
       if (!school) {
