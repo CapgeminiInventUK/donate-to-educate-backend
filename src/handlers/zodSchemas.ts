@@ -46,9 +46,9 @@ export const insertSignUpDataSchema = z.object({
 });
 
 export const insertJoinRequestSchema = z.object({
-  aboutCharity: z.string().min(1).optional(),
-  charityAddress: z.string().min(1).optional(),
-  charityName: z.string().min(1).optional(),
+  aboutCharity: z.string().min(1).optional().nullable(),
+  charityAddress: z.string().min(1).optional().nullable(),
+  charityName: z.string().min(1).optional().nullable(),
   email: z.string().email(),
   jobTitle: z.string().min(1).optional(),
   localAuthority: z.string().min(1),
