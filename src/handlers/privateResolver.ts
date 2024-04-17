@@ -170,8 +170,18 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'insertItemQuery': {
-      const { name, email, type, message, who, phone, connection, organisationType } =
-        insertItemQuerySchema.parse(params);
+      const {
+        name,
+        email,
+        type,
+        message,
+        who,
+        phone,
+        connection,
+        organisationType,
+        organisationName,
+        organisationId,
+      } = insertItemQuerySchema.parse(params);
 
       const res = await itemQueriesRepository.insert({
         name,
@@ -180,6 +190,8 @@ export const handler: AppSyncResolverHandler<
         message,
         who,
         phone,
+        organisationId,
+        organisationName,
         organisationType,
         ...(connection && { connection }),
       });

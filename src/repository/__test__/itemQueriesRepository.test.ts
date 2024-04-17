@@ -18,6 +18,8 @@ describe('ItemQueriesRepository', () => {
       message: 'somehow.',
       who: 'anotherSchool',
       phone: '07654345843',
+      organisationId: '12',
+      organisationName: 'School',
       organisationType: 'school',
     });
     expect(result).toEqual(true);

@@ -6,6 +6,8 @@ export const itemQueries = [
     message: 'somehow.',
     who: 'charityVolunteerGroup',
     phone: '07654345843',
+    organisationId: '123',
+    organisationName: 'Charity',
     organisationType: 'charity',
   },
 ];

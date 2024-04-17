@@ -128,6 +128,8 @@ type ItemQuery {
   phone: String!
   message: String!
   connection: String
+  organisationName: String!
+  organisationId: String!
   organisationType: String!
 }
 
@@ -291,6 +293,8 @@ type Mutation {
     who: String!
     phone: String!
     connection: String
+    organisationName: String!
+    organisationId: String!
     organisationType: String!
   ): Boolean!
 

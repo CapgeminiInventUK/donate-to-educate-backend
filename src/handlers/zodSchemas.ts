@@ -63,6 +63,8 @@ export const insertItemQuerySchema = z.object({
   email: z.string().email(),
   message: z.string().min(1),
   name: z.string().min(1),
+  organisationName: z.string().min(1),
+  organisationId: z.string().min(1),
   organisationType: z.string().min(1),
   phone: z.string().min(1),
   type: z.string().min(1),
