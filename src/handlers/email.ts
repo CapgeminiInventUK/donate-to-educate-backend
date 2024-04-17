@@ -13,6 +13,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { CharityDataRepository } from '../repository/charityDataRepository';
 import { logger } from '../shared/logger';
 import { checkIfDefinedElseDefault } from '../shared/check';
+import { CharityUserRepository } from '../repository/charityUserRepository';
+import { SchoolUserRepository } from '../repository/schoolUserRepository';
 
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
 const fromEmailAddress = 'team@donatetoeducate.org.uk';
@@ -28,6 +30,8 @@ interface MongoDBEvent {
 const signUpDataRepository = SignUpDataRepository.getInstance();
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const charityDataRepository = CharityDataRepository.getInstance();
+const charityUserRepository = CharityUserRepository.getInstance();
+const schoolUserRepository = SchoolUserRepository.getInstance();
 
 export const handler: Handler = async (event: MongoDBEvent, context, callback): Promise<void> => {
   logger.info(event);
@@ -149,20 +153,39 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
         break;
       }
       case 'ItemQueries': {
-        const { email, name, type, message, who, phone, connection } = fullDocument as ItemQuery;
+        const {
+          email,
+          name,
+          type,
+          message,
+          who,
+          phone,
+          connection,
+          organisationId,
+          organisationName,
+          organisationType,
+        } = fullDocument as ItemQuery;
         const { subject, intro } = getContentFromType(type);
 
-        await sendEmail('ryan.b.smith@capgemini.com', 'request', {
-          // TODO who is this email meant to be sent to?
-          subject,
-          intro,
-          type: who,
-          email,
-          phone,
-          message,
-          name,
-          ...(connection && { connection }),
-        });
+        const user =
+          organisationType === 'school'
+            ? await schoolUserRepository.get(organisationName, organisationId)
+            : await charityUserRepository.get(organisationName, organisationId);
+
+        if (user?.email) {
+          await sendEmail(user?.email, 'request', {
+            subject,
+            intro,
+            type: who,
+            email,
+            phone,
+            message,
+            name,
+            ...(connection && { connection }),
+          });
+        } else {
+          logger.info(`Invalid email: ${user?.email}`);
+        }
         break;
       }
       case 'LocalAuthorityRegisterRequests': {
