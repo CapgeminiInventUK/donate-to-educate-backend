@@ -54,7 +54,7 @@ export const insertJoinRequestSchema = z.object({
   localAuthority: z.string().min(1),
   name: z.string().min(1),
   phone: z.string().min(1).optional().nullable(),
-  school: z.string().min(1).optional().nullable(),
+  school: z.string().optional().nullable(),
   type: z.string().min(1),
 });
 
