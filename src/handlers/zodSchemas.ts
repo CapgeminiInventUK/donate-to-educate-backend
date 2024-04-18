@@ -56,6 +56,7 @@ export const insertJoinRequestSchema = z.object({
   phone: z.string().min(1).optional().nullable(),
   school: z.string().optional().nullable(),
   type: z.string().min(1),
+  urn: z.string().optional().nullable(),
 });
 
 export const insertItemQuerySchema = z.object({
