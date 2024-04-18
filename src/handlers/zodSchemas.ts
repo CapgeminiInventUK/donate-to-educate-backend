@@ -16,7 +16,7 @@ export const registerLocalAuthoritySchema = z.object({
   lastName: z.string().min(1),
   name: z.string().min(1),
   nameId: z.string().min(1),
-  notes: z.string().min(1).optional().nullable(),
+  notes: z.string().optional().nullable(),
   phone: z.string().min(1),
 });
 
@@ -46,21 +46,21 @@ export const insertSignUpDataSchema = z.object({
 });
 
 export const insertJoinRequestSchema = z.object({
-  aboutCharity: z.string().min(1).optional().nullable(),
-  charityAddress: z.string().min(1).optional().nullable(),
-  charityName: z.string().min(1).optional().nullable(),
+  aboutCharity: z.string().optional().nullable(),
+  charityAddress: z.string().optional().nullable(),
+  charityName: z.string().optional().nullable(),
   email: z.string().email(),
-  jobTitle: z.string().min(1).optional().nullable(),
+  jobTitle: z.string().optional().nullable(),
   localAuthority: z.string().min(1),
   name: z.string().min(1),
-  phone: z.string().min(1).optional().nullable(),
+  phone: z.string().optional().nullable(),
   school: z.string().optional().nullable(),
   type: z.string().min(1),
   urn: z.string().optional().nullable(),
 });
 
 export const insertItemQuerySchema = z.object({
-  connection: z.string().min(1).optional().nullable(),
+  connection: z.string().optional().nullable(),
   email: z.string().email(),
   message: z.string().min(1),
   name: z.string().min(1),
