@@ -12,8 +12,8 @@ export class SchoolUserRepository extends BaseRepository<SchoolUser> {
     return this.instance;
   }
 
-  public async get(name: string, id: string): Promise<WithId<SchoolUser> | undefined> {
-    return await this.getOne({ name, id });
+  public async get(schoolName: string, schoolId: string): Promise<WithId<SchoolUser> | undefined> {
+    return await this.getOne({ schoolName, schoolId });
   }
 
   public async getByEmail(email: string): Promise<WithId<SchoolUser> | undefined> {

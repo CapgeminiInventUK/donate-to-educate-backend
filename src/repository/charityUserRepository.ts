@@ -12,8 +12,11 @@ export class CharityUserRepository extends BaseRepository<CharityUser> {
     return this.instance;
   }
 
-  public async get(name: string, id: string): Promise<WithId<CharityUser> | undefined> {
-    return await this.getOne({ name, id });
+  public async get(
+    charityName: string,
+    charityId: string
+  ): Promise<WithId<CharityUser> | undefined> {
+    return await this.getOne({ charityName, charityId });
   }
 
   public async getByEmail(email: string): Promise<WithId<CharityUser> | undefined> {
