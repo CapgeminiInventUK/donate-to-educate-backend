@@ -4,13 +4,15 @@ export const schoolUser = [
     jobTitle: 'Mr',
     name: 'Robin',
     phone: '07545432432',
-    school: 'Farlingaye',
+    schoolName: 'Farlingaye',
+    schoolId: '1',
   },
   {
     email: 'Test@minnie.com',
     jobTitle: 'Miss',
     name: 'Minnie',
     phone: '07545432432',
-    school: 'Eyke',
+    schoolName: 'Eyke',
+    schoolId: '2',
   },
 ];

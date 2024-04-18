@@ -82,6 +82,8 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
             charityAddress,
             aboutCharity,
             localAuthority,
+            jobTitle,
+            phone,
             urn,
           } = fullDocument as JoinRequest;
 
@@ -100,6 +102,15 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
               checkIfDefinedElseDefault(schoolName),
               checkIfDefinedElseDefault(urn)
             );
+
+            await schoolUserRepository.insert({
+              name,
+              phone: phone ?? '',
+              jobTitle: jobTitle ?? '',
+              email,
+              schoolId: urn ?? '',
+              schoolName: school ?? '',
+            });
           } else if (type === 'charity') {
             const charityId = uuidv4();
             await signUpDataRepository.insert({
@@ -116,6 +127,15 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
               address: checkIfDefinedElseDefault(charityAddress),
               about: checkIfDefinedElseDefault(aboutCharity),
               localAuthority,
+            });
+
+            await charityUserRepository.insert({
+              email,
+              phone: phone ?? '',
+              jobTitle: jobTitle ?? '',
+              charityName: charityName ?? '',
+              charityId,
+              name,
             });
           } else {
             throw new Error(`Invalid type ${type}`);

@@ -26,6 +26,8 @@ describe('CharityUserRepository', () => {
       jobTitle: 'Mr',
       name: 'Mickey',
       phone: '07545432432',
+      charityId: '1',
+      charityName: 'Oxfam',
     });
     expect(result).toEqual(true);
 

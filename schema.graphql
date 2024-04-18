@@ -135,7 +135,8 @@ type ItemQuery {
 
 type SchoolUser {
   name: String!
-  school: String!
+  schoolName: String!
+  schoolId: String!
   jobTitle: String!
   email: String!
   phone: String!
@@ -143,21 +144,11 @@ type SchoolUser {
 
 type CharityUser {
   name: String!
+  charityName: String!
+  charityId: String!
   jobTitle: String!
   email: String!
   phone: String!
-}
-
-type CharityDetails {
-  name: String!
-  address: String!
-  localAuthority: String!
-  about: String
-}
-
-type CharitySignUpDetails {
-  charityUser: CharityUser!
-  charityDetails: CharityDetails!
 }
 
 type LocalAuthorityRegisterRequest {

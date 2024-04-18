@@ -33,14 +33,6 @@ export type Charity = {
   profile?: Maybe<Array<Maybe<CharityProfile>>>;
 };
 
-export type CharityDetails = {
-  __typename?: 'CharityDetails';
-  about?: Maybe<Scalars['String']['output']>;
-  address: Scalars['String']['output'];
-  localAuthority: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-};
-
 export type CharityProfile = {
   __typename?: 'CharityProfile';
   about?: Maybe<Scalars['String']['output']>;
@@ -62,14 +54,10 @@ export type CharityProfileHeader = {
   website?: Maybe<Scalars['String']['output']>;
 };
 
-export type CharitySignUpDetails = {
-  __typename?: 'CharitySignUpDetails';
-  charityDetails: CharityDetails;
-  charityUser: CharityUser;
-};
-
 export type CharityUser = {
   __typename?: 'CharityUser';
+  charityId: Scalars['String']['output'];
+  charityName: Scalars['String']['output'];
   email: Scalars['String']['output'];
   jobTitle: Scalars['String']['output'];
   name: Scalars['String']['output'];
@@ -471,7 +459,8 @@ export type SchoolUser = {
   jobTitle: Scalars['String']['output'];
   name: Scalars['String']['output'];
   phone: Scalars['String']['output'];
-  school: Scalars['String']['output'];
+  schoolId: Scalars['String']['output'];
+  schoolName: Scalars['String']['output'];
 };
 
 export type SignUpData = {

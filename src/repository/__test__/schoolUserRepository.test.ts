@@ -26,7 +26,8 @@ describe('SchoolUserRepository', () => {
       jobTitle: 'Mr',
       name: 'Mickey',
       phone: '07545432432',
-      school: 'Some School',
+      schoolName: 'Some School',
+      schoolId: '1',
     });
     expect(result).toEqual(true);
 
