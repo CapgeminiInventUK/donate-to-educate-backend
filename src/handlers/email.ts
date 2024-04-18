@@ -196,7 +196,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
           await sendEmail(user?.email, 'request', {
             subject,
             intro,
-            type: who,
+            type: getWhoFromValue(who),
             email,
             phone,
             message,
@@ -274,5 +274,22 @@ const getContentFromType = (type: string): { subject: string; intro: string } =>
       };
     default:
       throw new Error(`Unknown type ${type}`);
+  }
+};
+
+const getWhoFromValue = (value: string): string => {
+  switch (value) {
+    case 'charityVolunteerGroup':
+      return 'I work for a charity or volunteer group';
+    case 'parentGuardian':
+      return 'I am a parent or guardian';
+    case 'public':
+      return 'I am a member of the public';
+    case 'anotherSchool':
+      return 'I work at another school';
+    case 'somethingElse':
+      return 'Another connection';
+    default:
+      return '';
   }
 };
