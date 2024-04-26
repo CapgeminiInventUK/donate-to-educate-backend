@@ -8,7 +8,7 @@ export const downloadSchoolDataFileLocally = async (): Promise<void> => {
     args: [...chromium.args, '--hide-scrollbars', '--disable-web-security'],
     defaultViewport: chromium.defaultViewport,
     executablePath: await chromium.executablePath(
-      `https://github.com/Sparticuz/chromium/releases/download/v122.0.0/chromium-v122.0.0-pack.tar`
+      `https://github.com/Sparticuz/chromium/releases/download/v123.0.1/chromium-v123.0.1-pack.tar`
     ),
     headless: true,
     ignoreHTTPSErrors: true,
