@@ -148,8 +148,8 @@ export const handler: AppSyncResolverHandler<
         const isLocalAuthorityRegistered = filteredLas.find(
           ({ name }) => name === localAuthority
         )?.registered;
-        const hasJoinRequest = requests.some(
-          ({ school: schoolJoinRequest }) => schoolJoinRequest === schoolName
+        const hasJoinRequest = requests?.some(
+          ({ school: schoolJoinRequest }) => String(schoolJoinRequest) === schoolName
         );
         return { ...school, isLocalAuthorityRegistered, hasJoinRequest };
       });
