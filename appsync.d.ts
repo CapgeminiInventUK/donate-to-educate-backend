@@ -418,6 +418,7 @@ export type School = {
   address3?: Maybe<Scalars['String']['output']>;
   county?: Maybe<Scalars['String']['output']>;
   distance?: Maybe<Scalars['Float']['output']>;
+  hasJoinRequest?: Maybe<Scalars['Boolean']['output']>;
   isLocalAuthorityRegistered?: Maybe<Scalars['Boolean']['output']>;
   localAuthority: Scalars['String']['output'];
   locality?: Maybe<Scalars['String']['output']>;
