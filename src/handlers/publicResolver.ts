@@ -142,16 +142,13 @@ export const handler: AppSyncResolverHandler<
       const filteredLas = localAuthorities.map((la) =>
         removeFields<LocalAuthority>(info.selectionSetList, la)
       );
-      const requests = await joinRequestsRepository.getNewJoinRequests();
       const mappedSchools = schools.map((school) => {
-        const { localAuthority, name: schoolName } = school;
+        const { localAuthority } = school;
         const isLocalAuthorityRegistered = filteredLas.find(
           ({ name }) => name === localAuthority
         )?.registered;
-        const hasJoinRequest = requests?.some(
-          ({ school: schoolJoinRequest }) => String(schoolJoinRequest) === schoolName
-        );
-        return { ...school, isLocalAuthorityRegistered, hasJoinRequest };
+
+        return { ...school, isLocalAuthorityRegistered };
       });
       callback(null, mappedSchools);
       break;
