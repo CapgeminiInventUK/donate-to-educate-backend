@@ -30,6 +30,7 @@ export type Charity = {
   id: Scalars['String']['output'];
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  postcode?: Maybe<Scalars['String']['output']>;
   profile?: Maybe<Array<Maybe<CharityProfile>>>;
 };
 
@@ -98,6 +99,7 @@ export type JoinRequest = {
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
   phone?: Maybe<Scalars['String']['output']>;
+  postcode?: Maybe<Scalars['String']['output']>;
   requestTime: Scalars['Float']['output'];
   school?: Maybe<Scalars['String']['output']>;
   status: Scalars['String']['output'];
@@ -224,6 +226,7 @@ export type MutationInsertJoinRequestArgs = {
   localAuthority: Scalars['String']['input'];
   name: Scalars['String']['input'];
   phone?: InputMaybe<Scalars['String']['input']>;
+  postcode?: InputMaybe<Scalars['String']['input']>;
   school?: InputMaybe<Scalars['String']['input']>;
   type: Scalars['String']['input'];
   urn?: InputMaybe<Scalars['String']['input']>;

@@ -33,6 +33,7 @@ type Charity {
   about: String!
   distance: Float
   profile: [CharityProfile]
+  postcode: String
 }
 
 type ProfileItems {
@@ -119,6 +120,7 @@ type JoinRequest {
   charityAddress: String
   aboutCharity: String
   urn: String
+  postcode: String
 }
 
 type ItemQuery {
@@ -260,6 +262,7 @@ type Mutation {
     charityAddress: String
     aboutCharity: String
     urn: String
+    postcode: String
   ): Boolean!
 
   insertLocalAuthorityRegisterRequest(

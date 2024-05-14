@@ -85,6 +85,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
             jobTitle,
             phone,
             urn,
+            postcode,
           } = fullDocument as JoinRequest;
 
           if (type === 'school') {
@@ -127,6 +128,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
               address: checkIfDefinedElseDefault(charityAddress),
               about: checkIfDefinedElseDefault(aboutCharity),
               localAuthority,
+              postcode,
             });
 
             await charityUserRepository.insert({
