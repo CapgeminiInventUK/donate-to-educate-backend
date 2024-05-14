@@ -187,7 +187,7 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
           organisationName,
           organisationType,
         } = fullDocument as ItemQuery;
-        const { subject, intro } = getContentFromType(type);
+        const { subject, intro } = getContentFromType(type, organisationType);
 
         const user =
           organisationType === 'school'
@@ -257,22 +257,25 @@ const sendEmail = async (
   logger.info(res);
 };
 
-const getContentFromType = (type: string): { subject: string; intro: string } => {
+const getContentFromType = (
+  type: string,
+  organisationType: string
+): { subject: string; intro: string } => {
   switch (type) {
     case 'tick':
       return {
         subject: 'Product request',
-        intro: 'Someone has requested products from your school.',
+        intro: `Someone has requested products from your ${organisationType}.`,
       };
     case 'heart':
       return {
         subject: 'Donation request',
-        intro: 'Someone wants to donate products to your school.',
+        intro: `Someone wants to donate products to your ${organisationType}.`,
       };
     case 'plus':
       return {
         subject: 'Excess product assistance',
-        intro: 'Someone wants to help you with the extra stock at your school.',
+        intro: `Someone wants to help you with the extra stock at your ${organisationType}.`,
       };
     default:
       throw new Error(`Unknown type ${type}`);
