@@ -298,6 +298,8 @@ type Mutation {
   deleteSchoolProfile(name: String!, id: String!): Boolean
   deleteCharityProfile(name: String!, id: String!): Boolean
   acceptPrivacyPolicy(name: String!, nameId: String!, email: String!): Boolean!
+
+  deleteSignUpData(id: String!, email: String!): Boolean
 }
 
 schema {

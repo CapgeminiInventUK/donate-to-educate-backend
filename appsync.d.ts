@@ -168,6 +168,7 @@ export type Mutation = {
   deleteCharityProfile?: Maybe<Scalars['Boolean']['output']>;
   deleteDeniedJoinRequest: Scalars['Boolean']['output'];
   deleteSchoolProfile?: Maybe<Scalars['Boolean']['output']>;
+  deleteSignUpData?: Maybe<Scalars['Boolean']['output']>;
   insertItemQuery: Scalars['Boolean']['output'];
   insertJoinRequest: Scalars['Boolean']['output'];
   insertLocalAuthorityRegisterRequest: Scalars['Boolean']['output'];
@@ -200,6 +201,12 @@ export type MutationDeleteDeniedJoinRequestArgs = {
 export type MutationDeleteSchoolProfileArgs = {
   id: Scalars['String']['input'];
   name: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteSignUpDataArgs = {
+  email: Scalars['String']['input'];
+  id: Scalars['String']['input'];
 };
 
 
