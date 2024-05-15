@@ -156,6 +156,13 @@ export const handler: AppSyncResolverHandler<
       callback(null, res);
       break;
     }
+    case 'deleteSignUpData': {
+      const { id, email } = insertSignUpDataSchema.parse(params);
+
+      const res = await signUpDataRepository.deleteSignUpRequest(id, email);
+      callback(null, res);
+      break;
+    }
     case 'insertJoinRequest': {
       const status = 'NEW';
       const id = uuidv4();

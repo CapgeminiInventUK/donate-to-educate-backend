@@ -19,4 +19,8 @@ export class SignUpDataRepository extends BaseRepository<SignUpData> {
   public async insert(signUpData: SignUpData): Promise<boolean> {
     return (await this.collection.insertOne(signUpData)).acknowledged;
   }
+
+  public async deleteSignUpRequest(id: string, email: string): Promise<boolean> {
+    return (await this.collection.deleteOne({ email, id })).acknowledged;
+  }
 }
