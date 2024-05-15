@@ -437,6 +437,7 @@ export type School = {
   postcode?: Maybe<Scalars['String']['output']>;
   profile?: Maybe<Array<Maybe<SchoolProfile>>>;
   registered: Scalars['Boolean']['output'];
+  registrationState?: Maybe<Scalars['String']['output']>;
   street?: Maybe<Scalars['String']['output']>;
   town?: Maybe<Scalars['String']['output']>;
   urn: Scalars['ID']['output'];

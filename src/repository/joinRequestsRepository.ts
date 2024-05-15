@@ -20,6 +20,10 @@ export class JoinRequestsRepository extends BaseRepository<JoinRequest> {
     return await this.getByQuery({ status: 'NEW' });
   }
 
+  public async getNewSchoolJoinRequests(): Promise<WithId<JoinRequest>[]> {
+    return await this.getByQuery({ status: 'NEW', type: 'school' });
+  }
+
   public async getSchoolJoinRequestsCount(): Promise<number> {
     return await this.getCount({ status: 'NEW', type: 'school' });
   }
