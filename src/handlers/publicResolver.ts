@@ -151,8 +151,8 @@ export const handler: AppSyncResolverHandler<
         const hasJoinRequest = schoolJoinRequests.some(
           ({ school: schoolName }) => schoolName === name
         );
-        const registrationState = isLocalAuthorityRegistered
-          ? 'laRegistered'
+        const registrationState = !isLocalAuthorityRegistered
+          ? 'laNotRegistered'
           : hasJoinRequest
             ? 'hasJoinRequest'
             : undefined;
