@@ -154,7 +154,7 @@ export const handler: AppSyncResolverHandler<
         const registrationState = isLocalAuthorityRegistered
           ? 'laRegistered'
           : hasJoinRequest
-            ? 'hasJonRequest'
+            ? 'hasJoinRequest'
             : undefined;
 
         return { ...school, registrationState };
