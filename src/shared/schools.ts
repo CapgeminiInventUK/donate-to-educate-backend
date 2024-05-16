@@ -16,6 +16,22 @@ const removePostcodeFromSchoolName = (
   return schoolName?.replace(` - ${postcode}`, '') ?? '';
 };
 
+const getRegistrationState = (
+  isLocalAuthorityRegistered?: boolean,
+  hasJoinRequest?: boolean,
+  registered?: boolean
+): string | undefined => {
+  if (registered) {
+    return undefined;
+  }
+  if (!isLocalAuthorityRegistered) {
+    return 'laNotRegistered';
+  }
+  if (hasJoinRequest) {
+    return 'hasJoinRequest';
+  }
+};
+
 export const addSchoolsRequestState = (
   schools: School[],
   localAuthorities: LocalAuthority[],
@@ -26,18 +42,18 @@ export const addSchoolsRequestState = (
     removeFields<LocalAuthority>(info.selectionSetList, la)
   );
   return schools.map((school) => {
-    const { localAuthority, name, postcode } = school;
+    const { localAuthority, name, postcode, registered } = school;
     const isLocalAuthorityRegistered = filteredLas.find(
       ({ name }) => name === localAuthority
     )?.registered;
     const hasJoinRequest = schoolJoinRequests.some(
       ({ school: schoolName }) => removePostcodeFromSchoolName(schoolName, postcode) === name
     );
-    const registrationState = !isLocalAuthorityRegistered
-      ? 'laNotRegistered'
-      : hasJoinRequest
-        ? 'hasJoinRequest'
-        : undefined;
+    const registrationState = getRegistrationState(
+      isLocalAuthorityRegistered,
+      hasJoinRequest,
+      registered
+    );
 
     return { ...school, registrationState };
   });
