@@ -50,6 +50,7 @@ import {
   getSchoolsNearbyWithProfileSchema,
   getSignUpDataSchema,
 } from './zodSchemas';
+import { addSchoolsRequestState } from '../shared/schools';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const charityDataRepository = CharityDataRepository.getInstance();
@@ -139,26 +140,14 @@ export const handler: AppSyncResolverHandler<
     case 'getSchools': {
       const schools = await schoolDataRepository.list(projectedFields);
       const localAuthorities = await localAuthorityDataRepository.list();
-      const filteredLas = localAuthorities.map((la) =>
-        removeFields<LocalAuthority>(info.selectionSetList, la)
-      );
       const schoolJoinRequests = await joinRequestsRepository.getNewSchoolJoinRequests();
-      const mappedSchools = schools.map((school) => {
-        const { localAuthority, name } = school;
-        const isLocalAuthorityRegistered = filteredLas.find(
-          ({ name }) => name === localAuthority
-        )?.registered;
-        const hasJoinRequest = schoolJoinRequests.some(
-          ({ school: schoolName }) => schoolName?.split('-')[0] === name
-        );
-        const registrationState = !isLocalAuthorityRegistered
-          ? 'laNotRegistered'
-          : hasJoinRequest
-            ? 'hasJoinRequest'
-            : undefined;
+      const mappedSchools = addSchoolsRequestState(
+        schools,
+        localAuthorities,
+        schoolJoinRequests,
+        info
+      );
 
-        return { ...school, registrationState };
-      });
       callback(null, mappedSchools);
       break;
     }
