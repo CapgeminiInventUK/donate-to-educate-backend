@@ -149,7 +149,7 @@ export const handler: AppSyncResolverHandler<
           ({ name }) => name === localAuthority
         )?.registered;
         const hasJoinRequest = schoolJoinRequests.some(
-          ({ school: schoolName }) => schoolName === name
+          ({ school: schoolName }) => schoolName?.split('-')[0] === name
         );
         const registrationState = !isLocalAuthorityRegistered
           ? 'laNotRegistered'
