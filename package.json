@@ -46,7 +46,7 @@
     "axios": "1.6.8",
     "csv-parse": "5.5.5",
     "is-ci": "3.0.1",
-    "mongodb": "6.5.0",
+    "mongodb": "6.7.0",
     "mongoose": "8.4.0",
     "pino": "9.0.0",
     "proj4": "2.11.0",
