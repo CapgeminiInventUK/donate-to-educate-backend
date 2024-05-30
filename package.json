@@ -59,7 +59,7 @@
   "devDependencies": {
     "@graphql-codegen/cli": "5.0.2",
     "@graphql-codegen/typescript": "4.0.6",
-    "@shelf/jest-mongodb": "4.2.0",
+    "@shelf/jest-mongodb": "4.3.2",
     "@types/adm-zip": "0.5.5",
     "@types/aws-lambda": "8.10.137",
     "@types/jest": "29.5.12",
