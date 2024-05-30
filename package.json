@@ -47,7 +47,7 @@
     "csv-parse": "5.5.5",
     "is-ci": "3.0.1",
     "mongodb": "6.5.0",
-    "mongoose": "8.3.2",
+    "mongoose": "8.4.0",
     "pino": "9.0.0",
     "proj4": "2.11.0",
     "puppeteer-core": "22.7.1",
