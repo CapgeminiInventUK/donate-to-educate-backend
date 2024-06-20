@@ -69,6 +69,7 @@ export type InstituteSearchResult = {
   __typename?: 'InstituteSearchResult';
   distance: Scalars['Float']['output'];
   id: Scalars['String']['output'];
+  location: Point;
   name: Scalars['String']['output'];
   productTypes: Array<Scalars['Int']['output']>;
   registered: Scalars['Boolean']['output'];
@@ -288,6 +289,12 @@ export type MutationUpdateJoinRequestArgs = {
 export type MutationUpdateSchoolProfileArgs = {
   key: Scalars['String']['input'];
   value: Scalars['String']['input'];
+};
+
+export type Point = {
+  __typename?: 'Point';
+  coordinates: Array<Scalars['Float']['output']>;
+  type: Scalars['String']['output'];
 };
 
 export type ProfileItems = {

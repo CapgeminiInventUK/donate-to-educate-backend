@@ -1,5 +1,5 @@
 import { WithId } from 'mongodb';
-import { InstituteSearchResult, School, Type } from '../../appsync';
+import { InstituteSearchResult, Point, School, Type } from '../../appsync';
 import { BaseRepository } from './baseRepository';
 
 export class SchoolDataRepository extends BaseRepository<School> {
@@ -74,7 +74,7 @@ export class SchoolDataRepository extends BaseRepository<School> {
     maxDistance: number,
     type: Type
   ): Promise<InstituteSearchResult[]> {
-    const res = this.collection.aggregate<School>([
+    const res = this.collection.aggregate<School & { location: Point }>([
       {
         $geoNear: {
           near: {
@@ -96,14 +96,17 @@ export class SchoolDataRepository extends BaseRepository<School> {
       },
     ]);
 
-    return (await res.toArray()).reduce((acc, { name, distance, profile, urn, registered }) => {
-      const hasProfileItems = profile && profile?.length > 0;
+    return (await res.toArray()).reduce(
+      (acc, { name, distance, profile, urn, registered, location }) => {
+        const hasProfileItems = profile && profile?.length > 0;
 
-      const productTypes = hasProfileItems
-        ? (profile[0]?.[type]?.productTypes as number[]) ?? []
-        : [];
-      acc.push({ name, distance: distance ?? 0, productTypes, id: urn, registered });
-      return acc;
-    }, [] as InstituteSearchResult[]);
+        const productTypes = hasProfileItems
+          ? (profile[0]?.[type]?.productTypes as number[]) ?? []
+          : [];
+        acc.push({ name, distance: distance ?? 0, productTypes, id: urn, registered, location });
+        return acc;
+      },
+      [] as InstituteSearchResult[]
+    );
   }
 }

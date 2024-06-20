@@ -1,5 +1,5 @@
 import { WithId } from 'mongodb';
-import { Charity, InstituteSearchResult, Type } from '../../appsync';
+import { Charity, InstituteSearchResult, Point, Type } from '../../appsync';
 import { BaseRepository } from './baseRepository';
 import { convertPostcodeToLatLng } from '../shared/postcode';
 
@@ -93,7 +93,7 @@ export class CharityDataRepository extends BaseRepository<Charity> {
     maxDistance: number,
     type: Type
   ): Promise<InstituteSearchResult[]> {
-    const res = this.collection.aggregate<Charity>([
+    const res = this.collection.aggregate<Charity & { location: Point }>([
       {
         $geoNear: {
           near: {
@@ -115,13 +115,13 @@ export class CharityDataRepository extends BaseRepository<Charity> {
       },
     ]);
 
-    return (await res.toArray()).reduce((acc, { name, distance, profile, id }) => {
+    return (await res.toArray()).reduce((acc, { name, distance, profile, id, location }) => {
       const hasProfileItems = profile && profile?.length > 0;
 
       const productTypes = hasProfileItems
         ? (profile[0]?.[type]?.productTypes as number[]) ?? []
         : [];
-      acc.push({ name, distance: distance ?? 0, productTypes, id, registered: true });
+      acc.push({ name, distance: distance ?? 0, productTypes, id, registered: true, location });
       return acc;
     }, [] as InstituteSearchResult[]);
   }
