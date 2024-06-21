@@ -50,7 +50,7 @@ import {
   getSchoolsNearbyWithProfileSchema,
   getSignUpDataSchema,
 } from './zodSchemas';
-import { addSchoolsRequestState } from '../shared/schools';
+import { addSchoolsRequestState, infoType } from '../shared/schools';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const charityDataRepository = CharityDataRepository.getInstance();
@@ -83,13 +83,20 @@ export const handler: AppSyncResolverHandler<
   | LocalAuthorityUser
   | AdminStats
   | LaStats
+  | string
 > = async (event, context, callback) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
 
-  const { arguments: params, info } = event;
+  const { arguments: params, info } =
+    'info' in event
+      ? event
+      : // This is only used locally
+        (JSON.parse((event as { body: string }).body) as {
+          arguments: Record<string, string>;
+          info: infoType;
+        });
   logger.info(`${JSON.stringify(params)}`);
-
   logger.info(typeof info.selectionSetList);
 
   const selections =
@@ -102,18 +109,15 @@ export const handler: AppSyncResolverHandler<
     {}
   );
   logger.info(`Projected fields ${JSON.stringify(projectedFields)}`);
-
   switch (info.fieldName) {
     case 'getSchool': {
       const { name, urn } = getSchoolSchema.parse(params);
       const school = await schoolDataRepository.get(name, urn);
 
       if (!school) {
-        callback(null);
-        break;
+        return [];
       }
-      callback(null, removeFields<School>(info.selectionSetList, school));
-      break;
+      return removeFields<School>(info.selectionSetList, school);
     }
     case 'getLocalAuthorityUser': {
       const { email } = getLocalAuthorityUserSchema.parse(params);
@@ -213,8 +217,7 @@ export const handler: AppSyncResolverHandler<
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
       const res = await schoolDataRepository.getSchoolsNearby(longitude, latitude, distance);
-      callback(null, res);
-      break;
+      return res;
     }
     case 'getSchoolsNearbyWithProfile': {
       const { postcode, distance, type } = getSchoolsNearbyWithProfileSchema.parse(params);

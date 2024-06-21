@@ -210,3 +210,6 @@ $RECYCLE.BIN/
 AWSCLIV2.pkg
 
 globalConfig.json
+
+volume
+.env
