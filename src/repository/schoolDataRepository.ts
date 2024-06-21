@@ -60,6 +60,7 @@ export class SchoolDataRepository extends BaseRepository<School> {
           },
           distanceField: 'distance',
           maxDistance,
+          includeLocs: 'location',
         },
       },
     ]);
@@ -82,6 +83,7 @@ export class SchoolDataRepository extends BaseRepository<School> {
           },
           distanceField: 'distance',
           maxDistance,
+          includeLocs: 'location',
         },
       },
       {

@@ -192,6 +192,12 @@ type InstituteSearchResult {
   distance: Float!
   productTypes: [Int!]!
   registered: Boolean!
+  location: Point!
+}
+
+type Point {
+  type: String!
+  coordinates: [Float!]!
 }
 
 enum Type {

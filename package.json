@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "sls offline",
-    "dev": "docker-compose up --build --force-recreate -d && npm start --prefix ./scripts/",
+    "dev": "npm run build && docker-compose up --build --force-recreate -d && npm start --prefix ./scripts/",
     "start:localstack": "DEBUG=1 localstack start -d && serverless deploy --stage local",
     "build": "serverless package",
     "unit": "jest",

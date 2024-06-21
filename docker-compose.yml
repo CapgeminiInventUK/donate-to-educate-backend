@@ -10,7 +10,7 @@ services:
       - '3001:3001'
     environment:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
-      - DEBUG=${DEBUG:-0}
+      - DEBUG=1
       - SERVICES=lambda,sts
       - DOCKER_BRIDGE_IP=172.21.0.1
     volumes:

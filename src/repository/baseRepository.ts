@@ -1,7 +1,8 @@
 import { Collection, Db, Filter, MongoClient, WithId, Document } from 'mongodb';
-import { isTest } from '../shared/env';
+import { isLocal, isTest } from '../shared/env';
 import { clientOptions } from './config';
 import { checkIfDefinedElseDefault } from '../shared/check';
+import { logger } from '../shared/logger';
 
 export abstract class BaseRepository<T extends Document> {
   private readonly databaseName = 'D2E';
@@ -10,9 +11,10 @@ export abstract class BaseRepository<T extends Document> {
   protected readonly collection: Collection<T>;
 
   protected constructor(collectionName: string) {
+    logger.info(process?.env?.MONGO_URL);
     this.client = new MongoClient(
       checkIfDefinedElseDefault(process?.env?.MONGO_URL),
-      isTest() ? undefined : clientOptions
+      isTest() || isLocal() ? undefined : clientOptions
     );
     this.db = this.client.db(this.databaseName);
     this.collection = this.db.collection<T>(collectionName);

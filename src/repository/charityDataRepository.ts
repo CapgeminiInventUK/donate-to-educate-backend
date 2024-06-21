@@ -79,6 +79,7 @@ export class CharityDataRepository extends BaseRepository<Charity> {
           },
           distanceField: 'distance',
           maxDistance,
+          includeLocs: 'location',
         },
       },
     ]);
@@ -101,6 +102,7 @@ export class CharityDataRepository extends BaseRepository<Charity> {
           },
           distanceField: 'distance',
           maxDistance,
+          includeLocs: 'location',
         },
       },
       {
