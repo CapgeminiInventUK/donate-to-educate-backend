@@ -121,7 +121,18 @@ export class CharityDataRepository extends BaseRepository<Charity> {
       const productTypes = hasProfileItems
         ? (profile[0]?.[type]?.productTypes as number[]) ?? []
         : [];
-      acc.push({ name, distance: distance ?? 0, productTypes, id, registered: true, location });
+      acc.push({
+        name,
+        distance: distance ?? 0,
+        productTypes,
+        id,
+        registered: true,
+        location,
+        searchLocation: {
+          type: 'Point',
+          coordinates: [longitude, latitude],
+        },
+      });
       return acc;
     }, [] as InstituteSearchResult[]);
   }

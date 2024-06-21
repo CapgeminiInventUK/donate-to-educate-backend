@@ -103,7 +103,18 @@ export class SchoolDataRepository extends BaseRepository<School> {
         const productTypes = hasProfileItems
           ? (profile[0]?.[type]?.productTypes as number[]) ?? []
           : [];
-        acc.push({ name, distance: distance ?? 0, productTypes, id: urn, registered, location });
+        acc.push({
+          name,
+          distance: distance ?? 0,
+          productTypes,
+          id: urn,
+          registered,
+          location,
+          searchLocation: {
+            type: 'Point',
+            coordinates: [longitude, latitude],
+          },
+        });
         return acc;
       },
       [] as InstituteSearchResult[]

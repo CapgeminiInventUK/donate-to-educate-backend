@@ -193,6 +193,7 @@ type InstituteSearchResult {
   productTypes: [Int!]!
   registered: Boolean!
   location: Point!
+  searchLocation: Point!
 }
 
 type Point {

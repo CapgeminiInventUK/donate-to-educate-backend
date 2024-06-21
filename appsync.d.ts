@@ -73,6 +73,7 @@ export type InstituteSearchResult = {
   name: Scalars['String']['output'];
   productTypes: Array<Scalars['Int']['output']>;
   registered: Scalars['Boolean']['output'];
+  searchLocation: Point;
 };
 
 export type ItemQuery = {
