@@ -1,5 +1,5 @@
 import { WithId } from 'mongodb';
-import { InstituteSearchResult, Point, School, Type } from '../../appsync';
+import { InstituteSearchResult, Point, School, SearchResult, Type } from '../../appsync';
 import { BaseRepository } from './baseRepository';
 
 export class SchoolDataRepository extends BaseRepository<School> {
@@ -73,7 +73,7 @@ export class SchoolDataRepository extends BaseRepository<School> {
     latitude: number,
     maxDistance: number,
     type: Type
-  ): Promise<InstituteSearchResult[]> {
+  ): Promise<InstituteSearchResult> {
     const res = this.collection.aggregate<School & { location: Point }>([
       {
         $geoNear: {
@@ -96,7 +96,7 @@ export class SchoolDataRepository extends BaseRepository<School> {
       },
     ]);
 
-    return (await res.toArray()).reduce(
+    const resultsArray = (await res.toArray()).reduce(
       (acc, { name, distance, profile, urn, registered, location }) => {
         const hasProfileItems = profile && profile?.length > 0;
 
@@ -110,14 +110,18 @@ export class SchoolDataRepository extends BaseRepository<School> {
           id: urn,
           registered,
           location,
-          searchLocation: {
-            type: 'Point',
-            coordinates: [longitude, latitude],
-          },
         });
         return acc;
       },
-      [] as InstituteSearchResult[]
+      [] as SearchResult[]
     );
+
+    return {
+      searchLocation: {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      },
+      results: resultsArray,
+    };
   }
 }

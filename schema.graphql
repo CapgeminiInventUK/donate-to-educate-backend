@@ -187,13 +187,17 @@ type LaStats {
 }
 
 type InstituteSearchResult {
+  searchLocation: Point!
+  results: [SearchResult!]!
+}
+
+type SearchResult {
   id: String!
   name: String!
   distance: Float!
   productTypes: [Int!]!
   registered: Boolean!
   location: Point!
-  searchLocation: Point!
 }
 
 type Point {
@@ -231,12 +235,12 @@ type Query {
     postcode: String!
     distance: Float!
     type: Type!
-  ): [InstituteSearchResult!]!
+  ): InstituteSearchResult!
   getCharitiesNearbyWithProfile(
     postcode: String!
     distance: Float!
     type: Type!
-  ): [InstituteSearchResult!]!
+  ): InstituteSearchResult!
 
   hasSchoolProfile(name: String!, id: String!): Boolean!
   hasCharityProfile(name: String!, id: String!): Boolean!

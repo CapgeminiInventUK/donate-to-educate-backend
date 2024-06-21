@@ -1,5 +1,5 @@
 import { WithId } from 'mongodb';
-import { Charity, InstituteSearchResult, Point, Type } from '../../appsync';
+import { Charity, InstituteSearchResult, Point, SearchResult, Type } from '../../appsync';
 import { BaseRepository } from './baseRepository';
 import { convertPostcodeToLatLng } from '../shared/postcode';
 
@@ -92,7 +92,7 @@ export class CharityDataRepository extends BaseRepository<Charity> {
     latitude: number,
     maxDistance: number,
     type: Type
-  ): Promise<InstituteSearchResult[]> {
+  ): Promise<InstituteSearchResult> {
     const res = this.collection.aggregate<Charity & { location: Point }>([
       {
         $geoNear: {
@@ -115,25 +115,32 @@ export class CharityDataRepository extends BaseRepository<Charity> {
       },
     ]);
 
-    return (await res.toArray()).reduce((acc, { name, distance, profile, id, location }) => {
-      const hasProfileItems = profile && profile?.length > 0;
+    const resultsArray = (await res.toArray()).reduce(
+      (acc, { name, distance, profile, id, location }) => {
+        const hasProfileItems = profile && profile?.length > 0;
 
-      const productTypes = hasProfileItems
-        ? (profile[0]?.[type]?.productTypes as number[]) ?? []
-        : [];
-      acc.push({
-        name,
-        distance: distance ?? 0,
-        productTypes,
-        id,
-        registered: true,
-        location,
-        searchLocation: {
-          type: 'Point',
-          coordinates: [longitude, latitude],
-        },
-      });
-      return acc;
-    }, [] as InstituteSearchResult[]);
+        const productTypes = hasProfileItems
+          ? (profile[0]?.[type]?.productTypes as number[]) ?? []
+          : [];
+        acc.push({
+          name,
+          distance: distance ?? 0,
+          productTypes,
+          id,
+          registered: true,
+          location,
+        });
+        return acc;
+      },
+      [] as SearchResult[]
+    );
+
+    return {
+      searchLocation: {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      },
+      results: resultsArray,
+    };
   }
 }

@@ -75,7 +75,7 @@ export const handler: AppSyncResolverHandler<
   | Charity[]
   | LocalAuthority[]
   | JoinRequest[]
-  | InstituteSearchResult[]
+  | InstituteSearchResult
   | boolean
   | SchoolProfile
   | CharityProfile
