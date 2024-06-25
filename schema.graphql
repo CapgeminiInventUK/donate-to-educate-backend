@@ -63,6 +63,7 @@ type SchoolProfile {
   id: String!
   localAuthority: String!
   postcode: String!
+  location: Point
   header: SchoolProfileHeader
   about: String
   request: ProfileItems
@@ -75,6 +76,7 @@ type CharityProfile {
   id: String!
   localAuthority: String!
   postcode: String
+  location: Point
   header: CharityProfileHeader
   about: String
   request: ProfileItems

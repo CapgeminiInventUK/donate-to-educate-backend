@@ -42,6 +42,7 @@ export type CharityProfile = {
   header?: Maybe<CharityProfileHeader>;
   id: Scalars['String']['output'];
   localAuthority: Scalars['String']['output'];
+  location?: Maybe<Point>;
   name: Scalars['String']['output'];
   postcode?: Maybe<Scalars['String']['output']>;
   request?: Maybe<ProfileItems>;
@@ -455,6 +456,7 @@ export type SchoolProfile = {
   header?: Maybe<SchoolProfileHeader>;
   id: Scalars['String']['output'];
   localAuthority: Scalars['String']['output'];
+  location?: Maybe<Point>;
   name: Scalars['String']['output'];
   postcode: Scalars['String']['output'];
   request?: Maybe<ProfileItems>;
