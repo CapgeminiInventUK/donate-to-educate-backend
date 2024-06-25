@@ -34,14 +34,16 @@ export class CharityProfileRepository extends BaseRepository<CharityProfile> {
           $set: {
             [key]: parsedValue,
             ...(key === 'postcode' && {
-              'location.coordinates': await convertPostcodeToLatLngWithDefault(parsedValue),
+              location: {
+                type: 'Point',
+                coordinates: await convertPostcodeToLatLngWithDefault(parsedValue),
+              },
             }),
           },
           $setOnInsert: {
             name,
             id,
             localAuthority,
-            location: { type: 'Point', coordinates: [0, 0] },
           },
         },
         { upsert: true }
