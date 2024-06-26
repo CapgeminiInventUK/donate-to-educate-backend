@@ -217,7 +217,7 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getSchoolsNearbyWithProfile': {
-      const { postcode, distance, type } = getSchoolsNearbyWithProfileSchema.parse(params);
+      const { postcode, distance, type, limit } = getSchoolsNearbyWithProfileSchema.parse(params);
 
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
@@ -225,6 +225,7 @@ export const handler: AppSyncResolverHandler<
         longitude,
         latitude,
         distance,
+        limit,
         type
       );
       callback(null, res);
@@ -240,7 +241,7 @@ export const handler: AppSyncResolverHandler<
       break;
     }
     case 'getCharitiesNearbyWithProfile': {
-      const { postcode, distance, type } = getCharitiesNearbyWithProfileSchema.parse(params);
+      const { postcode, distance, type, limit } = getCharitiesNearbyWithProfileSchema.parse(params);
 
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
@@ -248,6 +249,7 @@ export const handler: AppSyncResolverHandler<
         longitude,
         latitude,
         distance,
+        limit,
         type
       );
       callback(null, res);

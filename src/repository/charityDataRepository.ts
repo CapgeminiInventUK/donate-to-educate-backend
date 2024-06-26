@@ -91,6 +91,7 @@ export class CharityDataRepository extends BaseRepository<Charity> {
     longitude: number,
     latitude: number,
     maxDistance: number,
+    limit: number,
     type: Type
   ): Promise<InstituteSearchResult> {
     const res = this.collection.aggregate<Charity & { location: Point }>([
@@ -104,6 +105,9 @@ export class CharityDataRepository extends BaseRepository<Charity> {
           maxDistance,
           includeLocs: 'location',
         },
+      },
+      {
+        $limit: limit,
       },
       {
         $lookup: {

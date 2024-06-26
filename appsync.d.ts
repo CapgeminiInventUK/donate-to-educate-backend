@@ -343,6 +343,7 @@ export type QueryGetCharitiesNearbyArgs = {
 
 export type QueryGetCharitiesNearbyWithProfileArgs = {
   distance: Scalars['Float']['input'];
+  limit: Scalars['Int']['input'];
   postcode: Scalars['String']['input'];
   type: Type;
 };
@@ -406,6 +407,7 @@ export type QueryGetSchoolsNearbyArgs = {
 
 export type QueryGetSchoolsNearbyWithProfileArgs = {
   distance: Scalars['Float']['input'];
+  limit: Scalars['Int']['input'];
   postcode: Scalars['String']['input'];
   type: Type;
 };

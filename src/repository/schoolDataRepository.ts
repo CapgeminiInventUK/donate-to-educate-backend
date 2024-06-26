@@ -72,6 +72,7 @@ export class SchoolDataRepository extends BaseRepository<School> {
     longitude: number,
     latitude: number,
     maxDistance: number,
+    limit: number,
     type: Type
   ): Promise<InstituteSearchResult> {
     const res = this.collection.aggregate<School & { location: Point }>([
@@ -85,6 +86,9 @@ export class SchoolDataRepository extends BaseRepository<School> {
           maxDistance,
           includeLocs: 'location',
         },
+      },
+      {
+        $limit: limit,
       },
       {
         $lookup: {

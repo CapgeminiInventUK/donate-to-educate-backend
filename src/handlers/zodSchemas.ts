@@ -145,6 +145,7 @@ export const getSchoolsNearbySchema = z.object({
 
 export const getSchoolsNearbyWithProfileSchema = z.object({
   distance: z.number(),
+  limit: z.number(),
   postcode: z.string().min(1),
   type: z.enum([Type.Donate, Type.Excess, Type.Request]),
 });
@@ -156,6 +157,7 @@ export const getCharitiesNearbySchema = z.object({
 
 export const getCharitiesNearbyWithProfileSchema = z.object({
   distance: z.number(),
+  limit: z.number(),
   postcode: z.string().min(1),
   type: z.enum([Type.Donate, Type.Excess, Type.Request]),
 });

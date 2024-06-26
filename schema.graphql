@@ -236,11 +236,13 @@ type Query {
   getSchoolsNearbyWithProfile(
     postcode: String!
     distance: Float!
+    limit: Int!
     type: Type!
   ): InstituteSearchResult!
   getCharitiesNearbyWithProfile(
     postcode: String!
     distance: Float!
+    limit: Int!
     type: Type!
   ): InstituteSearchResult!
 
