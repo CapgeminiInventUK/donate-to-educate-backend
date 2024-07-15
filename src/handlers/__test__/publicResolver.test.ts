@@ -22,18 +22,16 @@ describe('Public Resolver', () => {
   it('Get School By Name - No results', async () => {
     const callback = jest.fn();
 
-    await expect(async () => {
-      await handler(
-        generateEvent<QueryGetSchoolArgs>('getSchool', ['name'], {
-          name: 'Farlingaye',
-          urn: '10000',
-        }),
-        generateContext(),
-        callback
-      );
-    }).rejects.toThrow('An unknown error occurred');
+    const result = await handler(
+      generateEvent<QueryGetSchoolArgs>('getSchool', ['name'], {
+        name: 'Farlingaye',
+        urn: '10000',
+      }),
+      generateContext(),
+      callback
+    );
 
-    expect(callback).toHaveBeenCalledWith(null);
+    expect(result).toEqual([]);
   });
 
   it('Get School By Name - Results', async () => {
@@ -42,18 +40,16 @@ describe('Public Resolver', () => {
       { name: 'Farlingaye', localAuthority: 'Hackney', registered: true, urn: '10000' },
     ]);
 
-    await expect(async () => {
-      await handler(
-        generateEvent<QueryGetSchoolArgs>('getSchool', ['name', 'urn'], {
-          name: 'Farlingaye',
-          urn: '10000',
-        }),
-        generateContext(),
-        callback
-      );
-    }).rejects.toThrow('An unknown error occurred');
+    const result = await handler(
+      generateEvent<QueryGetSchoolArgs>('getSchool', ['name', 'urn'], {
+        name: 'Farlingaye',
+        urn: '10000',
+      }),
+      generateContext(),
+      callback
+    );
 
-    expect(callback).toHaveBeenCalledWith(null, { name: 'Farlingaye', urn: '10000' });
+    expect(result).toEqual({ name: 'Farlingaye', urn: '10000' });
   });
 
   it('Get La User By Email - No results', async () => {
