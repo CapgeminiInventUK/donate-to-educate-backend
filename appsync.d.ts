@@ -42,6 +42,7 @@ export type CharityProfile = {
   header?: Maybe<CharityProfileHeader>;
   id: Scalars['String']['output'];
   localAuthority: Scalars['String']['output'];
+  location?: Maybe<Point>;
   name: Scalars['String']['output'];
   postcode?: Maybe<Scalars['String']['output']>;
   request?: Maybe<ProfileItems>;
@@ -67,11 +68,8 @@ export type CharityUser = {
 
 export type InstituteSearchResult = {
   __typename?: 'InstituteSearchResult';
-  distance: Scalars['Float']['output'];
-  id: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  productTypes: Array<Scalars['Int']['output']>;
-  registered: Scalars['Boolean']['output'];
+  results: Array<SearchResult>;
+  searchLocation: Point;
 };
 
 export type ItemQuery = {
@@ -290,6 +288,12 @@ export type MutationUpdateSchoolProfileArgs = {
   value: Scalars['String']['input'];
 };
 
+export type Point = {
+  __typename?: 'Point';
+  coordinates: Array<Scalars['Float']['output']>;
+  type: Scalars['String']['output'];
+};
+
 export type ProfileItems = {
   __typename?: 'ProfileItems';
   actionText?: Maybe<Scalars['String']['output']>;
@@ -304,7 +308,7 @@ export type Query = {
   getCharities: Array<Charity>;
   getCharitiesByLa: Array<Maybe<Charity>>;
   getCharitiesNearby: Array<Charity>;
-  getCharitiesNearbyWithProfile: Array<InstituteSearchResult>;
+  getCharitiesNearbyWithProfile: InstituteSearchResult;
   getCharityJoinRequestsByLa: Array<JoinRequest>;
   getCharityProfile?: Maybe<CharityProfile>;
   getJoinRequests: Array<JoinRequest>;
@@ -319,7 +323,7 @@ export type Query = {
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
   getSchoolsNearby: Array<School>;
-  getSchoolsNearbyWithProfile: Array<InstituteSearchResult>;
+  getSchoolsNearbyWithProfile: InstituteSearchResult;
   getSignUpData?: Maybe<SignUpData>;
   hasCharityProfile: Scalars['Boolean']['output'];
   hasSchoolProfile: Scalars['Boolean']['output'];
@@ -339,6 +343,7 @@ export type QueryGetCharitiesNearbyArgs = {
 
 export type QueryGetCharitiesNearbyWithProfileArgs = {
   distance: Scalars['Float']['input'];
+  limit: Scalars['Int']['input'];
   postcode: Scalars['String']['input'];
   type: Type;
 };
@@ -402,6 +407,7 @@ export type QueryGetSchoolsNearbyArgs = {
 
 export type QueryGetSchoolsNearbyWithProfileArgs = {
   distance: Scalars['Float']['input'];
+  limit: Scalars['Int']['input'];
   postcode: Scalars['String']['input'];
   type: Type;
 };
@@ -452,6 +458,7 @@ export type SchoolProfile = {
   header?: Maybe<SchoolProfileHeader>;
   id: Scalars['String']['output'];
   localAuthority: Scalars['String']['output'];
+  location?: Maybe<Point>;
   name: Scalars['String']['output'];
   postcode: Scalars['String']['output'];
   request?: Maybe<ProfileItems>;
@@ -473,6 +480,16 @@ export type SchoolUser = {
   phone: Scalars['String']['output'];
   schoolId: Scalars['String']['output'];
   schoolName: Scalars['String']['output'];
+};
+
+export type SearchResult = {
+  __typename?: 'SearchResult';
+  distance: Scalars['Float']['output'];
+  id: Scalars['String']['output'];
+  location: Point;
+  name: Scalars['String']['output'];
+  productTypes: Array<Scalars['Int']['output']>;
+  registered: Scalars['Boolean']['output'];
 };
 
 export type SignUpData = {

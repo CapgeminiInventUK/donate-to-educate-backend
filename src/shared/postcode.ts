@@ -7,3 +7,13 @@ export const convertPostcodeToLatLng = async (postcode: string): Promise<[number
   const { longitude, latitude } = data.result;
   return [longitude, latitude];
 };
+
+export const convertPostcodeToLatLngWithDefault = async (
+  postcode: string | null | undefined
+): Promise<[number, number]> => {
+  try {
+    return postcode ? await convertPostcodeToLatLng(postcode.replace(/\s/g, '')) : [0, 0];
+  } catch {
+    return [0, 0];
+  }
+};

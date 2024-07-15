@@ -1,5 +1,5 @@
 import { WithId } from 'mongodb';
-import { InstituteSearchResult, School, Type } from '../../appsync';
+import { InstituteSearchResult, Point, School, SearchResult, Type } from '../../appsync';
 import { BaseRepository } from './baseRepository';
 
 export class SchoolDataRepository extends BaseRepository<School> {
@@ -72,9 +72,10 @@ export class SchoolDataRepository extends BaseRepository<School> {
     longitude: number,
     latitude: number,
     maxDistance: number,
+    limit: number,
     type: Type
-  ): Promise<InstituteSearchResult[]> {
-    const res = this.collection.aggregate<School>([
+  ): Promise<InstituteSearchResult> {
+    const res = this.collection.aggregate<School & { location: Point }>([
       {
         $geoNear: {
           near: {
@@ -87,6 +88,9 @@ export class SchoolDataRepository extends BaseRepository<School> {
         },
       },
       {
+        $limit: limit,
+      },
+      {
         $lookup: {
           from: 'SchoolProfile',
           localField: 'urn',
@@ -96,14 +100,32 @@ export class SchoolDataRepository extends BaseRepository<School> {
       },
     ]);
 
-    return (await res.toArray()).reduce((acc, { name, distance, profile, urn, registered }) => {
-      const hasProfileItems = profile && profile?.length > 0;
+    const resultsArray = (await res.toArray()).reduce(
+      (acc, { name, distance, profile, urn, registered, location }) => {
+        const hasProfileItems = profile && profile?.length > 0;
 
-      const productTypes = hasProfileItems
-        ? (profile[0]?.[type]?.productTypes as number[]) ?? []
-        : [];
-      acc.push({ name, distance: distance ?? 0, productTypes, id: urn, registered });
-      return acc;
-    }, [] as InstituteSearchResult[]);
+        const productTypes = hasProfileItems
+          ? (profile[0]?.[type]?.productTypes as number[]) ?? []
+          : [];
+        acc.push({
+          name,
+          distance: distance ?? 0,
+          productTypes,
+          id: urn,
+          registered,
+          location,
+        });
+        return acc;
+      },
+      [] as SearchResult[]
+    );
+
+    return {
+      searchLocation: {
+        type: 'Point',
+        coordinates: [longitude, latitude],
+      },
+      results: resultsArray,
+    };
   }
 }

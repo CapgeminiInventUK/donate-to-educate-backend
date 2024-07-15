@@ -1,6 +1,7 @@
 import { WithId } from 'mongodb';
 import { CharityProfile } from '../../appsync';
 import { BaseRepository } from './baseRepository';
+import { convertPostcodeToLatLngWithDefault } from '../shared/postcode';
 
 export class CharityProfileRepository extends BaseRepository<CharityProfile> {
   private static instance: CharityProfileRepository;
@@ -25,12 +26,25 @@ export class CharityProfileRepository extends BaseRepository<CharityProfile> {
   ): Promise<boolean> {
     const parsedValue =
       key === 'about' || key === 'postcode' ? value : (JSON.parse(value) as string);
+
     return (
       await this.collection.updateOne(
         { name, id },
         {
-          $set: { [key]: parsedValue },
-          $setOnInsert: { name, id, localAuthority },
+          $set: {
+            [key]: parsedValue,
+            ...(key === 'postcode' && {
+              location: {
+                type: 'Point',
+                coordinates: await convertPostcodeToLatLngWithDefault(parsedValue),
+              },
+            }),
+          },
+          $setOnInsert: {
+            name,
+            id,
+            localAuthority,
+          },
         },
         { upsert: true }
       )

@@ -63,6 +63,7 @@ type SchoolProfile {
   id: String!
   localAuthority: String!
   postcode: String!
+  location: Point
   header: SchoolProfileHeader
   about: String
   request: ProfileItems
@@ -75,6 +76,7 @@ type CharityProfile {
   id: String!
   localAuthority: String!
   postcode: String
+  location: Point
   header: CharityProfileHeader
   about: String
   request: ProfileItems
@@ -187,6 +189,11 @@ type LaStats {
 }
 
 type InstituteSearchResult {
+  searchLocation: Point!
+  results: [SearchResult!]!
+}
+
+type SearchResult {
   id: String!
   name: String!
   distance: Float!
@@ -229,13 +236,15 @@ type Query {
   getSchoolsNearbyWithProfile(
     postcode: String!
     distance: Float!
+    limit: Int!
     type: Type!
-  ): [InstituteSearchResult!]!
+  ): InstituteSearchResult!
   getCharitiesNearbyWithProfile(
     postcode: String!
     distance: Float!
+    limit: Int!
     type: Type!
-  ): [InstituteSearchResult!]!
+  ): InstituteSearchResult!
 
   hasSchoolProfile(name: String!, id: String!): Boolean!
   hasCharityProfile(name: String!, id: String!): Boolean!

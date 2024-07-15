@@ -2,6 +2,7 @@ import { WithId } from 'mongodb';
 import { SchoolProfile } from '../../appsync';
 import { BaseRepository } from './baseRepository';
 import { checkIfDefinedElseDefault } from '../shared/check';
+import { convertPostcodeToLatLngWithDefault } from '../shared/postcode';
 
 export class SchoolProfileRepository extends BaseRepository<SchoolProfile> {
   private static instance: SchoolProfileRepository;
@@ -26,12 +27,22 @@ export class SchoolProfileRepository extends BaseRepository<SchoolProfile> {
     postcode: string | null
   ): Promise<boolean> {
     const parsedValue = key === 'about' ? value : (JSON.parse(value) as string);
+
     return (
       await this.collection.updateOne(
         { name, id },
         {
           $set: { [key]: parsedValue },
-          $setOnInsert: { name, id, localAuthority, postcode: checkIfDefinedElseDefault(postcode) },
+          $setOnInsert: {
+            name,
+            id,
+            localAuthority,
+            postcode: checkIfDefinedElseDefault(postcode),
+            location: {
+              type: 'Point',
+              coordinates: await convertPostcodeToLatLngWithDefault(postcode),
+            },
+          },
         },
         { upsert: true }
       )
