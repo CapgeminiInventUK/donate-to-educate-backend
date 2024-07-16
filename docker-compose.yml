@@ -1,44 +1,53 @@
 version: '3.8'
 
 services:
-    mongo1:
-        container_name: mongo1
-        image: mongo:latest
-        volumes:
-            - ./scripts/rs-init.sh:/scripts/rs-init.sh
-            - ./scripts/init.js:/scripts/init.js
-        networks:
-            - mongo-network
-        ports:
-            - 27017:27017
-        depends_on:
-            - mongo2
-            - mongo3
-        links:
-            - mongo2
-            - mongo3
-        restart: always
-        entrypoint: ['/usr/bin/mongod', '--bind_ip_all', '--replSet', 'dbrs']
+  localstack:
+    container_name: '${LOCALSTACK_DOCKER_NAME:-localstack-main}'
+    image: localstack/localstack
+    ports:
+      - '127.0.0.1:4566:4566' # LocalStack Gateway
+      - '127.0.0.1:4510-4559:4510-4559' # external services port range
+      - '3001:3001'
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - DEBUG=1
+      - SERVICES=lambda,sts
+      - DOCKER_BRIDGE_IP=172.21.0.1
+    volumes:
+      - '${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - ./scripts/localstack-setup.sh:/etc/localstack/init/ready.d/script.sh
+      - ./.serverless/:/build
+      - ./scripts:/scripts
 
-    mongo2:
-        container_name: mongo2
-        image: mongo:latest
-        networks:
-            - mongo-network
-        ports:
-            - 27018:27017
-        restart: always
-        entrypoint: ['/usr/bin/mongod', '--bind_ip_all', '--replSet', 'dbrs']
-    mongo3:
-        container_name: mongo3
-        image: mongo:latest
-        networks:
-            - mongo-network
-        ports:
-            - 27019:27017
-        restart: always
-        entrypoint: ['/usr/bin/mongod', '--bind_ip_all', '--replSet', 'dbrs']
-
-networks:
-    mongo-network:
-        driver: bridge
+  mongo1:
+    image: mongo:7
+    hostname: mongo1
+    container_name: mongo1
+    ports:
+      - 27017:27017
+    entrypoint: ['mongod', '--replSet', 'myReplicaSet', '--bind_ip', 'localhost,mongo1']
+  mongo2:
+    image: mongo:7
+    hostname: mongo2
+    container_name: mongo2
+    ports:
+      - 27018:27017
+    entrypoint: ['mongod', '--replSet', 'myReplicaSet', '--bind_ip', 'localhost,mongo2']
+  mongo3:
+    image: mongo:7
+    hostname: mongo3
+    container_name: mongo3
+    ports:
+      - 27019:27017
+    entrypoint: ['mongod', '--replSet', 'myReplicaSet', '--bind_ip', 'localhost,mongo3']
+  mongosetup:
+    image: mongo:7
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+    volumes:
+      - ./scripts:/scripts
+    restart: 'no'
+    entrypoint: ['bash', './scripts/mongo_setup.sh']

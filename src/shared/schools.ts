@@ -1,7 +1,7 @@
 import { JoinRequest, LocalAuthority, School } from '../../appsync';
 import { removeFields } from './graphql';
 
-interface infoType {
+export interface infoType {
   selectionSetList: string[];
   selectionSetGraphQL: string;
   parentTypeName: string;
