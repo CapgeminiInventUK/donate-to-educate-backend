@@ -20,22 +20,19 @@ describe('Public Resolver', () => {
   });
 
   it('Get School By Name - No results', async () => {
-    const callback = jest.fn();
-
     const result = await handler(
       generateEvent<QueryGetSchoolArgs>('getSchool', ['name'], {
         name: 'Farlingaye',
         urn: '10000',
       }),
       generateContext(),
-      callback
+      jest.fn()
     );
 
     expect(result).toEqual([]);
   });
 
   it('Get School By Name - Results', async () => {
-    const callback = jest.fn();
     await insertData<School>('SchoolData', [
       { name: 'Farlingaye', localAuthority: 'Hackney', registered: true, urn: '10000' },
     ]);
@@ -46,30 +43,25 @@ describe('Public Resolver', () => {
         urn: '10000',
       }),
       generateContext(),
-      callback
+      jest.fn()
     );
 
     expect(result).toEqual({ name: 'Farlingaye', urn: '10000' });
   });
 
   it('Get La User By Email - No results', async () => {
-    const callback = jest.fn();
+    const result = await handler(
+      generateEvent<QueryGetLocalAuthorityUserArgs>('getLocalAuthorityUser', ['email'], {
+        email: 'mock@example.com',
+      }),
+      generateContext(),
+      jest.fn()
+    );
 
-    await expect(async () => {
-      await handler(
-        generateEvent<QueryGetLocalAuthorityUserArgs>('getLocalAuthorityUser', ['email'], {
-          email: 'mock@example.com',
-        }),
-        generateContext(),
-        callback
-      );
-    }).rejects.toThrow('An unknown error occurred');
-
-    expect(callback).toHaveBeenCalledWith(null);
+    expect(result).toEqual(null);
   });
 
   it('Get La User By Email - Results', async () => {
-    const callback = jest.fn();
     await insertData<LocalAuthorityUser>('LocalAuthorityUser', [
       {
         name: 'Hackney',
@@ -83,17 +75,15 @@ describe('Public Resolver', () => {
       },
     ]);
 
-    await expect(async () => {
-      await handler(
-        generateEvent<QueryGetLocalAuthorityUserArgs>('getLocalAuthorityUser', ['name', 'email'], {
-          email: 'mock@example.com',
-        }),
-        generateContext(),
-        callback
-      );
-    }).rejects.toThrow('An unknown error occurred');
+    const res = await handler(
+      generateEvent<QueryGetLocalAuthorityUserArgs>('getLocalAuthorityUser', ['name', 'email'], {
+        email: 'mock@example.com',
+      }),
+      generateContext(),
+      jest.fn()
+    );
 
-    expect(callback).toHaveBeenCalledWith(null, { name: 'Hackney', email: 'mock@example.com' });
+    expect(res).toEqual({ name: 'Hackney', email: 'mock@example.com' });
   });
 
   it('Throws validation error when payload is not formatted correctly', async () => {
@@ -104,12 +94,8 @@ describe('Public Resolver', () => {
     });
     const mockContext = generateContext();
 
-    const mockCallback = jest.fn();
-
     await expect(async () => {
-      await handler(mockEvent, mockContext, mockCallback);
+      await handler(mockEvent, mockContext, jest.fn());
     }).rejects.toThrow(ZodError);
-
-    expect(mockCallback).not.toHaveBeenCalled();
   });
 });

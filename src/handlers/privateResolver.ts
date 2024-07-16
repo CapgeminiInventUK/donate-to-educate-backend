@@ -66,7 +66,7 @@ export const handler: AppSyncResolverHandler<
   | MutationDeleteCharityProfileArgs
   | MutationInsertLocalAuthorityRegisterRequestArgs,
   boolean
-> = async (event, context, callback) => {
+> = async (event, context) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
 
@@ -90,16 +90,11 @@ export const handler: AppSyncResolverHandler<
         notes,
         nameId,
       });
-      callback(null, register && insert);
-      break;
+      return register && insert;
     }
     case 'updateJoinRequest': {
       const { localAuthority, name, status, id } = updateJoinRequestSchema.parse(params);
-
-      const res = await joinRequestsRepository.updateStatus(id, localAuthority, name, status);
-
-      callback(null, res);
-      break;
+      return await joinRequestsRepository.updateStatus(id, localAuthority, name, status);
     }
     case 'updateSchoolProfile': {
       const { key, value } = updateSchoolProfileSchema.parse(params);
@@ -110,7 +105,7 @@ export const handler: AppSyncResolverHandler<
       };
       const { localAuthority = '', postcode = '' } =
         (await schoolDataRepository.get(institution, institutionId)) ?? {};
-      const res = await schoolProfileRepository.updateKey(
+      return await schoolProfileRepository.updateKey(
         institutionId,
         institution,
         key,
@@ -118,8 +113,6 @@ export const handler: AppSyncResolverHandler<
         localAuthority,
         postcode
       );
-      callback(null, res);
-      break;
     }
     case 'updateCharityProfile': {
       const { key, value } = updateCharityProfileSchema.parse(params);
@@ -146,35 +139,26 @@ export const handler: AppSyncResolverHandler<
           value
         );
       }
-      callback(null, res);
-      break;
+      return res;
     }
     case 'insertSignUpData': {
       const { id, email, type, name, nameId } = insertSignUpDataSchema.parse(params);
-
-      const res = await signUpDataRepository.insert({ id, email, type, name, nameId });
-      callback(null, res);
-      break;
+      return await signUpDataRepository.insert({ id, email, type, name, nameId });
     }
     case 'deleteSignUpData': {
       const { id, email } = insertSignUpDataSchema.parse(params);
-
-      const res = await signUpDataRepository.deleteSignUpRequest(id, email);
-      callback(null, res);
-      break;
+      return await signUpDataRepository.deleteSignUpRequest(id, email);
     }
     case 'insertJoinRequest': {
       const status = 'NEW';
       const id = uuidv4();
       const requestTime = Number(new Date());
-      const res = await joinRequestsRepository.insert({
+      return await joinRequestsRepository.insert({
         ...insertJoinRequestSchema.parse(params),
         status,
         requestTime,
         id,
       });
-      callback(null, res);
-      break;
     }
     case 'insertItemQuery': {
       const {
@@ -190,7 +174,7 @@ export const handler: AppSyncResolverHandler<
         organisationId,
       } = insertItemQuerySchema.parse(params);
 
-      const res = await itemQueriesRepository.insert({
+      return await itemQueriesRepository.insert({
         name,
         email,
         type,
@@ -202,59 +186,44 @@ export const handler: AppSyncResolverHandler<
         organisationType,
         ...(connection && { connection }),
       });
-      callback(null, res);
-      break;
     }
     case 'insertLocalAuthorityRegisterRequest': {
       const { name, localAuthority, email, message, type } =
         insertLocalAuthorityRegisterRequestSchema.parse(params);
 
-      const res = await localAuthorityRegisterRequestsRepository.insert({
+      return await localAuthorityRegisterRequestsRepository.insert({
         name,
         localAuthority,
         email,
         message,
         type,
       });
-      callback(null, res);
-      break;
     }
     case 'deleteDeniedJoinRequest': {
       const { id } = deleteDeniedJoinRequestSchema.parse(params);
-
-      const res = await joinRequestsRepository.deleteDenied(id);
-      callback(null, res);
-      break;
+      return await joinRequestsRepository.deleteDenied(id);
     }
     case 'deleteSchoolProfile': {
       const { name, id } = deleteSchoolProfileSchema.parse(params);
 
       const res = await schoolProfileRepository.deleteSchoolProfile(name, id);
       await schoolDataRepository.unregister(name, id);
-      callback(null, res);
-      break;
+      return res;
     }
     case 'acceptPrivacyPolicy': {
       const { name, nameId, email } = acceptPrivacyPolicySchema.parse(params);
-
-      const res = await localAuthorityUserRepository.setPrivacyPolicyAccepted(name, nameId, email);
-      callback(null, res);
-      break;
+      return await localAuthorityUserRepository.setPrivacyPolicyAccepted(name, nameId, email);
     }
     case 'deleteCharityProfile': {
       const { name, id } = deleteCharityProfileSchema.parse(params);
 
       const res = await charityProfileRepository.deleteCharityProfile(name, id);
       const dataRes = await charityDataRepository.deleteCharity(name, id);
-      callback(null, res && dataRes);
-      break;
+      return res && dataRes;
     }
 
     default: {
-      callback(`Unexpected type ${info.fieldName}`);
       throw new Error(`Unexpected type ${info.fieldName}`);
     }
   }
-
-  throw new Error('An unknown error occurred');
 };

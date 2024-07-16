@@ -32,13 +32,8 @@ describe('Private Resolver', () => {
     );
     const mockContext = generateContext();
 
-    const mockCallback = jest.fn();
-
-    await expect(async () => {
-      await handler(mockEvent, mockContext, mockCallback);
-    }).rejects.toThrow('An unknown error occurred');
-
-    expect(mockCallback).toHaveBeenCalled();
+    const res = await handler(mockEvent, mockContext, jest.fn());
+    expect(res).toEqual(true);
   });
 
   it('Throws validation error when payload is not formatted correctly', async () => {
@@ -54,12 +49,8 @@ describe('Private Resolver', () => {
     });
     const mockContext = generateContext();
 
-    const mockCallback = jest.fn();
-
     await expect(async () => {
-      await handler(mockEvent, mockContext, mockCallback);
+      await handler(mockEvent, mockContext, jest.fn());
     }).rejects.toThrow(ZodError);
-
-    expect(mockCallback).not.toHaveBeenCalled();
   });
 });
