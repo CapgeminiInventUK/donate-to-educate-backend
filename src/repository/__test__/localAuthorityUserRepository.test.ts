@@ -1,7 +1,8 @@
-import { LocalAuthorityUserRepository } from '../localAuthorityUserRepository';
-import { laUser } from './mockData/laUser';
+import { beforeAll, describe, expect, it } from '@jest/globals';
 import { LocalAuthorityUser } from '../../../appsync';
 import { insertData } from '../../shared/testUtils';
+import { LocalAuthorityUserRepository } from '../localAuthorityUserRepository';
+import { laUser } from './mockData/laUser';
 
 describe('LocalAuthorityUserRepository', () => {
   const repo = LocalAuthorityUserRepository.getInstance();

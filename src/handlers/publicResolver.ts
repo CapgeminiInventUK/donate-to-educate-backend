@@ -1,38 +1,39 @@
 import { AppSyncResolverHandler } from 'aws-lambda';
 import {
-  School,
-  QueryGetSchoolsByLaArgs,
-  LocalAuthority,
-  JoinRequest,
-  SchoolProfile,
-  QueryGetSignUpDataArgs,
-  QueryGetLocalAuthorityUserArgs,
-  SignUpData,
-  LocalAuthorityUser,
-  QueryGetSchoolsNearbyArgs,
-  QueryGetRegisteredSchoolsByLaArgs,
-  QueryGetCharityProfileArgs,
-  CharityProfile,
-  QueryGetCharitiesNearbyArgs,
-  Charity,
   AdminStats,
+  Charity,
+  CharityProfile,
   InstituteSearchResult,
+  JoinRequest,
   LaStats,
+  LocalAuthority,
+  LocalAuthorityUser,
+  QueryGetCharitiesNearbyArgs,
+  QueryGetCharityProfileArgs,
+  QueryGetLocalAuthorityUserArgs,
+  QueryGetRegisteredSchoolsByLaArgs,
   QueryGetSchoolArgs,
-  QueryHasSchoolProfileArgs,
+  QueryGetSchoolsByLaArgs,
+  QueryGetSchoolsNearbyArgs,
+  QueryGetSignUpDataArgs,
   QueryHasCharityProfileArgs,
+  QueryHasSchoolProfileArgs,
+  School,
+  SchoolProfile,
+  SignUpData,
 } from '../../appsync';
-import { logger } from '../shared/logger';
-import { SchoolDataRepository } from '../repository/schoolDataRepository';
+import { CharityDataRepository } from '../repository/charityDataRepository';
+import { CharityProfileRepository } from '../repository/charityProfileRepository';
+import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
 import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
-import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
+import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
-import { CharityProfileRepository } from '../repository/charityProfileRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { removeFields } from '../shared/graphql';
+import { logger } from '../shared/logger';
 import { convertPostcodeToLatLng } from '../shared/postcode';
-import { CharityDataRepository } from '../repository/charityDataRepository';
+import { addSchoolsRequestState, infoType } from '../shared/schools';
 import {
   getCharitiesByLaSchema,
   getCharitiesNearbySchema,
@@ -50,7 +51,6 @@ import {
   getSchoolsNearbyWithProfileSchema,
   getSignUpDataSchema,
 } from './zodSchemas';
-import { addSchoolsRequestState, infoType } from '../shared/schools';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const charityDataRepository = CharityDataRepository.getInstance();

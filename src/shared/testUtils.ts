@@ -1,5 +1,5 @@
 import { AppSyncResolverEvent, Context } from 'aws-lambda';
-import { MongoClient, OptionalUnlessRequiredId, Document } from 'mongodb';
+import { Document, MongoClient, OptionalUnlessRequiredId } from 'mongodb';
 
 export const generateEvent = <T>(
   fieldName: string,

@@ -1,12 +1,13 @@
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
+import { ZodError } from 'zod';
 import {
   LocalAuthorityUser,
   QueryGetLocalAuthorityUserArgs,
   QueryGetSchoolArgs,
   School,
 } from '../../../appsync';
-import { handler } from '../publicResolver';
 import { dropDatabase, generateContext, generateEvent, insertData } from '../../shared/testUtils';
-import { ZodError } from 'zod';
+import { handler } from '../publicResolver';
 
 describe('Public Resolver', () => {
   afterEach(async () => {

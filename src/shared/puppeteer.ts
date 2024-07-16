@@ -1,7 +1,7 @@
+import os from 'os';
 import chromium from '@sparticuz/chromium-min';
 import puppeteer from 'puppeteer-core';
 import { logger } from './logger';
-import os from 'os';
 
 export const downloadSchoolDataFileLocally = async (): Promise<void> => {
   const browser = await puppeteer.launch({

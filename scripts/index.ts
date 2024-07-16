@@ -1,7 +1,7 @@
 import axios from 'axios';
-import express, { Request, Response, Application } from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import express, { Request, Response, Application } from 'express';
 
 const app: Application = express();
 dotenv.config();
@@ -46,10 +46,7 @@ app.post('/graphql', async (req: Request, res: Response) => {
 });
 
 const port = process.env.PORT ?? 3000;
-app.listen(port, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Example app listening on port ${port}`);
-});
+app.listen(port, () => undefined);
 
 const getUrl = (fieldName: string): string => {
   return (

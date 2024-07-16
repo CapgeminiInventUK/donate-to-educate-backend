@@ -1,11 +1,11 @@
-import { downloadSchoolDataFileLocally } from '../shared/puppeteer';
-import { loadCsvDataFromZip } from '../shared/file';
-import { checkIfObjectValuesMatch, removePropertiesFromObject } from '../shared/object';
-import { logger } from '../shared/logger';
-import { convertEastingNorthingtoLatLng } from '../shared/location';
 import os from 'os';
 import { AnyBulkWriteOperation, MongoClient } from 'mongodb';
 import { checkIfDefinedElseDefault } from '../shared/check';
+import { loadCsvDataFromZip } from '../shared/file';
+import { convertEastingNorthingtoLatLng } from '../shared/location';
+import { logger } from '../shared/logger';
+import { checkIfObjectValuesMatch, removePropertiesFromObject } from '../shared/object';
+import { downloadSchoolDataFileLocally } from '../shared/puppeteer';
 // import { SchoolDataRepository } from '../repository/schoolDataRepository';
 
 // TODO fully replace with repo

@@ -1,7 +1,8 @@
-import { ItemQueriesRepository } from '../itemQueriesRepository';
-import { itemQueries } from './mockData/itemQueries';
+import { beforeAll, describe, expect, it } from '@jest/globals';
 import { ItemQuery } from '../../../appsync';
 import { insertData } from '../../shared/testUtils';
+import { ItemQueriesRepository } from '../itemQueriesRepository';
+import { itemQueries } from './mockData/itemQueries';
 
 describe('ItemQueriesRepository', () => {
   const repo = ItemQueriesRepository.getInstance();
