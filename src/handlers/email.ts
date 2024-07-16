@@ -33,7 +33,7 @@ const charityDataRepository = CharityDataRepository.getInstance();
 const charityUserRepository = CharityUserRepository.getInstance();
 const schoolUserRepository = SchoolUserRepository.getInstance();
 
-export const handler: Handler = async (event: MongoDBEvent, context, callback): Promise<void> => {
+export const handler: Handler = async (event: MongoDBEvent, context): Promise<void> => {
   logger.info(event);
   context.callbackWaitsForEmptyEventLoop = false;
 
@@ -41,7 +41,6 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
     // TODO add validation here
     if (!event?.detail?.fullDocument?.email && !event?.detail?.fullDocumentBeforeChange?.email) {
       logger.info('No email address provided');
-      callback('No email address provided', null);
       return;
     }
 
@@ -232,8 +231,6 @@ export const handler: Handler = async (event: MongoDBEvent, context, callback): 
   } catch (error) {
     logger.error(error);
   }
-
-  callback(null, 'Finished');
 };
 
 const sendEmail = async (

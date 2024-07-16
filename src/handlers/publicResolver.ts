@@ -84,7 +84,9 @@ export const handler: AppSyncResolverHandler<
   | AdminStats
   | LaStats
   | string
-> = async (event, context, callback) => {
+  | undefined
+  | null
+> = async (event, context) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
   context.callbackWaitsForEmptyEventLoop = false;
 
@@ -125,138 +127,95 @@ export const handler: AppSyncResolverHandler<
       const laUser = await localAuthorityUserRepository.getByEmail(email);
 
       if (!laUser) {
-        callback(null);
-        break;
+        return null;
       }
-      callback(null, removeFields<LocalAuthorityUser>(info.selectionSetList, laUser));
-      break;
+
+      return removeFields<LocalAuthorityUser>(info.selectionSetList, laUser);
     }
     case 'getSchoolsByLa': {
       const { name } = getSchoolsByLaSchema.parse(params);
 
       const schools = await schoolDataRepository.getByLa(name);
-      const filteredSchools = schools.map((school) =>
-        removeFields<School>(info.selectionSetList, school)
-      );
-      callback(null, filteredSchools);
-      break;
+      return schools.map((school) => removeFields<School>(info.selectionSetList, school));
     }
     case 'getSchools': {
       const schools = await schoolDataRepository.list(projectedFields);
       const localAuthorities = await localAuthorityDataRepository.list();
       const schoolJoinRequests = await joinRequestsRepository.getNewSchoolJoinRequests();
-      const mappedSchools = addSchoolsRequestState(
-        schools,
-        localAuthorities,
-        schoolJoinRequests,
-        info
-      );
-
-      callback(null, mappedSchools);
-      break;
+      return addSchoolsRequestState(schools, localAuthorities, schoolJoinRequests, info);
     }
     case 'getLocalAuthorities': {
       const las = await localAuthorityDataRepository.list();
-      const filteredLas = las.map((la) => removeFields<LocalAuthority>(info.selectionSetList, la));
-      callback(null, filteredLas);
-      break;
+      return las.map((la) => removeFields<LocalAuthority>(info.selectionSetList, la));
     }
     case 'getJoinRequests': {
-      const requests = await joinRequestsRepository.getNewJoinRequests();
-      callback(null, requests);
-      break;
+      return await joinRequestsRepository.getNewJoinRequests();
     }
     case 'getSchoolProfile': {
       const { name, id } = getSchoolProfileSchema.parse(params);
-
-      const res = await schoolProfileRepository.getByName(name, id);
-      callback(null, res);
-      break;
+      return await schoolProfileRepository.getByName(name, id);
     }
     case 'getCharityProfile': {
       const { name, id } = getCharityProfileSchema.parse(params);
-
-      const res = await charityProfileRepository.getByName(name, id);
-      callback(null, res);
-      break;
+      return await charityProfileRepository.getByName(name, id);
     }
     case 'getSignUpData': {
       const { id } = getSignUpDataSchema.parse(params);
-
-      const res = await signUpDataRepository.getById(id);
-      callback(null, res);
-      break;
+      return await signUpDataRepository.getById(id);
     }
     case 'getRegisteredSchools': {
-      const res = await schoolDataRepository.getRegistered();
-      callback(null, res);
-      break;
+      return await schoolDataRepository.getRegistered();
     }
     case 'getCharities': {
-      const res = await charityDataRepository.list(projectedFields);
-      callback(null, res);
-      break;
+      return await charityDataRepository.list(projectedFields);
     }
     case 'getRegisteredSchoolsByLa': {
       const { localAuthority } = getRegisteredSchoolsByLaSchema.parse(params);
-
-      const res = await schoolDataRepository.getRegisteredByLa(localAuthority);
-      callback(null, res);
-      break;
+      return await schoolDataRepository.getRegisteredByLa(localAuthority);
     }
     case 'getSchoolJoinRequestsByLa': {
       const { localAuthority } = getSchoolJoinRequestsByLaSchema.parse(params);
-
-      const res = await joinRequestsRepository.getNewSchoolJoinRequestsByLa(localAuthority);
-      callback(null, res);
-      break;
+      return await joinRequestsRepository.getNewSchoolJoinRequestsByLa(localAuthority);
     }
     case 'getSchoolsNearby': {
       const { postcode, distance } = getSchoolsNearbySchema.parse(params);
 
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
-      const res = await schoolDataRepository.getSchoolsNearby(longitude, latitude, distance);
-      return res;
+      return await schoolDataRepository.getSchoolsNearby(longitude, latitude, distance);
     }
     case 'getSchoolsNearbyWithProfile': {
       const { postcode, distance, type, limit } = getSchoolsNearbyWithProfileSchema.parse(params);
 
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
-      const res = await schoolDataRepository.getSchoolsNearbyWithProfile(
+      return await schoolDataRepository.getSchoolsNearbyWithProfile(
         longitude,
         latitude,
         distance,
         limit,
         type
       );
-      callback(null, res);
-      break;
     }
     case 'getCharitiesNearby': {
       const { postcode, distance } = getCharitiesNearbySchema.parse(params);
 
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
-      const res = await charityDataRepository.getCharitiesNearby(longitude, latitude, distance);
-      callback(null, res);
-      break;
+      return await charityDataRepository.getCharitiesNearby(longitude, latitude, distance);
     }
     case 'getCharitiesNearbyWithProfile': {
       const { postcode, distance, type, limit } = getCharitiesNearbyWithProfileSchema.parse(params);
 
       const [longitude, latitude] = await convertPostcodeToLatLng(postcode.replace(/\s/g, ''));
 
-      const res = await charityDataRepository.getCharitiesNearbyWithProfile(
+      return await charityDataRepository.getCharitiesNearbyWithProfile(
         longitude,
         latitude,
         distance,
         limit,
         type
       );
-      callback(null, res);
-      break;
     }
     case 'getAdminTileStats': {
       const [joined, notJoined, school, charity, registeredSchools, registeredCharities] =
@@ -268,14 +227,12 @@ export const handler: AppSyncResolverHandler<
           schoolDataRepository.getRegisteredSchoolsCount(),
           charityDataRepository.getRegisteredCharityCount(),
         ]);
-      const res = {
+      return {
         la: { joined, notJoined },
         joinRequests: { school, charity },
         registeredSchools,
         registeredCharities,
       };
-      callback(null, res);
-      break;
     }
     case 'getLaStats': {
       const { name, nameId, email } = getLaStatsSchema.parse(params);
@@ -286,46 +243,31 @@ export const handler: AppSyncResolverHandler<
         joinRequestsRepository.getCharityJoinRequestsCountByLa(name),
       ]);
 
-      const res = {
+      return {
         privacyPolicyAccepted: la?.privacyPolicyAccepted ?? false,
         schoolRequests,
         charityRequests,
       };
-      callback(null, res);
-      break;
     }
     case 'getCharitiesByLa': {
       const { name } = getCharitiesByLaSchema.parse(params);
-
-      const charities = await charityDataRepository.getByLa(name);
-      callback(null, charities);
-      break;
+      return await charityDataRepository.getByLa(name);
     }
     case 'getCharityJoinRequestsByLa': {
       const { localAuthority } = getCharityJoinRequestsByLaSchema.parse(params);
-
-      const res = await joinRequestsRepository.getNewCharityJoinRequestsByLa(localAuthority);
-      callback(null, res);
-      break;
+      return await joinRequestsRepository.getNewCharityJoinRequestsByLa(localAuthority);
     }
     case 'hasSchoolProfile': {
       const { name, id } = params as QueryHasSchoolProfileArgs;
-      const res = await schoolProfileRepository.hasProfile(name, id);
-      callback(null, res);
-      break;
+      return await schoolProfileRepository.hasProfile(name, id);
     }
     case 'hasCharityProfile': {
       const { name, id } = params as QueryHasCharityProfileArgs;
-      const res = await charityProfileRepository.hasProfile(name, id);
-      callback(null, res);
-      break;
+      return await charityProfileRepository.hasProfile(name, id);
     }
 
     default: {
-      callback(`Unexpected type ${info.fieldName}`);
       throw new Error(`Unexpected type ${info.fieldName}`);
     }
   }
-
-  throw new Error('An unknown error occurred');
 };
