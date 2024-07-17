@@ -1,7 +1,8 @@
-import { CharityProfileRepository } from '../charityProfileRepository';
-import { charityProfile } from './mockData/charityProfile';
+import { beforeAll, describe, expect, it } from '@jest/globals';
 import { CharityProfile } from '../../../appsync';
 import { insertData } from '../../shared/testUtils';
+import { CharityProfileRepository } from '../charityProfileRepository';
+import { charityProfile } from './mockData/charityProfile';
 
 describe('CharityProfileRepository', () => {
   const repo = CharityProfileRepository.getInstance();

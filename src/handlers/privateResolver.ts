@@ -1,30 +1,30 @@
 import { AppSyncResolverHandler } from 'aws-lambda';
+import { v4 as uuidv4 } from 'uuid';
 import {
-  MutationRegisterLocalAuthorityArgs,
-  MutationUpdateSchoolProfileArgs,
-  MutationUpdateJoinRequestArgs,
-  MutationInsertSignUpDataArgs,
-  MutationInsertJoinRequestArgs,
-  MutationInsertItemQueryArgs,
-  MutationInsertLocalAuthorityRegisterRequestArgs,
-  MutationDeleteDeniedJoinRequestArgs,
-  MutationUpdateCharityProfileArgs,
-  MutationDeleteSchoolProfileArgs,
   MutationAcceptPrivacyPolicyArgs,
   MutationDeleteCharityProfileArgs,
+  MutationDeleteDeniedJoinRequestArgs,
+  MutationDeleteSchoolProfileArgs,
+  MutationInsertItemQueryArgs,
+  MutationInsertJoinRequestArgs,
+  MutationInsertLocalAuthorityRegisterRequestArgs,
+  MutationInsertSignUpDataArgs,
+  MutationRegisterLocalAuthorityArgs,
+  MutationUpdateCharityProfileArgs,
+  MutationUpdateJoinRequestArgs,
+  MutationUpdateSchoolProfileArgs,
 } from '../../appsync';
-import { logger } from '../shared/logger';
-import { v4 as uuidv4 } from 'uuid';
-import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
-import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
+import { CharityDataRepository } from '../repository/charityDataRepository';
+import { CharityProfileRepository } from '../repository/charityProfileRepository';
+import { ItemQueriesRepository } from '../repository/itemQueriesRepository';
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
+import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
+import { LocalAuthorityRegisterRequestsRepository } from '../repository/localAuthorityRegisterRequestsRepository';
+import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
+import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
-import { ItemQueriesRepository } from '../repository/itemQueriesRepository';
-import { LocalAuthorityRegisterRequestsRepository } from '../repository/localAuthorityRegisterRequestsRepository';
-import { SchoolDataRepository } from '../repository/schoolDataRepository';
-import { CharityProfileRepository } from '../repository/charityProfileRepository';
-import { CharityDataRepository } from '../repository/charityDataRepository';
+import { logger } from '../shared/logger';
 import {
   acceptPrivacyPolicySchema,
   deleteCharityProfileSchema,

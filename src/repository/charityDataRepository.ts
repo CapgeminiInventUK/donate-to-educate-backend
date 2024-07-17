@@ -1,7 +1,7 @@
 import { WithId } from 'mongodb';
 import { Charity, InstituteSearchResult, Point, SearchResult, Type } from '../../appsync';
-import { BaseRepository } from './baseRepository';
 import { convertPostcodeToLatLng } from '../shared/postcode';
+import { BaseRepository } from './baseRepository';
 
 export class CharityDataRepository extends BaseRepository<Charity> {
   private static instance: CharityDataRepository;

@@ -1,7 +1,8 @@
-import { LocalAuthorityRegisterRequestsRepository } from '../localAuthorityRegisterRequestsRepository';
-import { registerRequests } from './mockData/registerRequests';
+import { beforeAll, describe, expect, it } from '@jest/globals';
 import { LocalAuthorityRegisterRequest } from '../../../appsync';
 import { insertData } from '../../shared/testUtils';
+import { LocalAuthorityRegisterRequestsRepository } from '../localAuthorityRegisterRequestsRepository';
+import { registerRequests } from './mockData/registerRequests';
 
 describe('LocalAuthorityRegisterRequestsRepository', () => {
   const repo = LocalAuthorityRegisterRequestsRepository.getInstance();

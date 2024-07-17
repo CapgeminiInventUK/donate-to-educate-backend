@@ -1,20 +1,20 @@
-import { Handler } from 'aws-lambda';
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
+import { Handler } from 'aws-lambda';
+import { generate } from 'randomstring';
+import { v4 as uuidv4 } from 'uuid';
 import {
   ItemQuery,
   JoinRequest,
-  LocalAuthorityUser,
   LocalAuthorityRegisterRequest,
+  LocalAuthorityUser,
 } from '../../appsync';
-import { generate } from 'randomstring';
-import { SignUpDataRepository } from '../repository/signUpDataRepository';
-import { SchoolDataRepository } from '../repository/schoolDataRepository';
-import { v4 as uuidv4 } from 'uuid';
 import { CharityDataRepository } from '../repository/charityDataRepository';
-import { logger } from '../shared/logger';
-import { checkIfDefinedElseDefault } from '../shared/check';
 import { CharityUserRepository } from '../repository/charityUserRepository';
+import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { SchoolUserRepository } from '../repository/schoolUserRepository';
+import { SignUpDataRepository } from '../repository/signUpDataRepository';
+import { checkIfDefinedElseDefault } from '../shared/check';
+import { logger } from '../shared/logger';
 
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
 const fromEmailAddress = 'team@donatetoeducate.org.uk';

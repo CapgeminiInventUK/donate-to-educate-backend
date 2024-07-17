@@ -1,7 +1,7 @@
 import { WithId } from 'mongodb';
 import { CharityProfile } from '../../appsync';
-import { BaseRepository } from './baseRepository';
 import { convertPostcodeToLatLngWithDefault } from '../shared/postcode';
+import { BaseRepository } from './baseRepository';
 
 export class CharityProfileRepository extends BaseRepository<CharityProfile> {
   private static instance: CharityProfileRepository;

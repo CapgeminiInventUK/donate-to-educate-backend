@@ -1,8 +1,8 @@
 import { WithId } from 'mongodb';
 import { SchoolProfile } from '../../appsync';
-import { BaseRepository } from './baseRepository';
 import { checkIfDefinedElseDefault } from '../shared/check';
 import { convertPostcodeToLatLngWithDefault } from '../shared/postcode';
+import { BaseRepository } from './baseRepository';
 
 export class SchoolProfileRepository extends BaseRepository<SchoolProfile> {
   private static instance: SchoolProfileRepository;

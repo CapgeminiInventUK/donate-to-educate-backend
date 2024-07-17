@@ -1,7 +1,8 @@
-import { handler } from '../privateResolver';
-import { dropDatabase, generateContext, generateEvent } from '../../shared/testUtils';
-import { MutationRegisterLocalAuthorityArgs } from '../../../appsync';
+import { afterEach, describe, expect, it, jest } from '@jest/globals';
 import { ZodError } from 'zod';
+import { MutationRegisterLocalAuthorityArgs } from '../../../appsync';
+import { dropDatabase, generateContext, generateEvent } from '../../shared/testUtils';
+import { handler } from '../privateResolver';
 
 describe('Private Resolver', () => {
   afterEach(async () => {

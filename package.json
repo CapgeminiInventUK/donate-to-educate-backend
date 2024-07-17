@@ -10,21 +10,22 @@
     "start:localstack": "DEBUG=1 localstack start -d && serverless deploy --stage local",
     "build": "serverless package",
     "unit": "jest",
-    "lint": "eslint src/**/*.ts --quiet --fix",
+    "lint": "biome lint --error-on-warnings ./src",
     "compile": "tsc",
     "test": "npm run compile && npm run unit",
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
     "prepare": "is-ci || husky",
-    "format:check": "prettier --check src",
-    "format:fix": "prettier --write src",
-    "codegen": "graphql-codegen"
+    "codegen": "graphql-codegen",
+    "format": "biome format --write . && biome check --write ."
   },
   "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md,yml,yaml}": [
-      "npm run format:fix"
-    ],
-    "src/**/*.{ts,tsx}": [
-      "npm run lint"
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
+      "biome check --files-ignore-unknown=true",
+      "biome check --write --no-errors-on-unmatched",
+      "biome check --write --organize-imports-enabled=false --no-errors-on-unmatched",
+      "biome check --write --unsafe --no-errors-on-unmatched",
+      "biome format --write --no-errors-on-unmatched",
+      "biome lint --write --no-errors-on-unmatched"
     ]
   },
   "repository": {
@@ -58,6 +59,7 @@
     "zod": "3.23.8"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.8.3",
     "@graphql-codegen/cli": "5.0.2",
     "@graphql-codegen/typescript": "4.0.7",
     "@shelf/jest-mongodb": "4.3.2",

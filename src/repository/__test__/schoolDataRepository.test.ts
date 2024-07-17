@@ -1,7 +1,8 @@
-import { SchoolDataRepository } from '../schoolDataRepository';
-import { schoolsData } from './mockData/schools';
+import { beforeAll, describe, expect, it } from '@jest/globals';
 import { School } from '../../../appsync';
 import { createIndex, insertData } from '../../shared/testUtils';
+import { SchoolDataRepository } from '../schoolDataRepository';
+import { schoolsData } from './mockData/schools';
 
 describe('SchoolDataRepository', () => {
   const repo = SchoolDataRepository.getInstance();

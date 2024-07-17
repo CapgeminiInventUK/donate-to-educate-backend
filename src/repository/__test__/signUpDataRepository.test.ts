@@ -1,7 +1,8 @@
-import { SignUpDataRepository } from '../signUpDataRepository';
-import { signUpData } from './mockData/signUps';
+import { beforeAll, describe, expect, it } from '@jest/globals';
 import { SignUpData } from '../../../appsync';
 import { insertData } from '../../shared/testUtils';
+import { SignUpDataRepository } from '../signUpDataRepository';
+import { signUpData } from './mockData/signUps';
 
 describe('SignUpDataRepository', () => {
   const repo = SignUpDataRepository.getInstance();

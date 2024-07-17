@@ -1,7 +1,8 @@
-import { SchoolProfileRepository } from '../schoolProfileRepository';
-import { schoolProfile } from './mockData/schoolProfile';
+import { beforeAll, describe, expect, it } from '@jest/globals';
 import { SchoolProfile } from '../../../appsync';
 import { insertData } from '../../shared/testUtils';
+import { SchoolProfileRepository } from '../schoolProfileRepository';
+import { schoolProfile } from './mockData/schoolProfile';
 
 describe('SchoolProfileRepository', () => {
   const repo = SchoolProfileRepository.getInstance();

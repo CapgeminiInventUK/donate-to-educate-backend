@@ -1,7 +1,7 @@
 import { unlinkSync } from 'fs';
-import { logger } from './logger';
-import { parse } from 'csv-parse/sync';
 import Zip from 'adm-zip';
+import { parse } from 'csv-parse/sync';
+import { logger } from './logger';
 
 export const loadCsvDataFromZip = <T>(zipFile: string): T => {
   try {

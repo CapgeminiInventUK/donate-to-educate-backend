@@ -1,8 +1,8 @@
-import { Collection, Db, Filter, MongoClient, WithId, Document } from 'mongodb';
-import { isLocal, isTest } from '../shared/env';
-import { clientOptions } from './config';
+import { Collection, Db, Document, Filter, MongoClient, WithId } from 'mongodb';
 import { checkIfDefinedElseDefault } from '../shared/check';
+import { isLocal, isTest } from '../shared/env';
 import { logger } from '../shared/logger';
+import { clientOptions } from './config';
 
 export abstract class BaseRepository<T extends Document> {
   private readonly databaseName = 'D2E';

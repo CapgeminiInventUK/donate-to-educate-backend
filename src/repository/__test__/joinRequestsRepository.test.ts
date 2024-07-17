@@ -1,7 +1,8 @@
-import { JoinRequestsRepository } from '../joinRequestsRepository';
-import { joinRequests } from './mockData/joinRequests';
+import { beforeAll, describe, expect, it } from '@jest/globals';
 import { JoinRequest } from '../../../appsync';
 import { insertData } from '../../shared/testUtils';
+import { JoinRequestsRepository } from '../joinRequestsRepository';
+import { joinRequests } from './mockData/joinRequests';
 
 describe('JoinRequestsRepository', () => {
   const repo = JoinRequestsRepository.getInstance();
