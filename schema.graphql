@@ -226,6 +226,8 @@ type Query {
   getSchoolProfile(name: String!, id: String!): SchoolProfile
   getCharityProfile(name: String!, id: String!): CharityProfile
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
+  getSchoolUser(email: String!): SchoolUser!
+  getCharityUser(email: String!): CharityUser!
   getSignUpData(id: String!): SignUpData
   getSchoolsNearby(postcode: String!, distance: Float!): [School!]!
   getCharitiesNearby(postcode: String!, distance: Float!): [Charity!]!
