@@ -311,6 +311,7 @@ export type Query = {
   getCharitiesNearbyWithProfile: InstituteSearchResult;
   getCharityJoinRequestsByLa: Array<JoinRequest>;
   getCharityProfile?: Maybe<CharityProfile>;
+  getCharityUser: CharityUser;
   getJoinRequests: Array<JoinRequest>;
   getLaStats: LaStats;
   getLocalAuthorities: Array<LocalAuthority>;
@@ -320,6 +321,7 @@ export type Query = {
   getSchool: School;
   getSchoolJoinRequestsByLa: Array<JoinRequest>;
   getSchoolProfile?: Maybe<SchoolProfile>;
+  getSchoolUser: SchoolUser;
   getSchools: Array<School>;
   getSchoolsByLa: Array<School>;
   getSchoolsNearby: Array<School>;
@@ -360,6 +362,11 @@ export type QueryGetCharityProfileArgs = {
 };
 
 
+export type QueryGetCharityUserArgs = {
+  email: Scalars['String']['input'];
+};
+
+
 export type QueryGetLaStatsArgs = {
   email: Scalars['String']['input'];
   name: Scalars['String']['input'];
@@ -391,6 +398,11 @@ export type QueryGetSchoolJoinRequestsByLaArgs = {
 export type QueryGetSchoolProfileArgs = {
   id: Scalars['String']['input'];
   name: Scalars['String']['input'];
+};
+
+
+export type QueryGetSchoolUserArgs = {
+  email: Scalars['String']['input'];
 };
 
 
