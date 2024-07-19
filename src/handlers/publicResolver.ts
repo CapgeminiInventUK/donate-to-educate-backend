@@ -3,6 +3,7 @@ import {
   AdminStats,
   Charity,
   CharityProfile,
+  CharityUser,
   InstituteSearchResult,
   JoinRequest,
   LaStats,
@@ -20,15 +21,18 @@ import {
   QueryHasSchoolProfileArgs,
   School,
   SchoolProfile,
+  SchoolUser,
   SignUpData,
 } from '../../appsync';
 import { CharityDataRepository } from '../repository/charityDataRepository';
 import { CharityProfileRepository } from '../repository/charityProfileRepository';
+import { CharityUserRepository } from '../repository/charityUserRepository';
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
 import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
+import { SchoolUserRepository } from '../repository/schoolUserRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { removeFields } from '../shared/graphql';
 import { logger } from '../shared/logger';
@@ -41,7 +45,6 @@ import {
   getCharityJoinRequestsByLaSchema,
   getCharityProfileSchema,
   getLaStatsSchema,
-  getLocalAuthorityUserSchema,
   getRegisteredSchoolsByLaSchema,
   getSchoolJoinRequestsByLaSchema,
   getSchoolProfileSchema,
@@ -50,12 +53,15 @@ import {
   getSchoolsNearbySchema,
   getSchoolsNearbyWithProfileSchema,
   getSignUpDataSchema,
+  getUserSchema,
 } from './zodSchemas';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
 const charityDataRepository = CharityDataRepository.getInstance();
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
 const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
+const schoolUserRepository = SchoolUserRepository.getInstance();
+const charityUserRepository = CharityUserRepository.getInstance();
 const joinRequestsRepository = JoinRequestsRepository.getInstance();
 const schoolProfileRepository = SchoolProfileRepository.getInstance();
 const charityProfileRepository = CharityProfileRepository.getInstance();
@@ -81,6 +87,8 @@ export const handler: AppSyncResolverHandler<
   | CharityProfile
   | SignUpData
   | LocalAuthorityUser
+  | SchoolUser
+  | CharityUser
   | AdminStats
   | LaStats
   | string
@@ -122,7 +130,7 @@ export const handler: AppSyncResolverHandler<
       return removeFields<School>(info.selectionSetList, school);
     }
     case 'getLocalAuthorityUser': {
-      const { email } = getLocalAuthorityUserSchema.parse(params);
+      const { email } = getUserSchema.parse(params);
 
       const laUser = await localAuthorityUserRepository.getByEmail(email);
 
@@ -131,6 +139,28 @@ export const handler: AppSyncResolverHandler<
       }
 
       return removeFields<LocalAuthorityUser>(info.selectionSetList, laUser);
+    }
+    case 'getSchoolUser': {
+      const { email } = getUserSchema.parse(params);
+
+      const schoolUser = await schoolUserRepository.getByEmail(email);
+
+      if (!schoolUser) {
+        return null;
+      }
+
+      return removeFields<SchoolUser>(info.selectionSetList, schoolUser);
+    }
+    case 'getCharityUser': {
+      const { email } = getUserSchema.parse(params);
+
+      const charityUser = await charityUserRepository.getByEmail(email);
+
+      if (!charityUser) {
+        return null;
+      }
+
+      return removeFields<CharityUser>(info.selectionSetList, charityUser);
     }
     case 'getSchoolsByLa': {
       const { name } = getSchoolsByLaSchema.parse(params);

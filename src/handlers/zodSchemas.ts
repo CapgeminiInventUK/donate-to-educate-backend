@@ -108,7 +108,7 @@ export const getSchoolSchema = z.object({
   urn: z.string().min(1),
 });
 
-export const getLocalAuthorityUserSchema = z.object({
+export const getUserSchema = z.object({
   email: z.string().email(),
 });
 
