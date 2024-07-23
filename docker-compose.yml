@@ -26,21 +26,21 @@ services:
     container_name: mongo1
     ports:
       - 27017:27017
-    entrypoint: ['mongod', '--replSet', 'myReplicaSet', '--bind_ip', 'localhost,mongo1']
+    entrypoint: ['mongod', '--replSet', 'replicaSet', '--bind_ip', 'localhost,mongo1']
   mongo2:
     image: mongo:7
     hostname: mongo2
     container_name: mongo2
     ports:
       - 27018:27017
-    entrypoint: ['mongod', '--replSet', 'myReplicaSet', '--bind_ip', 'localhost,mongo2']
+    entrypoint: ['mongod', '--replSet', 'replicaSet', '--bind_ip', 'localhost,mongo2']
   mongo3:
     image: mongo:7
     hostname: mongo3
     container_name: mongo3
     ports:
       - 27019:27017
-    entrypoint: ['mongod', '--replSet', 'myReplicaSet', '--bind_ip', 'localhost,mongo3']
+    entrypoint: ['mongod', '--replSet', 'replicaSet', '--bind_ip', 'localhost,mongo3']
   mongosetup:
     image: mongo:7
     depends_on:
