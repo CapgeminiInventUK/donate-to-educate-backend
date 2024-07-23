@@ -1,8 +1,10 @@
 import axios from 'axios';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import express, { Request, Response, Application } from 'express';
+import express, { type Request, type Response, type Application } from 'express';
+import pino from 'pino';
 
+const logger = pino();
 const app: Application = express();
 dotenv.config();
 
@@ -14,6 +16,7 @@ app.post('/graphql', async (req: Request, res: Response) => {
   const { variables, query } = req.body;
   const fieldName = getFieldName(query);
 
+  logger.info(`Called with: { fieldName: ${fieldName}, variables: ${JSON.stringify(variables)}}`);
   try {
     const { data } = await axios.post(
       getUrl('getSchool'),
@@ -35,7 +38,10 @@ app.post('/graphql', async (req: Request, res: Response) => {
         stash: {},
       }),
       {
-        headers: { 'X-Amz-Invocation-Type': 'Event', 'Content-Type': 'application/json' },
+        headers: {
+          'X-Amz-Invocation-Type': 'Event',
+          'Content-Type': 'application/json',
+        },
       }
     );
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
