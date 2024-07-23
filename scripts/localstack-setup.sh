@@ -34,6 +34,3 @@ url=$(awslocal lambda create-function-url-config \
     --auth-type NONE | jq -r '.FunctionUrl')
 echo PRIVATE_RESOLVER_URL=$url >> /scripts/.env
 # End of private resolver #
-
-
-awslocal lambda get-function --function-name localstack-public-resolver
