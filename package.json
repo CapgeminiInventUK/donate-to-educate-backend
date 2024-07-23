@@ -5,9 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "sls offline",
-    "dev": "npm run build && docker-compose up --build --force-recreate -d && npm start --prefix ./scripts/",
-    "start:localstack": "DEBUG=1 localstack start -d && serverless deploy --stage local",
+    "dev": "npm run build && docker-compose up --build --force-recreate -d && npm start --prefix ./scripts/ ",
     "build": "serverless package",
     "unit": "jest",
     "lint": "biome lint --error-on-warnings ./src",
@@ -16,7 +14,7 @@
     "test:debug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
     "prepare": "is-ci || husky",
     "codegen": "graphql-codegen",
-    "format": "biome format --write . && biome check --write ."
+    "format": "biome check --write ."
   },
   "lint-staged": {
     "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [

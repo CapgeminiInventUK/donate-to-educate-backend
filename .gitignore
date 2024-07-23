@@ -213,3 +213,6 @@ globalConfig.json
 
 volume
 .env
+
+mongo-backup
+secrets.sh

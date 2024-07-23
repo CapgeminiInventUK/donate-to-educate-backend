@@ -3,7 +3,7 @@ sleep 10
 
 mongosh --host mongo1:27017 <<EOF
   var cfg = {
-    "_id": "myReplicaSet",
+    "_id": "replicaSet",
     "version": 1,
     "members": [
       {
@@ -48,3 +48,12 @@ mongosh --host mongo1:27017 <<EOF
   db.SchoolData.createIndex({location: '2dsphere'})
   db.CharityData.createIndex({location: '2dsphere'})
 EOF
+
+sleep 10
+
+chmod +x /scripts/secrets.sh
+source /scripts/secrets.sh
+
+# Get data from the dev database
+mongodump --uri "mongodb+srv://${USERNAME}:${PASSWORD}@donate-to-educate.oxzr0hm.mongodb.net/D2E" -o ./mongo-backup
+mongorestore --uri "mongodb://mongo1:27017/" ./mongo-backup
