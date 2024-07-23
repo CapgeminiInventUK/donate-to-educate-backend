@@ -66,9 +66,8 @@ export const handler: AppSyncResolverHandler<
   | MutationDeleteCharityProfileArgs
   | MutationInsertLocalAuthorityRegisterRequestArgs,
   boolean
-> = async (event, context) => {
+> = async (event) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
-  context.callbackWaitsForEmptyEventLoop = false;
 
   const { arguments: params, info } = event;
   logger.info(`${JSON.stringify(params)}`);

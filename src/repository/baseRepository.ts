@@ -11,7 +11,7 @@ export abstract class BaseRepository<T extends Document> {
   protected readonly collection: Collection<T>;
 
   protected constructor(collectionName: string) {
-    logger.info(process?.env?.MONGO_URL);
+    logger.info('Mongo URL: ' + process?.env?.MONGO_URL);
     this.client = new MongoClient(
       checkIfDefinedElseDefault(process?.env?.MONGO_URL),
       isTest() || isLocal() ? undefined : clientOptions

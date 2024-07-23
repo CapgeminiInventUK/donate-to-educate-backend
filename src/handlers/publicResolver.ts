@@ -94,9 +94,8 @@ export const handler: AppSyncResolverHandler<
   | string
   | undefined
   | null
-> = async (event, context) => {
+> = async (event) => {
   logger.info(`Running function with ${JSON.stringify(event)}`);
-  context.callbackWaitsForEmptyEventLoop = false;
 
   const { arguments: params, info } =
     'info' in event
