@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, describe, expect, it } from '@jest/globals';
 import { ZodError } from 'zod';
 import {
   LocalAuthorityUser,
@@ -6,7 +6,6 @@ import {
   QueryGetSchoolArgs,
   School,
 } from '../../../appsync';
-import { castToObjectWithBody } from '../../shared/object';
 import { dropDatabase, generateContext, generateEvent, insertData } from '../../shared/testUtils';
 import { handler } from '../publicResolver';
 
@@ -30,7 +29,7 @@ describe('Public Resolver', () => {
       generateContext()
     );
 
-    expect(castToObjectWithBody(result).body).toEqual('[]');
+    expect(result).toEqual([]);
   });
 
   it('Get School By Name - Results', async () => {
@@ -46,9 +45,7 @@ describe('Public Resolver', () => {
       generateContext()
     );
 
-    expect(castToObjectWithBody(result).body).toEqual(
-      JSON.stringify({ name: 'Farlingaye', urn: '10000' })
-    );
+    expect(result).toEqual({ name: 'Farlingaye', urn: '10000' });
   });
 
   it('Get La User By Email - No results', async () => {
@@ -59,7 +56,7 @@ describe('Public Resolver', () => {
       generateContext()
     );
 
-    expect(castToObjectWithBody(result).body).toEqual('null');
+    expect(result).toEqual(null);
   });
 
   it('Get La User By Email - Results', async () => {
@@ -83,9 +80,7 @@ describe('Public Resolver', () => {
       generateContext()
     );
 
-    expect(castToObjectWithBody(res).body).toEqual(
-      JSON.stringify({ name: 'Hackney', email: 'mock@example.com' })
-    );
+    expect(res).toEqual({ name: 'Hackney', email: 'mock@example.com' });
   });
 
   it('Throws validation error when payload is not formatted correctly', async () => {

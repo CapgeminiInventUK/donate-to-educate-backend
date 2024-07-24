@@ -1,7 +1,6 @@
-import { afterEach, describe, expect, it, jest } from '@jest/globals';
+import { afterEach, describe, expect, it } from '@jest/globals';
 import { ZodError } from 'zod';
 import { MutationRegisterLocalAuthorityArgs } from '../../../appsync';
-import { castToObjectWithBody } from '../../shared/object';
 import { dropDatabase, generateContext, generateEvent } from '../../shared/testUtils';
 import { handler } from '../privateResolver';
 
@@ -35,7 +34,7 @@ describe('Private Resolver', () => {
     const mockContext = generateContext();
 
     const res = await handler(mockEvent, mockContext);
-    expect(castToObjectWithBody(res).body).toEqual('true');
+    expect(res).toEqual(true);
   });
 
   it('Throws validation error when payload is not formatted correctly', async () => {
