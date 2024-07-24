@@ -19,5 +19,5 @@ export const removePropertiesFromObject = (
 };
 
 export const castToObjectWithBody = (object: unknown) => {
-  return object as unknown as { body: string };
+  return object as { body: string };
 };
