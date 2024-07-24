@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, jest } from '@jest/globals';
 import { ZodError } from 'zod';
 import { MutationRegisterLocalAuthorityArgs } from '../../../appsync';
+import { castToObjectWithBody } from '../../shared/object';
 import { dropDatabase, generateContext, generateEvent } from '../../shared/testUtils';
 import { handler } from '../privateResolver';
 
@@ -11,7 +12,7 @@ describe('Private Resolver', () => {
 
   it('Throws error if field name does not match', async () => {
     await expect(async () => {
-      await handler(generateEvent('missingFieldName'), generateContext(), jest.fn());
+      await handler(generateEvent('missingFieldName'), generateContext());
     }).rejects.toThrow('Unexpected type missingFieldName');
   });
 
@@ -33,8 +34,8 @@ describe('Private Resolver', () => {
     );
     const mockContext = generateContext();
 
-    const res = await handler(mockEvent, mockContext, jest.fn());
-    expect(res).toEqual(true);
+    const res = await handler(mockEvent, mockContext);
+    expect(castToObjectWithBody(res).body).toEqual('true');
   });
 
   it('Throws validation error when payload is not formatted correctly', async () => {
@@ -51,7 +52,7 @@ describe('Private Resolver', () => {
     const mockContext = generateContext();
 
     await expect(async () => {
-      await handler(mockEvent, mockContext, jest.fn());
+      await handler(mockEvent, mockContext);
     }).rejects.toThrow(ZodError);
   });
 });

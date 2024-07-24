@@ -6,6 +6,7 @@ import {
   QueryGetSchoolArgs,
   School,
 } from '../../../appsync';
+import { castToObjectWithBody } from '../../shared/object';
 import { dropDatabase, generateContext, generateEvent, insertData } from '../../shared/testUtils';
 import { handler } from '../publicResolver';
 
@@ -16,7 +17,7 @@ describe('Public Resolver', () => {
 
   it('Throws error if field name does not match', async () => {
     await expect(async () => {
-      await handler(generateEvent('missingFieldName'), generateContext(), jest.fn());
+      await handler(generateEvent('missingFieldName'), generateContext());
     }).rejects.toThrow('Unexpected type missingFieldName');
   });
 
@@ -26,11 +27,10 @@ describe('Public Resolver', () => {
         name: 'Farlingaye',
         urn: '10000',
       }),
-      generateContext(),
-      jest.fn()
+      generateContext()
     );
 
-    expect(result).toEqual([]);
+    expect(castToObjectWithBody(result).body).toEqual('[]');
   });
 
   it('Get School By Name - Results', async () => {
@@ -43,11 +43,12 @@ describe('Public Resolver', () => {
         name: 'Farlingaye',
         urn: '10000',
       }),
-      generateContext(),
-      jest.fn()
+      generateContext()
     );
 
-    expect(result).toEqual({ name: 'Farlingaye', urn: '10000' });
+    expect(castToObjectWithBody(result).body).toEqual(
+      JSON.stringify({ name: 'Farlingaye', urn: '10000' })
+    );
   });
 
   it('Get La User By Email - No results', async () => {
@@ -55,11 +56,10 @@ describe('Public Resolver', () => {
       generateEvent<QueryGetLocalAuthorityUserArgs>('getLocalAuthorityUser', ['email'], {
         email: 'mock@example.com',
       }),
-      generateContext(),
-      jest.fn()
+      generateContext()
     );
 
-    expect(result).toEqual(null);
+    expect(castToObjectWithBody(result).body).toEqual('null');
   });
 
   it('Get La User By Email - Results', async () => {
@@ -80,11 +80,12 @@ describe('Public Resolver', () => {
       generateEvent<QueryGetLocalAuthorityUserArgs>('getLocalAuthorityUser', ['name', 'email'], {
         email: 'mock@example.com',
       }),
-      generateContext(),
-      jest.fn()
+      generateContext()
     );
 
-    expect(res).toEqual({ name: 'Hackney', email: 'mock@example.com' });
+    expect(castToObjectWithBody(res).body).toEqual(
+      JSON.stringify({ name: 'Hackney', email: 'mock@example.com' })
+    );
   });
 
   it('Throws validation error when payload is not formatted correctly', async () => {
@@ -96,7 +97,7 @@ describe('Public Resolver', () => {
     const mockContext = generateContext();
 
     await expect(async () => {
-      await handler(mockEvent, mockContext, jest.fn());
+      await handler(mockEvent, mockContext);
     }).rejects.toThrow(ZodError);
   });
 });
