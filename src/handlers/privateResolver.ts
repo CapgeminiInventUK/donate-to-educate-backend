@@ -1,9 +1,9 @@
 import middy from '@middy/core';
 import errorLogger from '@middy/error-logger';
-import httpContentEncoding from '@middy/http-content-encoding';
-import httpContentNegotiation from '@middy/http-content-negotiation';
-import httpResponseSerializer from '@middy/http-response-serializer';
-import httpSecurityHeaders from '@middy/http-security-headers';
+// import httpContentEncoding from '@middy/http-content-encoding';
+// import httpContentNegotiation from '@middy/http-content-negotiation';
+// import httpResponseSerializer from '@middy/http-response-serializer';
+// import httpSecurityHeaders from '@middy/http-security-headers';
 import { AppSyncResolverEvent } from 'aws-lambda';
 import { v4 as uuidv4 } from 'uuid';
 import { CharityDataRepository } from '../repository/charityDataRepository';
@@ -55,24 +55,24 @@ export const handler = middy(middyOptions)
       logger: (request) => logger.error(request.error),
     })
   )
-  .use(httpSecurityHeaders())
-  .use(httpContentNegotiation())
-  .use(
-    httpContentEncoding({
-      overridePreferredEncoding: ['gzip'],
-    })
-  )
-  .use(
-    httpResponseSerializer({
-      serializers: [
-        {
-          regex: /^application\/json$/,
-          serializer: ({ body }) => JSON.stringify(body),
-        },
-      ],
-      defaultContentType: 'application/json',
-    })
-  )
+  // .use(httpSecurityHeaders())
+  // .use(httpContentNegotiation())
+  // .use(
+  //   httpContentEncoding({
+  //     overridePreferredEncoding: ['gzip'],
+  //   })
+  // )
+  // .use(
+  //   httpResponseSerializer({
+  //     serializers: [
+  //       {
+  //         regex: /^application\/json$/,
+  //         serializer: ({ body }) => JSON.stringify(body),
+  //       },
+  //     ],
+  //     defaultContentType: 'application/json',
+  //   })
+  // )
   .handler(
     async (event: AppSyncResolverEvent<Record<string, string | null | undefined | number>>) => {
       const { arguments: params, info } = event;
