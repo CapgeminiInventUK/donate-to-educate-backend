@@ -11,7 +11,9 @@ awslocal lambda create-function \
     --zip-file fileb:///build/publicResolver.zip \
     --handler ./src/handlers/publicResolver.handler \
     --environment "Variables={MONGO_URL=mongodb://mongo1:27017,NODE_ENV=local}" \
-    --role arn:aws:iam::000000000000:role/lambda-role
+    --role arn:aws:iam::000000000000:role/lambda-role \
+    --timeout 60 \
+    --memory-size 256
 
 url=$(awslocal lambda create-function-url-config \
     --function-name localstack-public-resolver \
@@ -27,7 +29,9 @@ awslocal lambda create-function \
     --zip-file fileb:///build/privateResolver.zip \
     --handler ./src/handlers/privateResolver.handler \
     --environment "Variables={MONGO_URL=mongodb://mongo1:27017,NODE_ENV=local}" \
-    --role arn:aws:iam::000000000000:role/lambda-role
+    --role arn:aws:iam::000000000000:role/lambda-role \
+    --timeout 60 \
+    --memory-size 256
 
 url=$(awslocal lambda create-function-url-config \
     --function-name localstack-private-resolver \
