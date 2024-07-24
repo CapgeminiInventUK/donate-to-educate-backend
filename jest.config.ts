@@ -21,7 +21,6 @@ const config: JestConfigWithTsJest = {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
   extensionsToTreatAsEsm: ['.ts'],
-  // transformIgnorePatterns: [`node_modules/(?!${esModules})`],
   clearMocks: true,
   collectCoverage: true,
   coverageDirectory: 'coverage',
