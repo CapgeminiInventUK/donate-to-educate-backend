@@ -7,7 +7,7 @@ rm /scripts/.env
 # Setup public resolver #
 awslocal lambda create-function \
     --function-name localstack-public-resolver \
-    --runtime nodejs18.x \
+    --runtime nodejs20.x \
     --zip-file fileb:///build/publicResolver.zip \
     --handler ./src/handlers/publicResolver.handler \
     --environment "Variables={MONGO_URL=mongodb://mongo1:27017,NODE_ENV=local}" \
@@ -25,7 +25,7 @@ echo PUBLIC_RESOLVER_URL=$url >> /scripts/.env
 # Setup private resolver #
 awslocal lambda create-function \
     --function-name localstack-private-resolver \
-    --runtime nodejs18.x \
+    --runtime nodejs20.x \
     --zip-file fileb:///build/privateResolver.zip \
     --handler ./src/handlers/privateResolver.handler \
     --environment "Variables={MONGO_URL=mongodb://mongo1:27017,NODE_ENV=local}" \

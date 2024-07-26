@@ -38,7 +38,7 @@ custom:
 provider:
   name: aws
   architecture: x86_64
-  runtime: nodejs18.x
+  runtime: nodejs20.x
 
 functions:
   compressImage:
