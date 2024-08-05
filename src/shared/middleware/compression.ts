@@ -1,7 +1,7 @@
 import { Readable } from 'node:stream';
 import { createGzip } from 'node:zlib';
 import { MiddlewareObj } from '@middy/core';
-import { isLocal, isTest } from '../env';
+import { isLocal } from '../env';
 
 export const compression = (): MiddlewareObj => {
   return {
