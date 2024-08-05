@@ -26,6 +26,7 @@ import { SchoolUserRepository } from '../repository/schoolUserRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { removeFields } from '../shared/graphql';
 import { logger } from '../shared/logger';
+import { compression } from '../shared/middleware/compression';
 import { inputLogger } from '../shared/middleware/inputLogger';
 import { responseSize } from '../shared/middleware/responseSize';
 import { middyOptions } from '../shared/middleware/testOptions';
@@ -60,14 +61,17 @@ const schoolProfileRepository = SchoolProfileRepository.getInstance();
 const charityProfileRepository = CharityProfileRepository.getInstance();
 const signUpDataRepository = SignUpDataRepository.getInstance();
 
+// Handlers are evaluated in reverse order
 export const handler = middy(middyOptions)
   .use(responseSize())
+  .use(compression())
   .use(inputLogger())
   .use(
     errorLogger({
       logger: (request) => logger.error(request.error),
     })
   )
+
   // .use(httpSecurityHeaders())
   // .use(httpContentNegotiation())
   // .use(
