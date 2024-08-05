@@ -1,12 +1,12 @@
 import { Readable } from 'node:stream';
 import { createGzip } from 'node:zlib';
-import middy from '@middy/core';
-import { isTest } from '../env';
+import { MiddlewareObj } from '@middy/core';
+import { isLocal } from '../env';
 
-export const compression = (): middy.MiddlewareObj => {
+export const compression = (): MiddlewareObj => {
   return {
     after: async (request) => {
-      if (isTest()) {
+      if (!isLocal()) {
         return;
       }
 
