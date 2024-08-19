@@ -51,4 +51,14 @@ export class LocalAuthorityUserRepository extends BaseRepository<LocalAuthorityU
       )
     ).acknowledged;
   }
+
+  public async update(
+    nameId: string,
+    jobTitle: string,
+    phone: string,
+    department: string
+  ): Promise<boolean> {
+    return (await this.collection.updateOne({ nameId }, { $set: { jobTitle, phone, department } }))
+      .acknowledged;
+  }
 }

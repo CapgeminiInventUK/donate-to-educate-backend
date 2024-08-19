@@ -30,4 +30,10 @@ export class CharityUserRepository extends BaseRepository<CharityUser> {
   public async insert(charity: CharityUser): Promise<boolean> {
     return (await this.collection.insertOne(charity)).acknowledged;
   }
+
+  public async update(charity: CharityUser): Promise<boolean> {
+    const { charityId, charityName } = charity;
+    return (await this.collection.updateOne({ charityName, charityId }, { $set: { ...charity } }))
+      .acknowledged;
+  }
 }

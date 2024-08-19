@@ -27,4 +27,10 @@ export class SchoolUserRepository extends BaseRepository<SchoolUser> {
   public async insert(school: SchoolUser): Promise<boolean> {
     return (await this.collection.insertOne(school)).acknowledged;
   }
+
+  public async update(school: SchoolUser): Promise<boolean> {
+    const { schoolId, schoolName } = school;
+    return (await this.collection.updateOne({ schoolName, schoolId }, { $set: { ...school } }))
+      .acknowledged;
+  }
 }

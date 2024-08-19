@@ -175,3 +175,13 @@ export const getCharitiesByLaSchema = z.object({
 export const getCharityJoinRequestsByLaSchema = z.object({
   localAuthority: z.string().min(1),
 });
+
+export const updateUserSchema = z.object({
+  name: z.string().min(1),
+  id: z.string().min(1),
+  institutionName: z.string().min(1),
+  email: z.string().min(1),
+  phone: z.string().min(1),
+  jobTitle: z.string().min(1),
+  department: z.string().optional().nullable(),
+});
