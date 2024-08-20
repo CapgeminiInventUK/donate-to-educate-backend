@@ -6,6 +6,12 @@ export enum Type {
   Request = 'request',
 }
 
+export enum UserType {
+  La = 'la',
+  Charity = 'charity',
+  School = 'school',
+}
+
 // Private resolver schemas
 
 export const registerLocalAuthoritySchema = z.object({
@@ -177,6 +183,7 @@ export const getCharityJoinRequestsByLaSchema = z.object({
 });
 
 export const updateUserSchema = z.object({
+  type: z.enum([UserType.La, UserType.Charity, UserType.School]),
   name: z.string().min(1),
   id: z.string().min(1),
   institutionName: z.string().min(1),

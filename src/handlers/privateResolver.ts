@@ -20,6 +20,7 @@ import { inputLogger } from '../shared/middleware/inputLogger';
 import { responseSize } from '../shared/middleware/responseSize';
 import { middyOptions } from '../shared/middleware/testOptions';
 import {
+  UserType,
   acceptPrivacyPolicySchema,
   deleteCharityProfileSchema,
   deleteDeniedJoinRequestSchema,
@@ -212,30 +213,41 @@ export const handler = middy(middyOptions)
           const dataRes = await charityDataRepository.deleteCharity(name, id);
           return res && dataRes;
         }
-        case 'updateCharityUser': {
-          const { name, id, institutionName, email, phone, jobTitle } =
+        case 'updateUser': {
+          const { type, name, id, institutionName, email, phone, jobTitle, department } =
             updateUserSchema.parse(params);
-          const user = {
-            name,
-            charityId: id,
-            charityName: institutionName,
-            email,
-            jobTitle,
-            phone,
-          };
-          return await charityUserRepository.update(user);
+          if (type === UserType.Charity) {
+            const user = {
+              name,
+              charityId: id,
+              charityName: institutionName,
+              email,
+              jobTitle,
+              phone,
+            };
+            return await charityUserRepository.update(user);
+          }
+          if (type === UserType.School) {
+            const user = {
+              name,
+              schoolId: id,
+              schoolName: institutionName,
+              email,
+              jobTitle,
+              phone,
+            };
+            return await schoolUserRepository.update(user);
+          }
+          if (type === UserType.La) {
+            return await localAuthorityUserRepository.update(
+              id,
+              jobTitle,
+              phone,
+              String(department)
+            );
+          }
+          throw new Error(`Unexpected type ${type}`);
         }
-        case 'updateSchoolUser': {
-          const { name, id, institutionName, email, phone, jobTitle } =
-            updateUserSchema.parse(params);
-          const user = { name, schoolId: id, schoolName: institutionName, email, jobTitle, phone };
-          return await schoolUserRepository.update(user);
-        }
-        case 'updateLaUser': {
-          const { id, phone, jobTitle, department } = updateUserSchema.parse(params);
-          return await localAuthorityUserRepository.update(id, jobTitle, phone, String(department));
-        }
-
         default: {
           throw new Error(`Unexpected type ${info.fieldName}`);
         }
