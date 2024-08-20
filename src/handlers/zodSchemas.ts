@@ -7,7 +7,7 @@ export enum Type {
 }
 
 export enum UserType {
-  La = 'la',
+  La = 'localAuthority',
   Charity = 'charity',
   School = 'school',
 }
