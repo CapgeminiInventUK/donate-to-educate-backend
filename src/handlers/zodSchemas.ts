@@ -183,7 +183,7 @@ export const getCharityJoinRequestsByLaSchema = z.object({
 });
 
 export const updateUserSchema = z.object({
-  type: z.enum([UserType.La, UserType.Charity, UserType.School]),
+  type: z.string().min(1),
   name: z.string().min(1),
   id: z.string().min(1),
   institutionName: z.string().min(1),

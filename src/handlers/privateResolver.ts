@@ -216,7 +216,7 @@ export const handler = middy(middyOptions)
         case 'updateUser': {
           const { type, name, id, institutionName, email, phone, jobTitle, department } =
             updateUserSchema.parse(params);
-          if (type === UserType.Charity) {
+          if (type === 'charity') {
             const user = {
               name,
               charityId: id,
@@ -227,7 +227,7 @@ export const handler = middy(middyOptions)
             };
             return await charityUserRepository.update(user);
           }
-          if (type === UserType.School) {
+          if (type === 'school') {
             const user = {
               name,
               schoolId: id,
@@ -238,7 +238,7 @@ export const handler = middy(middyOptions)
             };
             return await schoolUserRepository.update(user);
           }
-          if (type === UserType.La) {
+          if (type === 'la') {
             return await localAuthorityUserRepository.update(
               id,
               jobTitle,
