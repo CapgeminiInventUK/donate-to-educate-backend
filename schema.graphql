@@ -235,18 +235,8 @@ type Query {
   getCharityJoinRequestsByLa(localAuthority: String!): [JoinRequest!]!
   getAdminTileStats: AdminStats!
   getLaStats(name: String!, nameId: String!, email: String!): LaStats!
-  getSchoolsNearbyWithProfile(
-    postcode: String!
-    distance: Float!
-    limit: Int!
-    type: Type!
-  ): InstituteSearchResult!
-  getCharitiesNearbyWithProfile(
-    postcode: String!
-    distance: Float!
-    limit: Int!
-    type: Type!
-  ): InstituteSearchResult!
+  getSchoolsNearbyWithProfile(postcode: String!, distance: Float!, limit: Int!, type: Type!): InstituteSearchResult!
+  getCharitiesNearbyWithProfile(postcode: String!, distance: Float!, limit: Int!, type: Type!): InstituteSearchResult!
 
   hasSchoolProfile(name: String!, id: String!): Boolean!
   hasCharityProfile(name: String!, id: String!): Boolean!
@@ -283,21 +273,9 @@ type Mutation {
     postcode: String
   ): Boolean!
 
-  insertLocalAuthorityRegisterRequest(
-    name: String!
-    localAuthority: String!
-    email: String!
-    message: String!
-    type: String!
-  ): Boolean!
+  insertLocalAuthorityRegisterRequest(name: String!, localAuthority: String!, email: String!, message: String!, type: String!): Boolean!
 
-  insertSignUpData(
-    id: String!
-    email: String!
-    type: String!
-    name: String!
-    nameId: String!
-  ): Boolean!
+  insertSignUpData(id: String!, email: String!, type: String!, name: String!, nameId: String!): Boolean!
   insertItemQuery(
     name: String!
     email: String!
@@ -318,6 +296,16 @@ type Mutation {
   acceptPrivacyPolicy(name: String!, nameId: String!, email: String!): Boolean!
 
   deleteSignUpData(id: String!, email: String!): Boolean
+
+  updateUser(
+    name: String!
+    id: String!
+    institutionName: String!
+    email: String!
+    phone: String!
+    jobTitle: String!
+    department: String
+  ): Boolean
 }
 
 schema {

@@ -4,6 +4,7 @@ import { AppSyncResolverEvent } from 'aws-lambda';
 import { v4 as uuidv4 } from 'uuid';
 import { CharityDataRepository } from '../repository/charityDataRepository';
 import { CharityProfileRepository } from '../repository/charityProfileRepository';
+import { CharityUserRepository } from '../repository/charityUserRepository';
 import { ItemQueriesRepository } from '../repository/itemQueriesRepository';
 import { JoinRequestsRepository } from '../repository/joinRequestsRepository';
 import { LocalAuthorityDataRepository } from '../repository/localAuthorityDataRepository';
@@ -11,6 +12,7 @@ import { LocalAuthorityRegisterRequestsRepository } from '../repository/localAut
 import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
 import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
+import { SchoolUserRepository } from '../repository/schoolUserRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { logger } from '../shared/logger';
 import { compression } from '../shared/middleware/compression';
@@ -30,6 +32,7 @@ import {
   updateCharityProfileSchema,
   updateJoinRequestSchema,
   updateSchoolProfileSchema,
+  updateUserSchema,
 } from './zodSchemas';
 
 const localAuthorityDataRepository = LocalAuthorityDataRepository.getInstance();
@@ -42,7 +45,9 @@ const itemQueriesRepository = ItemQueriesRepository.getInstance();
 const localAuthorityRegisterRequestsRepository =
   LocalAuthorityRegisterRequestsRepository.getInstance();
 const schoolDataRepository = SchoolDataRepository.getInstance();
+const schoolUserRepository = SchoolUserRepository.getInstance();
 const charityDataRepository = CharityDataRepository.getInstance();
+const charityUserRepository = CharityUserRepository.getInstance();
 
 export const handler = middy(middyOptions)
   .use(responseSize())
@@ -206,6 +211,29 @@ export const handler = middy(middyOptions)
           const res = await charityProfileRepository.deleteCharityProfile(name, id);
           const dataRes = await charityDataRepository.deleteCharity(name, id);
           return res && dataRes;
+        }
+        case 'updateCharityUser': {
+          const { name, id, institutionName, email, phone, jobTitle } =
+            updateUserSchema.parse(params);
+          const user = {
+            name,
+            charityId: id,
+            charityName: institutionName,
+            email,
+            jobTitle,
+            phone,
+          };
+          return await charityUserRepository.update(user);
+        }
+        case 'updateSchoolUser': {
+          const { name, id, institutionName, email, phone, jobTitle } =
+            updateUserSchema.parse(params);
+          const user = { name, schoolId: id, schoolName: institutionName, email, jobTitle, phone };
+          return await schoolUserRepository.update(user);
+        }
+        case 'updateLaUser': {
+          const { id, phone, jobTitle, department } = updateUserSchema.parse(params);
+          return await localAuthorityUserRepository.update(id, jobTitle, phone, String(department));
         }
 
         default: {

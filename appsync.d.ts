@@ -175,6 +175,7 @@ export type Mutation = {
   updateCharityProfile: Scalars['Boolean']['output'];
   updateJoinRequest: Scalars['Boolean']['output'];
   updateSchoolProfile: Scalars['Boolean']['output'];
+  updateUser?: Maybe<Scalars['Boolean']['output']>;
 };
 
 
@@ -286,6 +287,17 @@ export type MutationUpdateJoinRequestArgs = {
 export type MutationUpdateSchoolProfileArgs = {
   key: Scalars['String']['input'];
   value: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateUserArgs = {
+  department?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['String']['input'];
+  id: Scalars['String']['input'];
+  institutionName: Scalars['String']['input'];
+  jobTitle: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  phone: Scalars['String']['input'];
 };
 
 export type Point = {
