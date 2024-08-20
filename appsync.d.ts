@@ -298,6 +298,7 @@ export type MutationUpdateUserArgs = {
   jobTitle: Scalars['String']['input'];
   name: Scalars['String']['input'];
   phone: Scalars['String']['input'];
+  userType: Scalars['String']['input'];
 };
 
 export type Point = {

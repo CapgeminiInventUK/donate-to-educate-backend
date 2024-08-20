@@ -214,9 +214,9 @@ export const handler = middy(middyOptions)
           return res && dataRes;
         }
         case 'updateUser': {
-          const { type, name, id, institutionName, email, phone, jobTitle, department } =
+          const { userType, name, id, institutionName, email, phone, jobTitle, department } =
             updateUserSchema.parse(params);
-          if (type === 'charity') {
+          if (userType === UserType.Charity) {
             const user = {
               name,
               charityId: id,
@@ -227,7 +227,7 @@ export const handler = middy(middyOptions)
             };
             return await charityUserRepository.update(user);
           }
-          if (type === 'school') {
+          if (userType === UserType.School) {
             const user = {
               name,
               schoolId: id,
@@ -238,7 +238,7 @@ export const handler = middy(middyOptions)
             };
             return await schoolUserRepository.update(user);
           }
-          if (type === 'la') {
+          if (userType === UserType.La) {
             return await localAuthorityUserRepository.update(
               id,
               jobTitle,
@@ -246,7 +246,7 @@ export const handler = middy(middyOptions)
               String(department)
             );
           }
-          throw new Error(`Unexpected type ${type}`);
+          throw new Error(`Unexpected type ${userType}`);
         }
         default: {
           throw new Error(`Unexpected type ${info.fieldName}`);

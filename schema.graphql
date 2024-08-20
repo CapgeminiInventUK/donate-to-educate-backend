@@ -298,6 +298,7 @@ type Mutation {
   deleteSignUpData(id: String!, email: String!): Boolean
 
   updateUser(
+    userType: String!
     name: String!
     id: String!
     institutionName: String!
@@ -305,7 +306,7 @@ type Mutation {
     phone: String!
     jobTitle: String!
     department: String
-  ): Boolean
+  ): Boolean @aws_cognito_user_pools
 }
 
 schema {
