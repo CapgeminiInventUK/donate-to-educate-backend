@@ -123,6 +123,8 @@ export type LocalAuthority = {
   code: Scalars['String']['output'];
   name: Scalars['String']['output'];
   registered: Scalars['Boolean']['output'];
+  registeredCharities?: Maybe<Scalars['Int']['output']>;
+  registeredSchools?: Maybe<Scalars['Int']['output']>;
 };
 
 export type LocalAuthorityProfile = {

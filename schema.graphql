@@ -101,6 +101,8 @@ type LocalAuthority {
   code: String!
   name: String!
   registered: Boolean!
+  registeredSchools: Int
+  registeredCharities: Int
 }
 
 type LocalAuthorityProfile {
