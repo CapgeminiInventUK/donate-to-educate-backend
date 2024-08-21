@@ -136,6 +136,19 @@ export const handler = middy(middyOptions)
 
           return removeFields<SchoolUser>(info.selectionSetList, schoolUser);
         }
+        case 'getSchoolUsers': {
+          const { id } = getUsersByIdSchema.parse(params);
+
+          const schoolUsers = await schoolUserRepository.getAllById(id);
+
+          if (!schoolUsers) {
+            return null;
+          }
+
+          return schoolUsers.map((schoolUser) =>
+            removeFields<SchoolUser>(info.selectionSetList, schoolUser)
+          );
+        }
         case 'getCharityUser': {
           const { email } = getUserSchema.parse(params);
 
@@ -146,6 +159,17 @@ export const handler = middy(middyOptions)
           }
 
           return removeFields<CharityUser>(info.selectionSetList, charityUser);
+        }
+        case 'getCharityUsers': {
+          const { id } = getUsersByIdSchema.parse(params);
+
+          const charityUsers = await charityUserRepository.getAllById(id);
+
+          if (!charityUsers) {
+            return null;
+          }
+
+          return charityUsers.map((user) => removeFields<CharityUser>(info.selectionSetList, user));
         }
         case 'getSchoolsByLa': {
           const { name } = getSchoolsByLaSchema.parse(params);

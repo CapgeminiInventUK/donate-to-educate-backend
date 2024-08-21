@@ -226,8 +226,11 @@ type Query {
   getSchoolProfile(name: String!, id: String!): SchoolProfile
   getCharityProfile(name: String!, id: String!): CharityProfile
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
+  getLocalAuthorityUsers(id: String!): [LocalAuthorityUser]!
   getSchoolUser(email: String!): SchoolUser!
+  getSchoolUsers(id: String!): [SchoolUser]!
   getCharityUser(email: String!): CharityUser!
+  getCharityUsers(id: String!): [CharityUser]!
   getSignUpData(id: String!): SignUpData
   getSchoolsNearby(postcode: String!, distance: Float!): [School!]!
   getCharitiesNearby(postcode: String!, distance: Float!): [Charity!]!
