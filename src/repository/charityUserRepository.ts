@@ -23,6 +23,10 @@ export class CharityUserRepository extends BaseRepository<CharityUser> {
     return await this.getOne({ email });
   }
 
+  public async getAllById(charityId: string): Promise<WithId<CharityUser>[] | undefined> {
+    return await this.getByQuery({ charityId });
+  }
+
   public async list(): Promise<WithId<CharityUser>[]> {
     return await this.getByQuery({});
   }

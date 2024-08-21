@@ -20,6 +20,10 @@ export class SchoolUserRepository extends BaseRepository<SchoolUser> {
     return await this.getOne({ email });
   }
 
+  public async getAllById(schoolId: string): Promise<WithId<SchoolUser>[] | undefined> {
+    return await this.getByQuery({ schoolId });
+  }
+
   public async list(): Promise<WithId<SchoolUser>[]> {
     return await this.getByQuery({});
   }
