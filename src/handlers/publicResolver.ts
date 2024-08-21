@@ -141,7 +141,7 @@ export const handler = middy(middyOptions)
 
           const schoolUsers = await schoolUserRepository.getAllById(id);
 
-          if (!schoolUsers) {
+          if (!schoolUsers?.length) {
             return null;
           }
 
@@ -165,7 +165,7 @@ export const handler = middy(middyOptions)
 
           const charityUsers = await charityUserRepository.getAllById(id);
 
-          if (!charityUsers) {
+          if (!charityUsers?.length) {
             return null;
           }
 
