@@ -36,6 +36,10 @@ export class LocalAuthorityUserRepository extends BaseRepository<LocalAuthorityU
     return await this.getOne({ name, nameId, email });
   }
 
+  public async getById(nameId: string): Promise<WithId<LocalAuthorityUser>[] | undefined> {
+    return await this.getByQuery({ nameId });
+  }
+
   public async setPrivacyPolicyAccepted(
     name: string,
     nameId: string,

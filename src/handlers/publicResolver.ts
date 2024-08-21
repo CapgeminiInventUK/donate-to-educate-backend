@@ -44,6 +44,7 @@ import {
   getSchoolsNearbyWithProfileSchema,
   getSignUpDataSchema,
   getUserSchema,
+  getUsersByIdSchema,
 } from './zodSchemas';
 
 const schoolDataRepository = SchoolDataRepository.getInstance();
@@ -110,6 +111,19 @@ export const handler = middy(middyOptions)
           }
 
           return removeFields<LocalAuthorityUser>(info.selectionSetList, laUser);
+        }
+        case 'getLocalAuthorityUsers': {
+          const { id } = getUsersByIdSchema.parse(params);
+
+          const laUsers = await localAuthorityUserRepository.getById(id);
+
+          if (!laUsers?.length) {
+            return null;
+          }
+
+          return laUsers.map((laUser) =>
+            removeFields<LocalAuthorityUser>(info.selectionSetList, laUser)
+          );
         }
         case 'getSchoolUser': {
           const { email } = getUserSchema.parse(params);
