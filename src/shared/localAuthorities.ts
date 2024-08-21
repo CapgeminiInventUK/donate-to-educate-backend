@@ -9,12 +9,11 @@ export const addSchoolsAndCharitiesToLa = (
   info: infoType
 ) => {
   return las.map((la) => {
-    const registeredSchools = schools.filter(
-      (school) => school.localAuthority === la.name && school.registered
-    ).length;
-    const registeredCharities = charities.filter(
-      (charity) => charity.localAuthority === la.name
-    ).length;
+    const registeredSchools =
+      schools.filter((school) => school.localAuthority === la.name && school.registered)?.length ??
+      0;
+    const registeredCharities =
+      charities.filter((charity) => charity.localAuthority === la.name)?.length ?? 0;
     removeFields<LocalAuthority>(info.selectionSetList, {
       ...la,
       registeredSchools,
