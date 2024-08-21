@@ -14,7 +14,7 @@ export const addSchoolsAndCharitiesToLa = (
       0;
     const registeredCharities =
       charities.filter((charity) => charity.localAuthority === la.name)?.length ?? 0;
-    removeFields<LocalAuthority>(info.selectionSetList, {
+    return removeFields<LocalAuthority>(info.selectionSetList, {
       ...la,
       registeredSchools,
       registeredCharities,
