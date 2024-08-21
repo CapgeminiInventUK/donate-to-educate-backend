@@ -21,7 +21,6 @@ import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { SchoolUserRepository } from '../repository/schoolUserRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { removeFields } from '../shared/graphql';
-import { addSchoolsAndCharitiesToLa } from '../shared/localAuthorities';
 import { logger } from '../shared/logger';
 import { compression } from '../shared/middleware/compression';
 import { inputLogger } from '../shared/middleware/inputLogger';
@@ -186,9 +185,7 @@ export const handler = middy(middyOptions)
         }
         case 'getLocalAuthorities': {
           const las = await localAuthorityDataRepository.list();
-          const schools = await schoolDataRepository.list(projectedFields);
-          const charities = await charityDataRepository.list(projectedFields);
-          return addSchoolsAndCharitiesToLa(las, schools, charities, info);
+          return las.map((la) => removeFields<LocalAuthority>(info.selectionSetList, la));
         }
         case 'getJoinRequests': {
           return await joinRequestsRepository.getNewJoinRequests();
