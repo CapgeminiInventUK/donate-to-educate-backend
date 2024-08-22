@@ -119,7 +119,7 @@ export const getUserSchema = z.object({
 });
 
 export const getUsersByIdSchema = z.object({
-  id: z.string().email(),
+  id: z.string().min(1),
 });
 
 export const getSchoolsByLaSchema = z.object({
