@@ -114,9 +114,9 @@ export const handler = middy(middyOptions)
           return removeFields<LocalAuthorityUser>(info.selectionSetList, laUser);
         }
         case 'getLocalAuthorityUsers': {
-          const { id } = getUsersByIdSchema.parse(params);
+          const { id, name } = getUsersByIdSchema.parse(params);
 
-          const laUsers = await localAuthorityUserRepository.getById(id);
+          const laUsers = await localAuthorityUserRepository.getAllBy(id, name);
 
           if (!laUsers?.length) {
             return null;
@@ -186,8 +186,8 @@ export const handler = middy(middyOptions)
         }
         case 'getLocalAuthorities': {
           const las = await localAuthorityDataRepository.list();
-          const schools = await schoolDataRepository.list({localAuthority: 1, registered: 1});
-          const charities = await charityDataRepository.list({localAuthority: 1});
+          const schools = await schoolDataRepository.list({ localAuthority: 1, registered: 1 });
+          const charities = await charityDataRepository.list({ localAuthority: 1 });
           return addSchoolsAndCharitiesToLa(las, schools, charities, info);
         }
         case 'getJoinRequests': {
