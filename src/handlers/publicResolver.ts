@@ -186,8 +186,8 @@ export const handler = middy(middyOptions)
         }
         case 'getLocalAuthorities': {
           const las = await localAuthorityDataRepository.list();
-          const schools = await schoolDataRepository.list(projectedFields);
-          const charities = await charityDataRepository.list(projectedFields);
+          const schools = await schoolDataRepository.list({localAuthority: 1, registered: 1});
+          const charities = await charityDataRepository.list({localAuthority: 1});
           return addSchoolsAndCharitiesToLa(las, schools, charities, info);
         }
         case 'getJoinRequests': {
