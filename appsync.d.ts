@@ -404,6 +404,7 @@ export type QueryGetLocalAuthorityUserArgs = {
 
 export type QueryGetLocalAuthorityUsersArgs = {
   id: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 
