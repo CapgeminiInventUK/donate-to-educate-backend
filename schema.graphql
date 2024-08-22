@@ -228,7 +228,7 @@ type Query {
   getSchoolProfile(name: String!, id: String!): SchoolProfile
   getCharityProfile(name: String!, id: String!): CharityProfile
   getLocalAuthorityUser(email: String!): LocalAuthorityUser!
-  getLocalAuthorityUsers(id: String!, name: String): [LocalAuthorityUser]!
+  getLocalAuthorityUsers(id: String!): [LocalAuthorityUser]!
   getSchoolUser(email: String!): SchoolUser!
   getSchoolUsers(id: String!): [SchoolUser]!
   getCharityUser(email: String!): CharityUser!

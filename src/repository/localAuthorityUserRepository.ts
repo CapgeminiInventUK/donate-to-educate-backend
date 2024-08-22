@@ -36,13 +36,7 @@ export class LocalAuthorityUserRepository extends BaseRepository<LocalAuthorityU
     return await this.getOne({ name, nameId, email });
   }
 
-  public async getAllBy(
-    nameId: string,
-    name?: string | null
-  ): Promise<WithId<LocalAuthorityUser>[] | undefined> {
-    if (name) {
-      return await this.getByQuery({ name });
-    }
+  public async getAllById(nameId: string): Promise<WithId<LocalAuthorityUser>[] | undefined> {
     return await this.getByQuery({ nameId });
   }
 

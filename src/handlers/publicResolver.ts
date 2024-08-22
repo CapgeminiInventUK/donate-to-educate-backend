@@ -114,9 +114,9 @@ export const handler = middy(middyOptions)
           return removeFields<LocalAuthorityUser>(info.selectionSetList, laUser);
         }
         case 'getLocalAuthorityUsers': {
-          const { id, name } = getUsersByIdSchema.parse(params);
+          const { id } = getUsersByIdSchema.parse(params);
 
-          const laUsers = await localAuthorityUserRepository.getAllBy(id, name);
+          const laUsers = await localAuthorityUserRepository.getAllById(id);
 
           if (!laUsers?.length) {
             return null;
