@@ -28,6 +28,21 @@ export class LocalAuthorityUserRepository extends BaseRepository<LocalAuthorityU
     return (await this.collection.insertOne(la)).acknowledged;
   }
 
+  public async useAdminAsDefaultUser(name: string): Promise<boolean> {
+    const adminUser = {
+      name,
+      firstName: 'D2E',
+      lastName: 'Admin',
+      // TODO use envar admin email
+      email: 'admin',
+      phone: '',
+      department: 'D2E',
+      jobTitle: 'D2E Admin',
+      nameId: '000000',
+    };
+    return (await this.collection.insertOne(adminUser)).acknowledged;
+  }
+
   public async getByAll(
     name: string,
     nameId: string,
@@ -64,5 +79,9 @@ export class LocalAuthorityUserRepository extends BaseRepository<LocalAuthorityU
   ): Promise<boolean> {
     return (await this.collection.updateOne({ nameId }, { $set: { jobTitle, phone, department } }))
       .acknowledged;
+  }
+
+  public async deleteUser(nameId: string, email: string): Promise<boolean> {
+    return (await this.collection.deleteOne({ nameId, email })).acknowledged;
   }
 }

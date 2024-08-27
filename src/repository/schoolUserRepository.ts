@@ -37,4 +37,8 @@ export class SchoolUserRepository extends BaseRepository<SchoolUser> {
     return (await this.collection.updateOne({ schoolName, schoolId }, { $set: { ...school } }))
       .acknowledged;
   }
+
+  public async deleteUser(schoolId: string, email: string): Promise<boolean> {
+    return (await this.collection.deleteOne({ schoolId, email })).acknowledged;
+  }
 }

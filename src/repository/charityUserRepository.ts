@@ -40,4 +40,8 @@ export class CharityUserRepository extends BaseRepository<CharityUser> {
     return (await this.collection.updateOne({ charityName, charityId }, { $set: { ...charity } }))
       .acknowledged;
   }
+
+  public async deleteUser(charityId: string, email: string): Promise<boolean> {
+    return (await this.collection.deleteOne({ charityId, email })).acknowledged;
+  }
 }
