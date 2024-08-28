@@ -26,7 +26,6 @@ import {
   deleteDeniedJoinRequestSchema,
   deleteSchoolProfileSchema,
   deleteUserSchema,
-  getUsersByIdSchema,
   insertItemQuerySchema,
   insertJoinRequestSchema,
   insertLocalAuthorityRegisterRequestSchema,

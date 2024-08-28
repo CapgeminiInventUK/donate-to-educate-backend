@@ -105,7 +105,7 @@ export const handler = middy(middyOptions)
         case 'getLocalAuthorityUser': {
           const { email } = getUserSchema.parse(params);
 
-          const laUser = await localAuthorityUserRepository.getByEmail(email);
+          const laUser = await localAuthorityUserRepository.getByEmail(email.toLowerCase());
 
           if (!laUser) {
             return null;
@@ -129,7 +129,7 @@ export const handler = middy(middyOptions)
         case 'getSchoolUser': {
           const { email } = getUserSchema.parse(params);
 
-          const schoolUser = await schoolUserRepository.getByEmail(email);
+          const schoolUser = await schoolUserRepository.getByEmail(email.toLowerCase());
 
           if (!schoolUser) {
             return null;
@@ -153,7 +153,7 @@ export const handler = middy(middyOptions)
         case 'getCharityUser': {
           const { email } = getUserSchema.parse(params);
 
-          const charityUser = await charityUserRepository.getByEmail(email);
+          const charityUser = await charityUserRepository.getByEmail(email.toLowerCase());
 
           if (!charityUser) {
             return null;
@@ -282,7 +282,7 @@ export const handler = middy(middyOptions)
           const { name, nameId, email } = getLaStatsSchema.parse(params);
 
           const [la, schoolRequests, charityRequests] = await Promise.all([
-            localAuthorityUserRepository.getByAll(name, nameId, email),
+            localAuthorityUserRepository.getByAll(name, nameId, email.toLowerCase()),
             joinRequestsRepository.getSchoolJoinRequestsCountByLa(name),
             joinRequestsRepository.getCharityJoinRequestsCountByLa(name),
           ]);
