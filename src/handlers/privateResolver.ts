@@ -25,6 +25,8 @@ import {
   deleteCharityProfileSchema,
   deleteDeniedJoinRequestSchema,
   deleteSchoolProfileSchema,
+  deleteUserSchema,
+  getUsersByIdSchema,
   insertItemQuerySchema,
   insertJoinRequestSchema,
   insertLocalAuthorityRegisterRequestSchema,
@@ -247,6 +249,39 @@ export const handler = middy(middyOptions)
             );
           }
           throw new Error(`Unexpected type ${userType}`);
+        }
+        case 'deleteUserProfile': {
+          const { name, id, userType, email } = deleteUserSchema.parse(params);
+          switch (userType) {
+            case UserType.School: {
+              const res = await schoolUserRepository.deleteUser(id, email);
+              const registeredUsers = await schoolUserRepository.getAllById(id);
+              if (!registeredUsers?.length) {
+                await schoolDataRepository.unregister(name, id);
+                await schoolProfileRepository.deleteSchoolProfile(name, id);
+              }
+              return res;
+            }
+            case UserType.Charity: {
+              const res = await charityUserRepository.deleteUser(id, email);
+              const registeredUsers = await charityUserRepository.getAllById(id);
+              if (!registeredUsers?.length) {
+                await charityDataRepository.deleteCharity(name, id);
+                await charityProfileRepository.deleteCharityProfile(name, id);
+              }
+              return res;
+            }
+            case UserType.La: {
+              const res = await localAuthorityUserRepository.deleteUser(id, email);
+              const laUsers = await localAuthorityUserRepository.getAllById(id);
+              if (!laUsers?.length) {
+                await localAuthorityUserRepository.useAdminAsDefaultUser(name);
+              }
+              return res;
+            }
+            default:
+              throw new Error(`Unexpected type ${userType}`);
+          }
         }
         default: {
           throw new Error(`Unexpected type ${info.fieldName}`);

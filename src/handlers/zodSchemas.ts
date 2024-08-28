@@ -196,3 +196,10 @@ export const updateUserSchema = z.object({
   jobTitle: z.string().min(1),
   department: z.string().optional().nullable(),
 });
+
+export const deleteUserSchema = z.object({
+  userType: z.enum([UserType.La, UserType.Charity, UserType.School]),
+  id: z.string().min(1),
+  name: z.string().min(1),
+  email: z.string().min(1),
+});
