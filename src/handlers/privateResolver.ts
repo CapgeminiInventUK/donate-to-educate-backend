@@ -255,6 +255,9 @@ export const handler = middy(middyOptions)
           switch (userType) {
             case UserType.School: {
               const res = await schoolUserRepository.deleteUser(id, email);
+              if (res) {
+                await signUpDataRepository.deleteSignUpRequest(id, email);
+              }
               const registeredUsers = await schoolUserRepository.getAllById(id);
               if (!registeredUsers?.length) {
                 await schoolDataRepository.unregister(name, id);
@@ -264,6 +267,9 @@ export const handler = middy(middyOptions)
             }
             case UserType.Charity: {
               const res = await charityUserRepository.deleteUser(id, email);
+              if (res) {
+                await signUpDataRepository.deleteSignUpRequest(id, email);
+              }
               const registeredUsers = await charityUserRepository.getAllById(id);
               if (!registeredUsers?.length) {
                 await charityDataRepository.deleteCharity(name, id);
@@ -273,6 +279,9 @@ export const handler = middy(middyOptions)
             }
             case UserType.La: {
               const res = await localAuthorityUserRepository.deleteUser(id, email);
+              if (res) {
+                await signUpDataRepository.deleteSignUpRequest(id, email);
+              }
               const laUsers = await localAuthorityUserRepository.getAllById(id);
               if (!laUsers?.length) {
                 await localAuthorityUserRepository.useAdminAsDefaultUser(name);
