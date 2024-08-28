@@ -23,4 +23,11 @@ export class SignUpDataRepository extends BaseRepository<SignUpData> {
   public async deleteSignUpRequest(id: string, email: string): Promise<boolean> {
     return (await this.collection.deleteOne({ email, id })).acknowledged;
   }
+
+  public async deleteSignUpRequestAfterProfileDeletion(
+    nameId: string,
+    email: string
+  ): Promise<boolean> {
+    return (await this.collection.deleteOne({ email, nameId })).acknowledged;
+  }
 }
