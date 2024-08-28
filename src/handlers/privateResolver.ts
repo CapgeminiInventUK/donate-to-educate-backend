@@ -256,7 +256,7 @@ export const handler = middy(middyOptions)
             case UserType.School: {
               const res = await schoolUserRepository.deleteUser(id, email);
               if (res) {
-                await signUpDataRepository.deleteSignUpRequest(id, email);
+                await signUpDataRepository.deleteSignUpRequestAfterProfileDeletion(id, email);
               }
               const registeredUsers = await schoolUserRepository.getAllById(id);
               if (!registeredUsers?.length) {
@@ -268,7 +268,7 @@ export const handler = middy(middyOptions)
             case UserType.Charity: {
               const res = await charityUserRepository.deleteUser(id, email);
               if (res) {
-                await signUpDataRepository.deleteSignUpRequest(id, email);
+                await signUpDataRepository.deleteSignUpRequestAfterProfileDeletion(id, email);
               }
               const registeredUsers = await charityUserRepository.getAllById(id);
               if (!registeredUsers?.length) {
@@ -280,7 +280,7 @@ export const handler = middy(middyOptions)
             case UserType.La: {
               const res = await localAuthorityUserRepository.deleteUser(id, email);
               if (res) {
-                await signUpDataRepository.deleteSignUpRequest(id, email);
+                await signUpDataRepository.deleteSignUpRequestAfterProfileDeletion(id, email);
               }
               const laUsers = await localAuthorityUserRepository.getAllById(id);
               if (!laUsers?.length) {
