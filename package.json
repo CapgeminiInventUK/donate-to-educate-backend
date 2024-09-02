@@ -46,7 +46,6 @@
     "@sparticuz/chromium-min": "123.0.1",
     "@types/proj4": "2.5.5",
     "adm-zip": "0.5.16",
-    "aws-amplify": "^6.5.3",
     "aws-sdk": "2.1685.0",
     "aws4": "1.13.2",
     "axios": "1.7.4",
