@@ -1,6 +1,5 @@
 import middy from '@middy/core';
 import errorLogger from '@middy/error-logger';
-import { deleteUser } from 'aws-amplify/auth';
 import { AppSyncResolverEvent } from 'aws-lambda';
 import { v4 as uuidv4 } from 'uuid';
 import { CharityDataRepository } from '../repository/charityDataRepository';
@@ -252,10 +251,9 @@ export const handler = middy(middyOptions)
         }
         case 'deleteUserProfile': {
           const { name, id, userType, email } = deleteUserSchema.parse(params);
-          let res;
           switch (userType) {
             case UserType.School: {
-              res = await schoolUserRepository.deleteUser(id, email);
+              const res = await schoolUserRepository.deleteUser(id, email);
               if (res) {
                 await signUpDataRepository.deleteSignUpRequestAfterProfileDeletion(id, email);
               }
@@ -264,10 +262,10 @@ export const handler = middy(middyOptions)
                 await schoolDataRepository.unregister(name, id);
                 await schoolProfileRepository.deleteSchoolProfile(name, id);
               }
-              break;
+              return res;
             }
             case UserType.Charity: {
-              res = await charityUserRepository.deleteUser(id, email);
+              const res = await charityUserRepository.deleteUser(id, email);
               if (res) {
                 await signUpDataRepository.deleteSignUpRequestAfterProfileDeletion(id, email);
               }
@@ -276,10 +274,10 @@ export const handler = middy(middyOptions)
                 await charityDataRepository.deleteCharity(name, id);
                 await charityProfileRepository.deleteCharityProfile(name, id);
               }
-              break;
+              return res;
             }
             case UserType.La: {
-              res = await localAuthorityUserRepository.deleteUser(id, email);
+              const res = await localAuthorityUserRepository.deleteUser(id, email);
               if (res) {
                 await signUpDataRepository.deleteSignUpRequestAfterProfileDeletion(id, email);
               }
@@ -287,13 +285,11 @@ export const handler = middy(middyOptions)
               if (!laUsers?.length) {
                 await localAuthorityUserRepository.useAdminAsDefaultUser(name);
               }
-              break;
+              return res;
             }
             default:
               throw new Error(`Unexpected type ${userType}`);
           }
-          await deleteUser();
-          return res;
         }
         default: {
           throw new Error(`Unexpected type ${info.fieldName}`);
