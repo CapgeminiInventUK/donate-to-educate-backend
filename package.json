@@ -43,7 +43,7 @@
     "@middy/http-content-negotiation": "^5.4.5",
     "@middy/http-response-serializer": "^5.4.5",
     "@middy/http-security-headers": "^5.4.5",
-    "@sparticuz/chromium-min": "123.0.1",
+    "@sparticuz/chromium-min": "127.0.0",
     "@types/proj4": "2.5.5",
     "adm-zip": "0.5.16",
     "aws-sdk": "2.1687.0",
