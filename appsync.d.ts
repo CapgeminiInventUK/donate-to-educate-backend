@@ -14,6 +14,20 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type AdditionalUser = {
+  __typename?: 'AdditionalUser';
+  charityName?: Maybe<Scalars['String']['output']>;
+  email: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  jobTitle: Scalars['String']['output'];
+  localAuthority: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  phone?: Maybe<Scalars['String']['output']>;
+  school?: Maybe<Scalars['String']['output']>;
+  type: Scalars['String']['output'];
+  urn?: Maybe<Scalars['String']['output']>;
+};
+
 export type AdminStats = {
   __typename?: 'AdminStats';
   joinRequests: JoinRequestStats;
