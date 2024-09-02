@@ -15,6 +15,7 @@ import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { SchoolUserRepository } from '../repository/schoolUserRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
+import { getExistingUsers } from '../shared/account';
 import { logger } from '../shared/logger';
 import { compression } from '../shared/middleware/compression';
 import { inputLogger } from '../shared/middleware/inputLogger';
@@ -296,6 +297,11 @@ export const handler = middy(middyOptions)
         }
         case 'addAdditionalUser': {
           const user = addAdditionalUserSchema.parse(params);
+          const { type, name } = user;
+          const existingUsers = await getExistingUsers(type, name);
+          if (existingUsers > 2) {
+            throw new Error('Too many users associated with this account');
+          }
           return await additionalUsersRepository.insert(user);
         }
         default: {
