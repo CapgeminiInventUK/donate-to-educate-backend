@@ -206,7 +206,17 @@ export type MutationAcceptPrivacyPolicyArgs = {
 
 
 export type MutationAddAdditionalUserArgs = {
-  user: AdditionalUser;
+  charityName?: InputMaybe<Scalars['String']['input']>;
+  department?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['String']['input'];
+  id: Scalars['String']['input'];
+  jobTitle: Scalars['String']['input'];
+  localAuthority: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  phone?: InputMaybe<Scalars['String']['input']>;
+  school?: InputMaybe<Scalars['String']['input']>;
+  type: Scalars['String']['input'];
+  urn?: InputMaybe<Scalars['String']['input']>;
 };
 
 

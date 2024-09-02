@@ -329,7 +329,19 @@ type Mutation {
 
   deleteUserProfile(userType: String!, name: String!, id: String!, email: String!): Boolean @aws_cognito_user_pools
 
-  addAdditionalUser(user: AdditionalUser!): Boolean @aws_cognito_user_pools
+  addAdditionalUser(
+    id: String!
+    name: String!
+    localAuthority: String!
+    type: String!
+    email: String!
+    school: String
+    jobTitle: String!
+    phone: String
+    charityName: String
+    urn: String
+    department: String
+  ): Boolean @aws_cognito_user_pools
 }
 
 schema {
