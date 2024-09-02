@@ -2,6 +2,7 @@ import middy from '@middy/core';
 import errorLogger from '@middy/error-logger';
 import { AppSyncResolverEvent } from 'aws-lambda';
 import { v4 as uuidv4 } from 'uuid';
+import { AdditionalUsersRepository } from '../repository/additionalUsersRepository';
 import { CharityDataRepository } from '../repository/charityDataRepository';
 import { CharityProfileRepository } from '../repository/charityProfileRepository';
 import { CharityUserRepository } from '../repository/charityUserRepository';
@@ -22,6 +23,7 @@ import { middyOptions } from '../shared/middleware/testOptions';
 import {
   UserType,
   acceptPrivacyPolicySchema,
+  addAdditionalUserSchema,
   deleteCharityProfileSchema,
   deleteDeniedJoinRequestSchema,
   deleteSchoolProfileSchema,
@@ -50,6 +52,7 @@ const schoolDataRepository = SchoolDataRepository.getInstance();
 const schoolUserRepository = SchoolUserRepository.getInstance();
 const charityDataRepository = CharityDataRepository.getInstance();
 const charityUserRepository = CharityUserRepository.getInstance();
+const additionalUsersRepository = AdditionalUsersRepository.getInstance();
 
 export const handler = middy(middyOptions)
   .use(responseSize())
@@ -290,6 +293,10 @@ export const handler = middy(middyOptions)
             default:
               throw new Error(`Unexpected type ${userType}`);
           }
+        }
+        case 'addAdditionalUser': {
+          const user = addAdditionalUserSchema.parse(params);
+          return await additionalUsersRepository.insert(user);
         }
         default: {
           throw new Error(`Unexpected type ${info.fieldName}`);

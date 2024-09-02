@@ -203,3 +203,17 @@ export const deleteUserSchema = z.object({
   name: z.string().min(1),
   email: z.string().min(1),
 });
+
+export const addAdditionalUserSchema = z.object({
+  type: z.enum([UserType.La, UserType.Charity, UserType.School]),
+  id: z.string().min(1),
+  name: z.string().min(1),
+  email: z.string().min(1),
+  localAuthority: z.string().min(1),
+  jobTitle: z.string().min(1),
+  school: z.string().optional().nullable(),
+  phone: z.string().optional().nullable(),
+  charityName: z.string().optional().nullable(),
+  urn: z.string().optional().nullable(),
+  department: z.string().optional().nullable(),
+});
