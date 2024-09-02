@@ -17,6 +17,7 @@ export type Scalars = {
 export type AdditionalUser = {
   __typename?: 'AdditionalUser';
   charityName?: Maybe<Scalars['String']['output']>;
+  department?: Maybe<Scalars['String']['output']>;
   email: Scalars['String']['output'];
   id: Scalars['String']['output'];
   jobTitle: Scalars['String']['output'];
@@ -179,6 +180,7 @@ export type LocalAuthorityUser = {
 export type Mutation = {
   __typename?: 'Mutation';
   acceptPrivacyPolicy: Scalars['Boolean']['output'];
+  addAdditionalUser?: Maybe<Scalars['Boolean']['output']>;
   deleteCharityProfile?: Maybe<Scalars['Boolean']['output']>;
   deleteDeniedJoinRequest: Scalars['Boolean']['output'];
   deleteSchoolProfile?: Maybe<Scalars['Boolean']['output']>;
@@ -200,6 +202,11 @@ export type MutationAcceptPrivacyPolicyArgs = {
   email: Scalars['String']['input'];
   name: Scalars['String']['input'];
   nameId: Scalars['String']['input'];
+};
+
+
+export type MutationAddAdditionalUserArgs = {
+  user: AdditionalUser;
 };
 
 
