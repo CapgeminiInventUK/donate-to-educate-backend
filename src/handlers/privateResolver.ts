@@ -107,7 +107,7 @@ export const handler = middy(middyOptions)
             key,
             value,
             localAuthority,
-            postcode
+            postcode?.trim() ?? null
           );
         }
         case 'updateCharityProfile': {
@@ -124,7 +124,7 @@ export const handler = middy(middyOptions)
             institution,
             institutionId
           );
-          const profilePostcode = currentCharity?.postcode;
+          const profilePostcode = currentCharity?.postcode?.trim();
 
           const res = await charityProfileRepository.updateKey(
             institutionId,
@@ -139,7 +139,7 @@ export const handler = middy(middyOptions)
               institutionId,
               institution,
               localAuthority,
-              value
+              value.trim()
             );
           }
 
@@ -148,7 +148,7 @@ export const handler = middy(middyOptions)
               institutionId,
               institution,
               'postcode',
-              postcode,
+              postcode.trim(),
               localAuthority
             );
           }
