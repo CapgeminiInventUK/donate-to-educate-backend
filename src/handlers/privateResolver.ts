@@ -118,8 +118,14 @@ export const handler = middy(middyOptions)
             institutionId: string;
           };
 
-          const { localAuthority = '' } =
+          const { localAuthority = '', postcode } =
             (await charityDataRepository.getById(institutionId)) ?? {};
+          const currentCharity = await charityProfileRepository.getByName(
+            institution,
+            institutionId
+          );
+          const profilePostcode = currentCharity?.postcode;
+
           const res = await charityProfileRepository.updateKey(
             institutionId,
             institution,
@@ -134,6 +140,15 @@ export const handler = middy(middyOptions)
               institution,
               localAuthority,
               value
+            );
+          }
+
+          if (!profilePostcode && postcode) {
+            await charityDataRepository.updatePostcode(
+              institutionId,
+              institution,
+              localAuthority,
+              postcode
             );
           }
           return res;
