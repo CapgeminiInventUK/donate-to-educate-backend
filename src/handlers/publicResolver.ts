@@ -3,7 +3,6 @@ import errorLogger from '@middy/error-logger';
 import { AppSyncResolverEvent } from 'aws-lambda';
 import {
   CharityUser,
-  LocalAuthority,
   LocalAuthorityUser,
   QueryHasCharityProfileArgs,
   QueryHasSchoolProfileArgs,
