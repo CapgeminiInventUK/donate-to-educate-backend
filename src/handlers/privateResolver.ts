@@ -144,11 +144,12 @@ export const handler = middy(middyOptions)
           }
 
           if (!profilePostcode && postcode) {
-            await charityDataRepository.updatePostcode(
+            await charityProfileRepository.updateKey(
               institutionId,
               institution,
-              localAuthority,
-              postcode
+              'postcode',
+              postcode,
+              localAuthority
             );
           }
           return res;
