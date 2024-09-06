@@ -46,7 +46,7 @@
     "@sparticuz/chromium-min": "127.0.0",
     "@types/proj4": "2.5.5",
     "adm-zip": "0.5.16",
-    "aws-sdk": "2.1688.0",
+    "aws-sdk": "2.1691.0",
     "aws4": "1.13.2",
     "axios": "1.7.7",
     "csv-parse": "5.5.6",
