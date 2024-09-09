@@ -151,6 +151,12 @@ export const handler = middy(middyOptions)
               postcode.trim(),
               localAuthority
             );
+            await charityDataRepository.updatePostcode(
+              institutionId,
+              institution,
+              localAuthority,
+              postcode.trim()
+            );
           }
           return res;
         }
