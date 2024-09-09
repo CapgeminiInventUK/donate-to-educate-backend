@@ -41,4 +41,8 @@ export class SchoolUserRepository extends BaseRepository<SchoolUser> {
   public async deleteUser(schoolId: string, email: string): Promise<boolean> {
     return (await this.collection.deleteOne({ schoolId, email })).acknowledged;
   }
+
+  public async deleteAllUsersBySchool(schoolId: string): Promise<boolean> {
+    return (await this.collection.deleteMany({ schoolId })).acknowledged;
+  }
 }

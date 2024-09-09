@@ -44,4 +44,8 @@ export class CharityUserRepository extends BaseRepository<CharityUser> {
   public async deleteUser(charityId: string, email: string): Promise<boolean> {
     return (await this.collection.deleteOne({ charityId, email })).acknowledged;
   }
+
+  public async deleteAllUsersByCharity(charityId: string): Promise<boolean> {
+    return (await this.collection.deleteMany({ charityId })).acknowledged;
+  }
 }

@@ -227,6 +227,7 @@ export const handler = middy(middyOptions)
 
           const res = await schoolProfileRepository.deleteSchoolProfile(name, id);
           await schoolDataRepository.unregister(name, id);
+          await schoolUserRepository.deleteAllUsersBySchool(id);
           return res;
         }
         case 'acceptPrivacyPolicy': {
@@ -238,6 +239,7 @@ export const handler = middy(middyOptions)
 
           const res = await charityProfileRepository.deleteCharityProfile(name, id);
           const dataRes = await charityDataRepository.deleteCharity(name, id);
+          await charityUserRepository.deleteAllUsersByCharity(id);
           return res && dataRes;
         }
         case 'updateUser': {
