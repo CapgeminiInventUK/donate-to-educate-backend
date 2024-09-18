@@ -321,8 +321,8 @@ export const handler = middy(middyOptions)
         }
         case 'addAdditionalUser': {
           const user = addAdditionalUserSchema.parse(params);
-          const { type, name } = user;
-          const existingUsers = await getExistingUsers(type, name);
+          const { type, id } = user;
+          const existingUsers = await getExistingUsers(type, id);
           if (existingUsers > 2) {
             throw new Error('Too many users associated with this account');
           }
