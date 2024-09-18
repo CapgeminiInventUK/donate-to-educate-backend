@@ -19,8 +19,13 @@ const fromEmailAddress = 'team@donatetoeducate.org.uk';
 
 interface MongoDBEvent {
   detail: {
-    fullDocument: LocalAuthorityUser | JoinRequest | ItemQuery | LocalAuthorityRegisterRequest;
-    fullDocumentBeforeChange: JoinRequest;
+    fullDocument:
+      | LocalAuthorityUser
+      | JoinRequest
+      | ItemQuery
+      | LocalAuthorityRegisterRequest
+      | AdditionalUser;
+    fullDocumentBeforeChange: JoinRequest | AdditionalUser;
     ns: { db: string; coll: string };
   };
 }
