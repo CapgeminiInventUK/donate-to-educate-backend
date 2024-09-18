@@ -2,13 +2,7 @@ import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { Handler } from 'aws-lambda';
 import { generate } from 'randomstring';
 import { v4 as uuidv4 } from 'uuid';
-import {
-  AdditionalUser,
-  ItemQuery,
-  JoinRequest,
-  LocalAuthorityRegisterRequest,
-  LocalAuthorityUser,
-} from '../../appsync';
+import { AdditionalUser, ItemQuery, JoinRequest, LocalAuthorityRegisterRequest, LocalAuthorityUser } from '../../appsync';
 import { CharityDataRepository } from '../repository/charityDataRepository';
 import { CharityUserRepository } from '../repository/charityUserRepository';
 import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
@@ -17,6 +11,7 @@ import { SchoolUserRepository } from '../repository/schoolUserRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { checkIfDefinedElseDefault } from '../shared/check';
 import { splitAtLastHyphen } from '../shared/global';
+import { fullLogo, shortLogo } from '../shared/image';
 import { logger } from '../shared/logger';
 
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
@@ -66,6 +61,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
 
         await sendEmail(email, 'create-account-la', {
           subject: 'Complete your sign up to Donate to Educate',
+          shortLogo,
+          fullLogo,
           name: firstName,
           la: name,
           signUpLink: `https://${domainName}/add-user?id=${randomString}`,
@@ -76,20 +73,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
       case 'JoinRequests': {
         if (fullDocument) {
           const randomString = generate({ charset: 'alphabetic', length: 100 });
-          const {
-            email,
-            name,
-            type,
-            school,
-            charityName,
-            charityAddress,
-            aboutCharity,
-            localAuthority,
-            jobTitle,
-            phone,
-            urn,
-            postcode,
-          } = fullDocument as JoinRequest;
+          const { email, name, type, school, charityName, charityAddress, aboutCharity, localAuthority, jobTitle, phone, urn, postcode } =
+            fullDocument as JoinRequest;
 
           if (type === 'school' && school) {
             const schoolName = splitAtLastHyphen(school);
@@ -145,6 +130,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
 
           await sendEmail(email, 'join-request-approved', {
             subject: 'Your Donate to Educate application results',
+            shortLogo,
+            fullLogo,
             name,
             signUpLink: `https://${domainName}/add-user?id=${randomString}`,
           });
@@ -161,6 +148,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
 
           await sendEmail(email, 'join-request-declined', {
             subject: 'Your Donate to Educate application results',
+            shortLogo,
+            fullLogo,
             name,
           });
 
@@ -177,19 +166,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
       case 'AdditionalUsers': {
         if (fullDocument) {
           const randomString = generate({ charset: 'alphabetic', length: 100 });
-          const {
-            type,
-            id,
-            name,
-            email,
-            localAuthority,
-            jobTitle,
-            school,
-            phone,
-            charityName,
-            urn,
-            department,
-          } = fullDocument as AdditionalUser;
+          const { type, id, name, email, localAuthority, jobTitle, school, phone, charityName, urn, department } =
+            fullDocument as AdditionalUser;
 
           if (type === 'localAuthority') {
             await signUpDataRepository.insert({
@@ -215,6 +193,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
 
             await sendEmail(email, 'create-account-la', {
               subject: 'Complete your sign up to Donate to Educate',
+              shortLogo,
+              fullLogo,
               name: firstName,
               la: name,
               signUpLink: `https://${domainName}/add-user?id=${randomString}`,
@@ -264,6 +244,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
 
           await sendEmail(email, 'join-request-approved', {
             subject: 'Your Donate to Educate application results',
+            shortLogo,
+            fullLogo,
             name,
             signUpLink: `https://${domainName}/add-user?id=${randomString}`,
           });
@@ -279,18 +261,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
         break;
       }
       case 'ItemQueries': {
-        const {
-          email,
-          name,
-          type,
-          message,
-          who,
-          phone,
-          connection,
-          organisationId,
-          organisationName,
-          organisationType,
-        } = fullDocument as ItemQuery;
+        const { email, name, type, message, who, phone, connection, organisationId, organisationName, organisationType } =
+          fullDocument as ItemQuery;
         const { subject, intro } = getContentFromType(type, organisationType);
 
         const user =
@@ -315,12 +287,13 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
         break;
       }
       case 'LocalAuthorityRegisterRequests': {
-        const { name, email, localAuthority, message, type } =
-          fullDocument as LocalAuthorityRegisterRequest;
+        const { name, email, localAuthority, message, type } = fullDocument as LocalAuthorityRegisterRequest;
 
         await sendEmail(fromEmailAddress, 'la-not-joined', {
           type,
           subject: 'Local authority has not joined',
+          shortLogo,
+          fullLogo,
           email,
           name,
           localAuthority,
@@ -338,11 +311,7 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
   }
 };
 
-const sendEmail = async (
-  email: string,
-  templateName: string,
-  templateData: Record<string, string>
-): Promise<void> => {
+const sendEmail = async (email: string, templateName: string, templateData: Record<string, string>): Promise<void> => {
   const res = await sesClient.send(
     new SendEmailCommand({
       FromEmailAddress: fromEmailAddress,
@@ -359,10 +328,7 @@ const sendEmail = async (
   logger.info(res);
 };
 
-const getContentFromType = (
-  type: string,
-  organisationType: string
-): { subject: string; intro: string } => {
+const getContentFromType = (type: string, organisationType: string): { subject: string; intro: string } => {
   switch (type) {
     case 'tick':
       return {
