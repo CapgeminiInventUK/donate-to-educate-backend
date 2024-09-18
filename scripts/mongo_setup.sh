@@ -43,6 +43,7 @@ mongosh --host mongo1:27017 <<EOF
   db.createCollection("LocalAuthorityUser");
   db.createCollection("SchoolProfile");
   db.createCollection("SignUps");
+  db.createCollection("AdditionalUsers");
 
   // Create indexes
   db.SchoolData.createIndex({location: '2dsphere'})
