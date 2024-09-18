@@ -17,7 +17,7 @@ import { SchoolUserRepository } from '../repository/schoolUserRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
 import { checkIfDefinedElseDefault } from '../shared/check';
 import { splitAtLastHyphen } from '../shared/global';
-// import { fullLogo, shortLogo } from '../shared/image';
+import { fullLogo, shortLogo } from '../shared/image';
 import { logger } from '../shared/logger';
 
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
@@ -72,8 +72,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
 
         await sendEmail(email, 'create-account-la', {
           subject: 'Complete your sign up to Donate to Educate',
-          // shortLogo,
-          // fullLogo,
+          shortLogo,
+          fullLogo,
           name: firstName,
           la: name,
           signUpLink: `https://${domainName}/add-user?id=${randomString}`,
@@ -153,8 +153,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
 
           await sendEmail(email, 'join-request-approved', {
             subject: 'Your Donate to Educate application results',
-            // shortLogo,
-            // fullLogo,
+            shortLogo,
+            fullLogo,
             name,
             signUpLink: `https://${domainName}/add-user?id=${randomString}`,
           });
@@ -171,8 +171,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
 
           await sendEmail(email, 'join-request-declined', {
             subject: 'Your Donate to Educate application results',
-            // shortLogo,
-            // fullLogo,
+            shortLogo,
+            fullLogo,
             name,
           });
 
@@ -227,8 +227,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
 
             await sendEmail(email, 'create-account-la', {
               subject: 'Complete your sign up to Donate to Educate',
-              // shortLogo,
-              // fullLogo,
+              shortLogo,
+              fullLogo,
               name: firstName,
               la: name,
               signUpLink: `https://${domainName}/add-user?id=${randomString}`,
@@ -278,8 +278,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
 
           await sendEmail(email, 'join-request-approved', {
             subject: 'Your Donate to Educate application results',
-            // shortLogo,
-            // fullLogo,
+            shortLogo,
+            fullLogo,
             name,
             signUpLink: `https://${domainName}/add-user?id=${randomString}`,
           });
@@ -337,8 +337,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
         await sendEmail(fromEmailAddress, 'la-not-joined', {
           type,
           subject: 'Local authority has not joined',
-          // shortLogo,
-          // fullLogo,
+          shortLogo,
+          fullLogo,
           email,
           name,
           localAuthority,
