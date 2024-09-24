@@ -99,7 +99,7 @@ export const handleAdditionalUsers = async (fullDocument: AdditionalUser) => {
       subject: 'We have added a user of Donate to Educate',
       shortLogo,
       fullLogo,
-      institutionName: name,
+      institutionName: school ?? charityName ?? '',
     });
   } else {
     throw new Error(`Invalid type ${type}`);
@@ -110,7 +110,7 @@ export const handleAdditionalUsers = async (fullDocument: AdditionalUser) => {
     shortLogo,
     fullLogo,
     name: firstName,
-    institutionName: name,
+    institutionName: school ?? charityName ?? localAuthority,
     signUpLink: `https://${domainName}/add-user?id=${randomString}`,
   });
 };
