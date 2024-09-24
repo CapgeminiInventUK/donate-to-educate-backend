@@ -17,6 +17,10 @@ export class CharityProfileRepository extends BaseRepository<CharityProfile> {
     return await this.getOne({ name, id });
   }
 
+  public async getByLa(localAuthority: string): Promise<WithId<CharityProfile>[]> {
+    return await this.getByQuery({ localAuthority });
+  }
+
   public async updateKey(
     id: string,
     name: string,

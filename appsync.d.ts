@@ -521,6 +521,8 @@ export type School = {
   address3?: Maybe<Scalars['String']['output']>;
   county?: Maybe<Scalars['String']['output']>;
   distance?: Maybe<Scalars['Float']['output']>;
+  donate?: Maybe<ProfileItems>;
+  excess?: Maybe<ProfileItems>;
   hasJoinRequest?: Maybe<Scalars['Boolean']['output']>;
   isLocalAuthorityRegistered?: Maybe<Scalars['Boolean']['output']>;
   localAuthority: Scalars['String']['output'];
@@ -531,6 +533,7 @@ export type School = {
   profile?: Maybe<Array<Maybe<SchoolProfile>>>;
   registered: Scalars['Boolean']['output'];
   registrationState?: Maybe<Scalars['String']['output']>;
+  request?: Maybe<ProfileItems>;
   street?: Maybe<Scalars['String']['output']>;
   town?: Maybe<Scalars['String']['output']>;
   urn: Scalars['ID']['output'];

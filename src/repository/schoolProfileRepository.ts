@@ -18,6 +18,10 @@ export class SchoolProfileRepository extends BaseRepository<SchoolProfile> {
     return await this.getOne({ name, id });
   }
 
+  public async getByLa(localAuthority: string): Promise<WithId<SchoolProfile>[]> {
+    return await this.getByQuery({ localAuthority });
+  }
+
   public async updateKey(
     id: string,
     name: string,

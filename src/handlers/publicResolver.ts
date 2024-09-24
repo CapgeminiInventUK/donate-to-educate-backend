@@ -19,6 +19,7 @@ import { SchoolDataRepository } from '../repository/schoolDataRepository';
 import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { SchoolUserRepository } from '../repository/schoolUserRepository';
 import { SignUpDataRepository } from '../repository/signUpDataRepository';
+import { addProductListsToCharities } from '../shared/charities';
 import { removeFields } from '../shared/graphql';
 import { addSchoolsAndCharitiesToLa } from '../shared/localAuthorities';
 import { logger } from '../shared/logger';
@@ -27,7 +28,7 @@ import { inputLogger } from '../shared/middleware/inputLogger';
 import { responseSize } from '../shared/middleware/responseSize';
 import { middyOptions } from '../shared/middleware/testOptions';
 import { convertPostcodeToLatLng } from '../shared/postcode';
-import { addSchoolsRequestState, infoType } from '../shared/schools';
+import { addProductListsToSchools, addSchoolsRequestState, infoType } from '../shared/schools';
 import {
   getCharitiesByLaSchema,
   getCharitiesNearbySchema,
@@ -175,7 +176,10 @@ export const handler = middy(middyOptions)
           const { name } = getSchoolsByLaSchema.parse(params);
 
           const schools = await schoolDataRepository.getByLa(name);
-          return schools.map((school) => removeFields<School>(info.selectionSetList, school));
+          const schoolsWithProducts = await addProductListsToSchools(schools, name);
+          return schoolsWithProducts.map((school) =>
+            removeFields<School>(info.selectionSetList, school)
+          );
         }
         case 'getSchools': {
           const schools = await schoolDataRepository.list(projectedFields);
@@ -294,7 +298,8 @@ export const handler = middy(middyOptions)
         }
         case 'getCharitiesByLa': {
           const { name } = getCharitiesByLaSchema.parse(params);
-          return await charityDataRepository.getByLa(name);
+          const charities = await charityDataRepository.getByLa(name);
+          return await addProductListsToCharities(charities, name);
         }
         case 'getCharityJoinRequestsByLa': {
           const { localAuthority } = getCharityJoinRequestsByLaSchema.parse(params);
