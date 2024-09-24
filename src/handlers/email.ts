@@ -1,7 +1,5 @@
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { Handler } from 'aws-lambda';
-import { generate } from 'randomstring';
-import { v4 as uuidv4 } from 'uuid';
 import {
   AdditionalUser,
   ItemQuery,
@@ -9,16 +7,12 @@ import {
   LocalAuthorityRegisterRequest,
   LocalAuthorityUser,
 } from '../../appsync';
-import { CharityDataRepository } from '../repository/charityDataRepository';
-import { CharityUserRepository } from '../repository/charityUserRepository';
-import { LocalAuthorityUserRepository } from '../repository/localAuthorityUserRepository';
-import { SchoolDataRepository } from '../repository/schoolDataRepository';
-import { SchoolUserRepository } from '../repository/schoolUserRepository';
-import { SignUpDataRepository } from '../repository/signUpDataRepository';
-import { checkIfDefinedElseDefault } from '../shared/check';
-import { splitAtLastHyphen } from '../shared/global';
-import { fullLogo, shortLogo } from '../shared/image';
 import { logger } from '../shared/logger';
+import { handleAdditionalUsers } from './email/additionalUsers';
+import { handleItemQueries } from './email/itemQueries';
+import { handleJoinRequests } from './email/joinRequests';
+import { handleLocalAuthorityRegisterRequests } from './email/localAuthorityRegisterRequests';
+import { handleNewLaUser } from './email/newLaUser';
 
 const sesClient = new SESv2Client({ region: 'eu-west-2' });
 const fromEmailAddress = 'team@donatetoeducate.org.uk';
@@ -36,13 +30,6 @@ interface MongoDBEvent {
   };
 }
 
-const signUpDataRepository = SignUpDataRepository.getInstance();
-const schoolDataRepository = SchoolDataRepository.getInstance();
-const charityDataRepository = CharityDataRepository.getInstance();
-const charityUserRepository = CharityUserRepository.getInstance();
-const schoolUserRepository = SchoolUserRepository.getInstance();
-const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
-
 export const handler: Handler = async (event: MongoDBEvent, context): Promise<void> => {
   logger.info(event);
   context.callbackWaitsForEmptyEventLoop = false;
@@ -55,299 +42,31 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
     }
 
     const { fullDocument, ns, fullDocumentBeforeChange } = event.detail;
-    const domainName = checkIfDefinedElseDefault(process?.env?.DOMAIN_NAME);
 
     switch (ns.coll) {
       case 'LocalAuthorityUser': {
-        const randomString = generate({ charset: 'alphabetic', length: 100 });
-        const { email, firstName, name, nameId } = fullDocument as LocalAuthorityUser;
-
-        await signUpDataRepository.insert({
-          id: randomString,
-          email,
-          type: 'localAuthority',
-          name,
-          nameId,
-        });
-
-        await sendEmail(email, 'create-account-la', {
-          subject: 'Complete your sign up to Donate to Educate',
-          shortLogo,
-          fullLogo,
-          name: firstName,
-          la: name,
-          signUpLink: `https://${domainName}/add-user?id=${randomString}`,
-        });
+        await handleNewLaUser(fullDocument as LocalAuthorityUser);
         break;
       }
-
       case 'JoinRequests': {
-        if (fullDocument) {
-          const randomString = generate({ charset: 'alphabetic', length: 100 });
-          const {
-            email,
-            name,
-            type,
-            school,
-            charityName,
-            charityAddress,
-            aboutCharity,
-            localAuthority,
-            jobTitle,
-            phone,
-            urn,
-            postcode,
-          } = fullDocument as JoinRequest;
-
-          if (type === 'school' && school) {
-            const schoolName = splitAtLastHyphen(school);
-
-            await signUpDataRepository.insert({
-              id: randomString,
-              email,
-              type,
-              name: schoolName,
-              nameId: checkIfDefinedElseDefault(urn),
-            });
-
-            await schoolDataRepository.setToRegistered(schoolName, checkIfDefinedElseDefault(urn));
-
-            await schoolUserRepository.insert({
-              name,
-              phone: phone ?? '',
-              jobTitle: jobTitle ?? '',
-              email,
-              schoolId: urn ?? '',
-              schoolName: school ?? '',
-            });
-          } else if (type === 'charity') {
-            const charityId = uuidv4();
-            await signUpDataRepository.insert({
-              id: randomString,
-              email,
-              type,
-              name: checkIfDefinedElseDefault(charityName),
-              nameId: charityId,
-            });
-
-            await charityDataRepository.insert({
-              id: charityId,
-              name: checkIfDefinedElseDefault(charityName),
-              address: checkIfDefinedElseDefault(charityAddress),
-              about: checkIfDefinedElseDefault(aboutCharity),
-              localAuthority,
-              postcode,
-            });
-
-            await charityUserRepository.insert({
-              email,
-              phone: phone ?? '',
-              jobTitle: jobTitle ?? '',
-              charityName: charityName ?? '',
-              charityId,
-              name,
-            });
-          } else {
-            throw new Error(`Invalid type ${type}`);
-          }
-
-          await sendEmail(email, 'join-request-approved', {
-            subject: 'Your Donate to Educate application results',
-            shortLogo,
-            fullLogo,
-            name,
-            signUpLink: `https://${domainName}/add-user?id=${randomString}`,
-          });
-
-          // TODO do something with la email sending
-          // const la = await localAuthorityUserRepository.getByName(localAuthority);
-
-          // await sendEmail(checkIfDefinedElseDefault(la?.email), 'reviewed-requests-to-join', {
-          //   subject: "We've reviewed your requests to join",
-          //   reviewLink: `https://${domainName}/login`,
-          // });
-        } else {
-          const { email, name } = fullDocumentBeforeChange;
-
-          await sendEmail(email, 'join-request-declined', {
-            subject: 'Your Donate to Educate application results',
-            shortLogo,
-            fullLogo,
-            name,
-          });
-
-          // TODO do something with la email sending
-          // const la = await localAuthorityUserRepository.getByName(localAuthority);
-
-          // await sendEmail(checkIfDefinedElseDefault(la?.email), 'reviewed-requests-to-join', {
-          //   subject: "We've reviewed your requests to join",
-          //   reviewLink: `https://${domainName}/login`,
-          // });
-        }
+        await handleJoinRequests(
+          fullDocument as JoinRequest,
+          fullDocumentBeforeChange as JoinRequest
+        );
         break;
       }
       case 'AdditionalUsers': {
-        if (fullDocument) {
-          const randomString = generate({ charset: 'alphabetic', length: 100 });
-          const {
-            type,
-            id,
-            name,
-            email,
-            localAuthority,
-            jobTitle,
-            school,
-            phone,
-            charityName,
-            urn,
-            department,
-          } = fullDocument as AdditionalUser;
-
-          if (type === 'localAuthority') {
-            await signUpDataRepository.insert({
-              id: randomString,
-              email,
-              type,
-              name: localAuthority,
-              nameId: id,
-            });
-
-            const [firstName, lastName] = name.split(' ');
-
-            await localAuthorityUserRepository.insert({
-              department: String(department),
-              email,
-              firstName,
-              lastName,
-              jobTitle,
-              name: localAuthority,
-              nameId: id,
-              phone: String(phone),
-            });
-
-            await sendEmail(email, 'create-account-la', {
-              subject: 'Complete your sign up to Donate to Educate',
-              shortLogo,
-              fullLogo,
-              name: firstName,
-              la: name,
-              signUpLink: `https://${domainName}/add-user?id=${randomString}`,
-            });
-            break;
-          }
-
-          if (type === 'school' && school) {
-            await signUpDataRepository.insert({
-              id: randomString,
-              email,
-              type,
-              name: school,
-              nameId: checkIfDefinedElseDefault(urn),
-            });
-
-            await schoolDataRepository.setToRegistered(school, checkIfDefinedElseDefault(urn));
-
-            await schoolUserRepository.insert({
-              name,
-              phone: phone ?? '',
-              jobTitle: jobTitle ?? '',
-              email,
-              schoolId: urn ?? '',
-              schoolName: school ?? '',
-            });
-          } else if (type === 'charity') {
-            await signUpDataRepository.insert({
-              id: randomString,
-              email,
-              type,
-              name: checkIfDefinedElseDefault(charityName),
-              nameId: id,
-            });
-
-            await charityUserRepository.insert({
-              email,
-              phone: phone ?? '',
-              jobTitle: jobTitle ?? '',
-              charityName: charityName ?? '',
-              charityId: id,
-              name,
-            });
-          } else {
-            throw new Error(`Invalid type ${type}`);
-          }
-
-          await sendEmail(email, 'join-request-approved', {
-            subject: 'Your Donate to Educate application results',
-            shortLogo,
-            fullLogo,
-            name,
-            signUpLink: `https://${domainName}/add-user?id=${randomString}`,
-          });
-
-          // TODO do something with la email sending
-          // const la = await localAuthorityUserRepository.getByName(localAuthority);
-
-          // await sendEmail(checkIfDefinedElseDefault(la?.email), 'reviewed-requests-to-join', {
-          //   subject: "We've reviewed your requests to join",
-          //   reviewLink: `https://${domainName}/login`,
-          // });
-        }
+        await handleAdditionalUsers(fullDocument as AdditionalUser);
         break;
       }
       case 'ItemQueries': {
-        const {
-          email,
-          name,
-          type,
-          message,
-          who,
-          phone,
-          connection,
-          organisationId,
-          organisationName,
-          organisationType,
-        } = fullDocument as ItemQuery;
-        const { subject, intro } = getContentFromType(type, organisationType);
-
-        const user =
-          organisationType === 'school'
-            ? await schoolUserRepository.get(organisationName, organisationId)
-            : await charityUserRepository.get(organisationName, organisationId);
-
-        if (user?.email) {
-          await sendEmail(user?.email, 'request', {
-            subject,
-            intro,
-            type: getWhoFromValue(who),
-            email,
-            phone,
-            message,
-            name,
-            ...(connection && { connection }),
-          });
-        } else {
-          logger.info(`Invalid email: ${user?.email}`);
-        }
+        await handleItemQueries(fullDocument as ItemQuery);
         break;
       }
       case 'LocalAuthorityRegisterRequests': {
-        const { name, email, localAuthority, message, type } =
-          fullDocument as LocalAuthorityRegisterRequest;
-
-        await sendEmail(fromEmailAddress, 'la-not-joined', {
-          type,
-          subject: 'Local authority has not joined',
-          shortLogo,
-          fullLogo,
-          email,
-          name,
-          localAuthority,
-          message,
-        });
-
+        handleLocalAuthorityRegisterRequests(fullDocument as LocalAuthorityRegisterRequest);
         break;
       }
-
       default:
         throw new Error(`Unexpected collection: ${event.detail.ns.coll}`);
     }
@@ -356,7 +75,7 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
   }
 };
 
-const sendEmail = async (
+export const sendEmail = async (
   email: string,
   templateName: string,
   templateData: Record<string, string>
@@ -375,46 +94,4 @@ const sendEmail = async (
   );
 
   logger.info(res);
-};
-
-const getContentFromType = (
-  type: string,
-  organisationType: string
-): { subject: string; intro: string } => {
-  switch (type) {
-    case 'tick':
-      return {
-        subject: 'Product request',
-        intro: `Someone has requested products from your ${organisationType}.`,
-      };
-    case 'heart':
-      return {
-        subject: 'Donation request',
-        intro: `Someone wants to donate products to your ${organisationType}.`,
-      };
-    case 'plus':
-      return {
-        subject: 'Excess product assistance',
-        intro: `Someone wants to help you with the extra stock at your ${organisationType}.`,
-      };
-    default:
-      throw new Error(`Unknown type ${type}`);
-  }
-};
-
-const getWhoFromValue = (value: string): string => {
-  switch (value) {
-    case 'charityVolunteerGroup':
-      return 'I work for a charity or volunteer group';
-    case 'parentGuardian':
-      return 'I am a parent or guardian';
-    case 'public':
-      return 'I am a member of the public';
-    case 'anotherSchool':
-      return 'I work at another school';
-    case 'somethingElse':
-      return 'Another connection';
-    default:
-      return '';
-  }
 };

@@ -216,4 +216,5 @@ export const addAdditionalUserSchema = z.object({
   charityName: z.string().optional().nullable(),
   urn: z.string().optional().nullable(),
   department: z.string().optional().nullable(),
+  addedBy: z.string().min(1),
 });
