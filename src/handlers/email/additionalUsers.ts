@@ -94,17 +94,6 @@ export const handleAdditionalUsers = async (fullDocument: AdditionalUser) => {
     });
   }
 
-  if (type !== 'localAuthority' && addedBy === 'admin') {
-    const { email: laEmail = '' } =
-      (await localAuthorityUserRepository.getByName(localAuthority)) || {};
-    await sendEmail(laEmail, 'additional-user-notify-institution', {
-      subject: 'We have added a user of Donate to Educate',
-      shortLogo,
-      fullLogo,
-      institutionName: school ?? charityName ?? '',
-    });
-  }
-
   await sendEmail(email, 'additional-user', {
     subject: 'Confirm your email for Donate to Educate',
     shortLogo,
@@ -112,5 +101,16 @@ export const handleAdditionalUsers = async (fullDocument: AdditionalUser) => {
     name: firstName,
     institutionName: school ?? charityName ?? localAuthority,
     signUpLink: `https://${domainName}/add-user?id=${randomString}`,
+  }).then(async () => {
+    if (type !== 'localAuthority' && addedBy === 'admin') {
+      const { email: laEmail = '' } =
+        (await localAuthorityUserRepository.getByName(localAuthority)) || {};
+      await sendEmail(laEmail, 'additional-user-notify-institution', {
+        subject: 'We have added a user of Donate to Educate',
+        shortLogo,
+        fullLogo,
+        institutionName: school ?? charityName ?? '',
+      });
+    }
   });
 };
