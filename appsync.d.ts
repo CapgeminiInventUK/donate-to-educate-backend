@@ -16,6 +16,7 @@ export type Scalars = {
 
 export type AdditionalUser = {
   __typename?: 'AdditionalUser';
+  addedBy: Scalars['String']['output'];
   charityName?: Maybe<Scalars['String']['output']>;
   department?: Maybe<Scalars['String']['output']>;
   email: Scalars['String']['output'];
@@ -206,6 +207,7 @@ export type MutationAcceptPrivacyPolicyArgs = {
 
 
 export type MutationAddAdditionalUserArgs = {
+  addedBy: Scalars['String']['input'];
   charityName?: InputMaybe<Scalars['String']['input']>;
   department?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];

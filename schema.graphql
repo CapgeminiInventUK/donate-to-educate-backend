@@ -140,6 +140,7 @@ type AdditionalUser {
   charityName: String
   urn: String
   department: String
+  addedBy: String!
 }
 
 type ItemQuery {
@@ -341,6 +342,7 @@ type Mutation {
     charityName: String
     urn: String
     department: String
+    addedBy: String!
   ): Boolean @aws_cognito_user_pools
 }
 
