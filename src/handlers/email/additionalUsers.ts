@@ -92,7 +92,9 @@ export const handleAdditionalUsers = async (fullDocument: AdditionalUser) => {
       charityId: id,
       name,
     });
-  } else if (type !== 'localAuthority' && addedBy === 'admin') {
+  }
+
+  if (type !== 'localAuthority' && addedBy === 'admin') {
     const { email: laEmail = '' } =
       (await localAuthorityUserRepository.getByName(localAuthority)) || {};
     await sendEmail(laEmail, 'additional-user-notify-institution', {
@@ -101,8 +103,6 @@ export const handleAdditionalUsers = async (fullDocument: AdditionalUser) => {
       fullLogo,
       institutionName: school ?? charityName ?? '',
     });
-  } else {
-    throw new Error(`Invalid type ${type}`);
   }
 
   await sendEmail(email, 'additional-user', {
