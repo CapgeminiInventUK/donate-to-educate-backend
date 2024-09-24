@@ -24,6 +24,9 @@ type School {
   profile: [SchoolProfile]
   hasJoinRequest: Boolean
   registrationState: String
+  request: ProfileItems
+  donate: ProfileItems
+  excess: ProfileItems
 }
 
 type Charity {

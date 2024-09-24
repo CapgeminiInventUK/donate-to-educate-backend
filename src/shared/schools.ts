@@ -1,5 +1,8 @@
 import { JoinRequest, LocalAuthority, School } from '../../appsync';
+import { SchoolProfileRepository } from '../repository/schoolProfileRepository';
 import { removeFields } from './graphql';
+
+const schoolProfileRepository = SchoolProfileRepository.getInstance();
 
 export interface infoType {
   selectionSetList: string[];
@@ -56,5 +59,17 @@ export const addSchoolsRequestState = (
     );
 
     return { ...school, registrationState };
+  });
+};
+
+export const addProductListsToSchools = async (
+  schools: School[],
+  localAuthority: string
+): Promise<School[]> => {
+  const schoolProfiles = await schoolProfileRepository.getByLa(localAuthority);
+  return schools.map((school) => {
+    const { request, donate, excess } =
+      schoolProfiles.find(({ name }) => school.name === name) ?? {};
+    return { request, donate, excess, ...school };
   });
 };
