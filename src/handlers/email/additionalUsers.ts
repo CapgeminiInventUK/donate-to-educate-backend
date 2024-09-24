@@ -92,17 +92,17 @@ export const handleAdditionalUsers = async (fullDocument: AdditionalUser) => {
       charityId: id,
       name,
     });
-  } else if (type !== 'localAuthority' && addedBy === 'admin') {
+  }
+
+  if (type !== 'localAuthority' && addedBy === 'admin') {
     const { email: laEmail = '' } =
       (await localAuthorityUserRepository.getByName(localAuthority)) || {};
     await sendEmail(laEmail, 'additional-user-notify-institution', {
       subject: 'We have added a user of Donate to Educate',
       shortLogo,
       fullLogo,
-      institutionName: name,
+      institutionName: school ?? charityName ?? '',
     });
-  } else {
-    throw new Error(`Invalid type ${type}`);
   }
 
   await sendEmail(email, 'additional-user', {
@@ -110,7 +110,7 @@ export const handleAdditionalUsers = async (fullDocument: AdditionalUser) => {
     shortLogo,
     fullLogo,
     name: firstName,
-    institutionName: name,
+    institutionName: school ?? charityName ?? localAuthority,
     signUpLink: `https://${domainName}/add-user?id=${randomString}`,
   });
 };
