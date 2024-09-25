@@ -216,7 +216,8 @@ export const handler = middy(middyOptions)
         }
         case 'getRegisteredSchoolsByLa': {
           const { localAuthority } = getRegisteredSchoolsByLaSchema.parse(params);
-          return await schoolDataRepository.getRegisteredByLa(localAuthority);
+          const schools = await schoolDataRepository.getRegisteredByLa(localAuthority);
+          return await addProductListsToSchools(schools, localAuthority);
         }
         case 'getSchoolJoinRequestsByLa': {
           const { localAuthority } = getSchoolJoinRequestsByLaSchema.parse(params);
