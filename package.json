@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/CapgeminiInventUK/educate-for-good-backend#readme",
   "dependencies": {
-    "@aws-sdk/client-sesv2": "3.637.0",
+    "@aws-sdk/client-sesv2": "3.658.1",
     "@middy/core": "^5.4.5",
     "@middy/error-logger": "^5.4.5",
     "@middy/http-content-encoding": "^5.4.5",
