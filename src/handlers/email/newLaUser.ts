@@ -2,7 +2,6 @@ import { generate } from 'randomstring';
 import { LocalAuthorityUser } from '../../../appsync';
 import { SignUpDataRepository } from '../../repository/signUpDataRepository';
 import { checkIfDefinedElseDefault } from '../../shared/check';
-import { fullLogo, shortLogo } from '../../shared/image';
 import { sendEmail } from '../email';
 
 const signUpDataRepository = SignUpDataRepository.getInstance();
@@ -22,8 +21,6 @@ export const handleNewLaUser = async (fullDocument: LocalAuthorityUser) => {
 
   await sendEmail(email, 'create-account-la', {
     subject: 'Complete your sign up to Donate to Educate',
-    shortLogo,
-    fullLogo,
     name: firstName,
     la: name,
     signUpLink: `https://${domainName}/add-user?id=${randomString}`,

@@ -7,6 +7,7 @@ import {
   LocalAuthorityRegisterRequest,
   LocalAuthorityUser,
 } from '../../appsync';
+import { fullLogo, shortLogo } from '../shared/image';
 import { logger } from '../shared/logger';
 import { handleAdditionalUsers } from './email/additionalUsers';
 import { handleItemQueries } from './email/itemQueries';
@@ -91,7 +92,7 @@ export const sendEmail = async (
       Content: {
         Template: {
           TemplateName: templateName,
-          TemplateData: JSON.stringify(templateData),
+          TemplateData: JSON.stringify({ ...templateData, fullLogo, shortLogo }),
         },
       },
     })

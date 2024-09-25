@@ -6,7 +6,6 @@ import { SchoolDataRepository } from '../../repository/schoolDataRepository';
 import { SchoolUserRepository } from '../../repository/schoolUserRepository';
 import { SignUpDataRepository } from '../../repository/signUpDataRepository';
 import { checkIfDefinedElseDefault } from '../../shared/check';
-import { fullLogo, shortLogo } from '../../shared/image';
 import { sendEmail } from '../email';
 
 const signUpDataRepository = SignUpDataRepository.getInstance();
@@ -96,8 +95,6 @@ export const handleAdditionalUsers = async (fullDocument: AdditionalUser) => {
 
   await sendEmail(email, 'additional-user', {
     subject: 'Confirm your email for Donate to Educate',
-    shortLogo,
-    fullLogo,
     name: firstName,
     institutionName: school ?? charityName ?? localAuthority,
     signUpLink: `https://${domainName}/add-user?id=${randomString}`,
@@ -107,8 +104,6 @@ export const handleAdditionalUsers = async (fullDocument: AdditionalUser) => {
         (await localAuthorityUserRepository.getByName(localAuthority)) || {};
       await sendEmail(laEmail, 'additional-user-notify-institution', {
         subject: 'We have added a user of Donate to Educate',
-        shortLogo,
-        fullLogo,
         institutionName: school ?? charityName ?? localAuthority,
       });
     }

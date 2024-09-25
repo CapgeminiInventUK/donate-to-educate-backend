@@ -8,7 +8,6 @@ import { SchoolUserRepository } from '../../repository/schoolUserRepository';
 import { SignUpDataRepository } from '../../repository/signUpDataRepository';
 import { checkIfDefinedElseDefault } from '../../shared/check';
 import { splitAtLastHyphen } from '../../shared/global';
-import { fullLogo, shortLogo } from '../../shared/image';
 import { sendEmail } from '../email';
 
 const charityDataRepository = CharityDataRepository.getInstance();
@@ -93,8 +92,6 @@ export const handleJoinRequests = async (
 
     await sendEmail(email, 'join-request-approved', {
       subject: 'Your Donate to Educate application results',
-      shortLogo,
-      fullLogo,
       name,
       signUpLink: `https://${domainName}/add-user?id=${randomString}`,
     });
@@ -111,8 +108,6 @@ export const handleJoinRequests = async (
 
     await sendEmail(email, 'join-request-declined', {
       subject: 'Your Donate to Educate application results',
-      shortLogo,
-      fullLogo,
       name,
     });
 
