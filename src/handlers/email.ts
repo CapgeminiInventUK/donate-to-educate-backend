@@ -80,6 +80,10 @@ export const sendEmail = async (
   templateName: string,
   templateData: Record<string, string>
 ): Promise<void> => {
+  logger.debug(
+    `Sending email template ${templateName} to ${email} with data ${JSON.stringify(templateData)}`
+  );
+
   const res = await sesClient.send(
     new SendEmailCommand({
       FromEmailAddress: fromEmailAddress,
