@@ -43,11 +43,14 @@ export type Charity = {
   about: Scalars['String']['output'];
   address: Scalars['String']['output'];
   distance?: Maybe<Scalars['Float']['output']>;
+  donate?: Maybe<ProfileItems>;
+  excess?: Maybe<ProfileItems>;
   id: Scalars['String']['output'];
   localAuthority: Scalars['String']['output'];
   name: Scalars['String']['output'];
   postcode?: Maybe<Scalars['String']['output']>;
   profile?: Maybe<Array<Maybe<CharityProfile>>>;
+  request?: Maybe<ProfileItems>;
 };
 
 export type CharityProfile = {

@@ -38,6 +38,9 @@ type Charity {
   distance: Float
   profile: [CharityProfile]
   postcode: String
+  request: ProfileItems
+  donate: ProfileItems
+  excess: ProfileItems
 }
 
 type ProfileItems {
