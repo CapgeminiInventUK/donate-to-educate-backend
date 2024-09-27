@@ -2,14 +2,23 @@ import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2';
 import { Handler } from 'aws-lambda';
 import {
   AdditionalUser,
+  CharityProfile,
+  CharityUser,
   ItemQuery,
   JoinRequest,
   LocalAuthorityRegisterRequest,
   LocalAuthorityUser,
+  SchoolProfile,
+  SchoolUser,
 } from '../../appsync';
 import { fullLogo, shortLogo } from '../shared/image';
 import { logger } from '../shared/logger';
 import { handleAdditionalUsers } from './email/additionalUsers';
+import { handleDeleteCharityProfile } from './email/deleteCharityProfile';
+import { handleDeleteCharityUser } from './email/deleteCharityUser';
+import { handleDeleteLocalAuthorityUser } from './email/deleteLaUser';
+import { handleDeleteSchoolProfile } from './email/deleteSchoolProfile';
+import { handleDeleteSchoolUser } from './email/deleteSchoolUser';
 import { handleItemQueries } from './email/itemQueries';
 import { handleJoinRequests } from './email/joinRequests';
 import { handleLocalAuthorityRegisterRequests } from './email/localAuthorityRegisterRequests';
@@ -25,8 +34,19 @@ interface MongoDBEvent {
       | JoinRequest
       | ItemQuery
       | LocalAuthorityRegisterRequest
+      | CharityUser
+      | SchoolUser
+      | SchoolProfile
+      | CharityProfile
       | AdditionalUser;
-    fullDocumentBeforeChange: JoinRequest | AdditionalUser;
+    fullDocumentBeforeChange:
+      | JoinRequest
+      | CharityUser
+      | SchoolUser
+      | SchoolProfile
+      | LocalAuthorityUser
+      | CharityProfile
+      | AdditionalUser;
     ns: { db: string; coll: string };
   };
 }
@@ -36,17 +56,15 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
-    // TODO add validation here
-    if (!event?.detail?.fullDocument?.email && !event?.detail?.fullDocumentBeforeChange?.email) {
-      logger.info('No email address provided');
-      return;
-    }
-
     const { fullDocument, ns, fullDocumentBeforeChange } = event.detail;
 
     switch (ns.coll) {
       case 'LocalAuthorityUser': {
-        await handleNewLaUser(fullDocument as LocalAuthorityUser);
+        if (fullDocument) {
+          await handleNewLaUser(fullDocument as LocalAuthorityUser);
+        } else {
+          await handleDeleteLocalAuthorityUser(fullDocumentBeforeChange as LocalAuthorityUser);
+        }
         break;
       }
       case 'JoinRequests': {
@@ -65,7 +83,27 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
         break;
       }
       case 'LocalAuthorityRegisterRequests': {
-        handleLocalAuthorityRegisterRequests(fullDocument as LocalAuthorityRegisterRequest);
+        await handleLocalAuthorityRegisterRequests(fullDocument as LocalAuthorityRegisterRequest);
+        break;
+      }
+      case 'CharityUsers': {
+        fullDocumentBeforeChange &&
+          (await handleDeleteCharityUser(fullDocumentBeforeChange as CharityUser));
+        break;
+      }
+      case 'SchoolUsers': {
+        fullDocumentBeforeChange &&
+          (await handleDeleteSchoolUser(fullDocumentBeforeChange as SchoolUser));
+        break;
+      }
+      case 'CharityProfile': {
+        fullDocumentBeforeChange &&
+          (await handleDeleteCharityProfile(fullDocumentBeforeChange as CharityProfile));
+        break;
+      }
+      case 'SchoolProfile': {
+        fullDocumentBeforeChange &&
+          (await handleDeleteSchoolProfile(fullDocumentBeforeChange as SchoolProfile));
         break;
       }
       default:

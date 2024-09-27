@@ -14,7 +14,7 @@ const charityUserRepository = CharityUserRepository.getInstance();
 const schoolUserRepository = SchoolUserRepository.getInstance();
 const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 
-export const handleAdditionalUsers = async (fullDocument: AdditionalUser) => {
+export const handleAdditionalUsers = async (fullDocument: AdditionalUser): Promise<void> => {
   const domainName = checkIfDefinedElseDefault(process?.env?.DOMAIN_NAME);
   const randomString = generate({ charset: 'alphabetic', length: 100 });
   const {
