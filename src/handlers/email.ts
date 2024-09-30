@@ -86,12 +86,12 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
         await handleLocalAuthorityRegisterRequests(fullDocument as LocalAuthorityRegisterRequest);
         break;
       }
-      case 'CharityUsers': {
+      case 'CharityUser': {
         fullDocumentBeforeChange &&
           (await handleDeleteCharityUser(fullDocumentBeforeChange as CharityUser));
         break;
       }
-      case 'SchoolUsers': {
+      case 'SchoolUser': {
         fullDocumentBeforeChange &&
           (await handleDeleteSchoolUser(fullDocumentBeforeChange as SchoolUser));
         break;
