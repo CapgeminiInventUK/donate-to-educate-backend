@@ -14,23 +14,21 @@ const charityUserRepository = CharityUserRepository.getInstance();
 const schoolUserRepository = SchoolUserRepository.getInstance();
 const localAuthorityUserRepository = LocalAuthorityUserRepository.getInstance();
 
-export const handleAdditionalUsers = async (fullDocument: AdditionalUser): Promise<void> => {
+export const handleAdditionalUsers = async ({
+  type,
+  id,
+  name,
+  email,
+  localAuthority,
+  jobTitle,
+  school,
+  phone,
+  charityName,
+  urn,
+  department,
+}: AdditionalUser): Promise<void> => {
   const domainName = checkIfDefinedElseDefault(process?.env?.DOMAIN_NAME);
   const randomString = generate({ charset: 'alphabetic', length: 100 });
-  const {
-    type,
-    id,
-    name,
-    email,
-    localAuthority,
-    jobTitle,
-    school,
-    phone,
-    charityName,
-    urn,
-    department,
-    addedBy,
-  } = fullDocument;
 
   const [firstName, lastName] = name.split(' ');
 
@@ -98,14 +96,21 @@ export const handleAdditionalUsers = async (fullDocument: AdditionalUser): Promi
     name: firstName,
     institutionName: school ?? charityName ?? localAuthority,
     signUpLink: `https://${domainName}/add-user?id=${randomString}`,
-  }).then(async () => {
-    if (addedBy === 'admin') {
-      const { email: laEmail = '' } =
-        (await localAuthorityUserRepository.getByName(localAuthority)) || {};
-      await sendEmail(laEmail, 'additional-user-notify-institution', {
-        subject: 'We have added a user of Donate to Educate',
-        institutionName: school ?? charityName ?? localAuthority,
-      });
-    }
   });
+};
+
+export const notifyLaOfAdditionalUser = async ({
+  localAuthority,
+  school,
+  charityName,
+  addedBy,
+}: AdditionalUser): Promise<void> => {
+  if (addedBy === 'admin') {
+    const { email: laEmail = '' } =
+      (await localAuthorityUserRepository.getByName(localAuthority)) || {};
+    await sendEmail(laEmail, 'additional-user-notify-institution', {
+      subject: 'We have added a user of Donate to Educate',
+      institutionName: school ?? charityName ?? localAuthority,
+    });
+  }
 };
