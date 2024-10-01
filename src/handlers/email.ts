@@ -13,7 +13,7 @@ import {
 } from '../../appsync';
 import { fullLogo, shortLogo } from '../shared/image';
 import { logger } from '../shared/logger';
-import { handleAdditionalUsers } from './email/additionalUsers';
+import { handleAdditionalUsers, notifyLaOfAdditionalUser } from './email/additionalUsers';
 import { handleDeleteCharityProfile } from './email/deleteCharityProfile';
 import { handleDeleteCharityUser } from './email/deleteCharityUser';
 import { handleDeleteLocalAuthorityUser } from './email/deleteLaUser';
@@ -76,6 +76,7 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
       }
       case 'AdditionalUsers': {
         await handleAdditionalUsers(fullDocument as AdditionalUser);
+        await notifyLaOfAdditionalUser(fullDocument as AdditionalUser);
         break;
       }
       case 'ItemQueries': {
