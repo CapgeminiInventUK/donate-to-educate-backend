@@ -75,8 +75,8 @@ export const handler: Handler = async (event: MongoDBEvent, context): Promise<vo
         break;
       }
       case 'AdditionalUsers': {
-        await handleAdditionalUsers(fullDocument as AdditionalUser);
         await notifyLaOfAdditionalUser(fullDocument as AdditionalUser);
+        await handleAdditionalUsers(fullDocument as AdditionalUser);
         break;
       }
       case 'ItemQueries': {
